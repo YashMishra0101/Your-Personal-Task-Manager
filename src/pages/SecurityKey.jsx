@@ -31,7 +31,7 @@ export default function SecurityKey() {
     <div className="min-h-screen flex items-center justify-center p-6 bg-linear-to-br from-background via-muted/20 to-background">
       <div className="w-full max-w-md">
         <div className="text-center mb-10 space-y-2">
-          <div className="w-20 h-20 bg-primary/10 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-primary/5 rotate-3">
+          <div className="w-20 h-20 bg-primary/10 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-primary/5">
             <LockKeyhole size={40} className="text-primary" />
           </div>
           <h1 className="text-3xl font-black tracking-tight text-foreground">
