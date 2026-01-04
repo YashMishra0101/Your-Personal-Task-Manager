@@ -9,12 +9,20 @@ import SecurityKey from "./pages/SecurityKey";
 import NotFound from "./pages/NotFound";
 import TaskDetails from "./pages/TaskDetails";
 import ProtectedRoute from "./components/ProtectedRoute";
+import SecurityRoute from "./components/SecurityRoute";
 
 export default function App() {
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
-      <Route path="/security-check" element={<SecurityKey />} />
+      <Route
+        path="/security-check"
+        element={
+          <SecurityRoute>
+            <SecurityKey />
+          </SecurityRoute>
+        }
+      />
 
       <Route
         path="/"

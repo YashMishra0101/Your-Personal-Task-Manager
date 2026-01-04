@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { LockKeyhole, ArrowRight, Loader } from "lucide-react";
+import { LockKeyhole, ArrowRight, Loader, LogOut } from "lucide-react";
 
 export default function SecurityKey() {
-  const { verifySecurityKey } = useAuth();
+  const { verifySecurityKey, logout } = useAuth();
   const navigate = useNavigate();
   const [key, setKey] = useState("");
   const [error, setError] = useState("");
@@ -24,6 +24,15 @@ export default function SecurityKey() {
       setError(err.message || "Invalid Security Key");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleSignOut = async () => {
+    try {
+      await logout();
+      navigate("/login");
+    } catch (error) {
+      console.error("Sign out failed:", error);
     }
   };
 
@@ -78,6 +87,18 @@ export default function SecurityKey() {
                 <ArrowRight className="group-hover:translate-x-1 transition-transform" />
               </>
             )}
+          </button>
+
+          <button
+            type="button"
+            onClick={handleSignOut}
+            className="w-full mt-4 py-3 rounded-2xl bg-muted/30 text-muted-foreground font-medium hover:bg-muted/50 hover:text-foreground transition-all flex items-center justify-center gap-2 group"
+          >
+            <LogOut
+              size={18}
+              className="group-hover:-translate-x-0.5 transition-transform"
+            />
+            <span>Sign Out</span>
           </button>
         </form>
 

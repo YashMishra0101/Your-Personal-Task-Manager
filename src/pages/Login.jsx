@@ -18,7 +18,7 @@ export default function Login() {
       setError("");
       setLoading(true);
       await login(email, password);
-      navigate("/");
+      navigate("/security-check");
     } catch (e) {
       if (e.message && e.message.includes("Device limit reached")) {
         setError(e.message);
