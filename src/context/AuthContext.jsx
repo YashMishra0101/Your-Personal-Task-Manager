@@ -119,108 +119,75 @@ export function AuthProvider({ children }) {
       throw new Error("Firebase configuration is missing. Cannot log in.");
     }
 
-    // 1. Authenticate with Firebase
-    const userCredential = await signInWithEmailAndPassword(
-      auth,
-      email,
-      password
-    );
-    const user = userCredential.user;
+    try {
+      // 2. Authenticate with Firebase
+      // Standard auth check (handles checking if user exists)
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      const user = userCredential.user;
 
-    // 2. Check Device Restrictions
-    if (db) {
-      try {
-        const deviceId = getDeviceId();
-        const userRef = doc(db, "users", user.uid);
-        const userSnap = await getDoc(userRef);
+      // 3. Check Device Restrictions
+      if (db) {
+        try {
+          const deviceId = getDeviceId();
+          const userRef = doc(db, "users", user.uid);
+          const userSnap = await getDoc(userRef);
 
-        let devices = [];
-
-        if (userSnap.exists()) {
-          devices = userSnap.data().devices || [];
-        }
-
-        // Check if this device is already registered
-        const isRegistered = devices.find((d) => d.deviceId === deviceId);
-
-        if (!isRegistered) {
-          if (devices.length >= 2) {
-            // LIMIT REACHED: Sign out immediately
-            await signOut(auth);
-            throw new Error(
-              "Security Alert: Device limit reached. You can only access this account from 2 devices."
-            );
+          let devices = [];
+          if (userSnap.exists()) {
+            devices = userSnap.data().devices || [];
           }
 
-          // Register new device
-          await setDoc(
-            userRef,
-            {
-              devices: arrayUnion({
-                deviceId,
-                addedAt: new Date().toISOString(),
-                userAgent: navigator.userAgent,
-              }),
-            },
-            { merge: true }
-          );
-        }
-      } catch (firestoreError) {
-        // If Firestore is blocked (ERR_BLOCKED_BY_CLIENT), don't stop the login process entirely
-        // but log the warning.
-        console.warn(
-          "Firestore device check failed (likely blocked):",
-          firestoreError
-        );
+          const isRegistered = devices.find((d) => d.deviceId === deviceId);
 
-        // If it's the security limit error, we still want to throw it
-        if (firestoreError.message.includes("limit reached")) {
-          throw firestoreError;
+          if (!isRegistered) {
+            if (devices.length >= 2) {
+              // STRICT LIMIT REACHED: Custom generic security message
+              await signOut(auth);
+              throw new Error("You cannot log in due to security rules.");
+            }
+
+            // Register new device
+            await setDoc(
+              userRef,
+              {
+                devices: arrayUnion({
+                  deviceId,
+                  addedAt: new Date().toISOString(),
+                  userAgent: navigator.userAgent,
+                }),
+              },
+              { merge: true }
+            );
+          }
+        } catch (firestoreError) {
+          // Propagate our custom security error
+          if (
+            firestoreError.message ===
+            "You cannot log in due to security rules."
+          ) {
+            throw firestoreError;
+          }
+          console.warn("Firestore device check failed:", firestoreError);
         }
       }
+      return userCredential;
+    } catch (error) {
+      // Standardize error messages as requested
+      if (error.message === "You cannot log in due to security rules.") {
+        throw error;
+      }
+      // For any other auth error (wrong password, user not found, etc.)
+      throw new Error("Invalid credentials.");
     }
-
-    return userCredential;
   }
 
   async function signup(email, password) {
-    if (!auth) {
-      throw new Error("Firebase configuration is missing. Cannot sign up.");
-    }
-
-    // Create user with Firebase Auth
-    const userCredential = await createUserWithEmailAndPassword(
-      auth,
-      email,
-      password
-    );
-    const user = userCredential.user;
-
-    // Register the first device
-    if (db) {
-      try {
-        const deviceId = getDeviceId();
-        const userRef = doc(db, "users", user.uid);
-        await setDoc(userRef, {
-          email: user.email,
-          createdAt: new Date().toISOString(),
-          devices: [
-            {
-              deviceId,
-              addedAt: new Date().toISOString(),
-              userAgent: navigator.userAgent,
-            },
-          ],
-        });
-      } catch (firestoreError) {
-        console.warn(
-          "Initial device registration failed (Firestore blocked):",
-          firestoreError
-        );
-      }
-    }
-
-    return userCredential;
+    // Disable signup completely as only one user is allowed
+    throw new Error("Sign up is disabled for this personal application.");
   }
 
   async function resetPassword(email) {
