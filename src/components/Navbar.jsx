@@ -5,7 +5,6 @@ import {
   PlusCircle,
   CheckCircle,
   LogOut,
-  Smartphone,
   Menu,
   X,
 } from "lucide-react";

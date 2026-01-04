@@ -15,7 +15,6 @@ import {
   onSnapshot,
 } from "firebase/firestore";
 import { auth, db } from "../lib/firebase";
-import { getDeviceId } from "../lib/device";
 
 const AuthContext = createContext();
 
