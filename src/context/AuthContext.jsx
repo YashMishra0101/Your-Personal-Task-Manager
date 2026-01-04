@@ -273,6 +273,19 @@ export function AuthProvider({ children }) {
 
   async function logout() {
     if (!auth) return;
+
+    try {
+      // Remove the current device from the backend before signing out
+      // This ensures the device slot is freed up
+      const deviceId = getDeviceId();
+      if (currentUser && deviceId) {
+        await removeDevice(deviceId);
+      }
+    } catch (error) {
+      console.error("Error removing device during logout:", error);
+      // We continue to sign out even if device removal fails
+    }
+
     return signOut(auth);
   }
 
