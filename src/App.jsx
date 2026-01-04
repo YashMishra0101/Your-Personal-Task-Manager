@@ -5,6 +5,7 @@ import AddTask from "./pages/AddTask";
 import EditTask from "./pages/EditTask";
 import Completed from "./pages/Completed";
 import Login from "./pages/Login";
+import DeviceManagement from "./pages/DeviceManagement";
 import NotFound from "./pages/NotFound";
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -41,6 +42,14 @@ export default function App() {
         element={
           <ProtectedRoute>
             <Completed />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/devices"
+        element={
+          <ProtectedRoute>
+            <DeviceManagement />
           </ProtectedRoute>
         }
       />

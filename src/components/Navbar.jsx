@@ -1,6 +1,12 @@
 import React from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { ListTodo, PlusCircle, CheckCircle, LogOut } from "lucide-react";
+import {
+  ListTodo,
+  PlusCircle,
+  CheckCircle,
+  LogOut,
+  Smartphone,
+} from "lucide-react";
 import { cn } from "../lib/utils";
 import { useAuth } from "../context/AuthContext";
 
@@ -63,8 +69,23 @@ export default function Navbar() {
           </button>
         </div>
 
-        {/* Desktop Logout Button (Bottom) */}
-        <div className="hidden md:block mt-auto pb-6">
+        {/* Desktop - Settings and Logout Section (Bottom) */}
+        <div className="hidden md:block mt-auto pb-6 space-y-2">
+          <NavLink
+            to="/devices"
+            className={({ isActive }) =>
+              cn(
+                "flex items-center space-x-3 w-full py-3 px-4 rounded-xl transition-colors",
+                isActive
+                  ? "text-primary bg-primary/10"
+                  : "text-muted-foreground hover:text-primary hover:bg-surface-hover"
+              )
+            }
+          >
+            <Smartphone size={20} />
+            <span className="text-sm font-medium">Devices</span>
+          </NavLink>
+
           <button
             onClick={handleLogout}
             className="flex items-center space-x-3 w-full py-3 px-4 rounded-xl text-muted-foreground hover:text-red-500 hover:bg-red-500/10 transition-colors"

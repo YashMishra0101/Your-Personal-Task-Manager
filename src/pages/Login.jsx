@@ -42,7 +42,7 @@ export default function Login() {
       <div className="w-full max-w-sm bg-surface rounded-2xl shadow-xl border border-border p-8">
         <div className="flex flex-col items-center mb-8">
           <img
-            src="/src/assets/favicon.png"
+            src="/icon-192.png"
             alt="Logo"
             className="w-16 h-16 mb-4 rounded-xl shadow-lg shadow-black/20"
           />

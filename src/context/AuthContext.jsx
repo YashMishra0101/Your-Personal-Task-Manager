@@ -165,6 +165,41 @@ export function AuthProvider({ children }) {
     return [];
   }
 
+  async function removeDevice(deviceId) {
+    if (!auth || !currentUser || !db) {
+      throw new Error(
+        "Cannot remove device: missing configuration or not authenticated."
+      );
+    }
+
+    const userRef = doc(db, "users", currentUser.uid);
+    const userSnap = await getDoc(userRef);
+
+    if (userSnap.exists()) {
+      const devices = userSnap.data().devices || [];
+      const updatedDevices = devices.filter((d) => d.deviceId !== deviceId);
+
+      await updateDoc(userRef, {
+        devices: updatedDevices,
+      });
+    }
+  }
+
+  async function getUserDevices() {
+    if (!auth || !currentUser || !db) {
+      return [];
+    }
+
+    const userRef = doc(db, "users", currentUser.uid);
+    const userSnap = await getDoc(userRef);
+
+    if (userSnap.exists()) {
+      return userSnap.data().devices || [];
+    }
+
+    return [];
+  }
+
   async function logout() {
     if (!auth) return;
     return signOut(auth);
@@ -174,6 +209,8 @@ export function AuthProvider({ children }) {
     currentUser,
     login,
     logout,
+    removeDevice,
+    getUserDevices,
   };
 
   return (
