@@ -3,12 +3,8 @@
 A modern task management application built with React and Firebase. This app helps you organize your daily tasks with an intuitive interface, complete with dark mode support and enhanced security features.
 
 ![Task Manager](https://img.shields.io/badge/Status-Production%20Ready-green)
-![React](https://img.shields.io/badge/React-18.3-blue)
+![React](https://img.shields.io/badge/React-19.2-blue)
 ![Firebase](https://img.shields.io/badge/Firebase-12.7-orange)
-
-## Preview
-
-![Login Page](C:/Users/yashr/.gemini/antigravity/brain/ff5d4323-62e6-489e-8c00-455606997fe2/login_page_1767645060804.png)
 
 ## Features
 
@@ -24,8 +20,19 @@ A modern task management application built with React and Firebase. This app hel
 ### Security & Authentication
 
 - Secure email/password authentication powered by Firebase
-- Password reset functionality via email
 - Protected routes ensuring only authenticated users can access tasks
+- **Security Key Protection**: Uses a Firestore security key to restrict database access
+  - Only users with the correct security key can access their tasks
+  - Security key is stored in Firestore Database under the `security` collection
+  - Provides an additional layer of protection for your personal data
+
+**Setting up the Security Key in Firebase:**
+
+1. Go to your Firebase Console → Firestore Database
+2. Create a new collection called `security`
+3. Add a document with ID `1`
+4. Add a field called `key` with your chosen security key (e.g., "90741209756")
+5. This key will be used to validate access to your tasks
 
 ### User Experience
 
@@ -49,7 +56,7 @@ A modern task management application built with React and Firebase. This app hel
 
 ### What You'll Need
 
-- Node.js version 16 or higher
+- Node.js version 18 or higher
 - pnpm package manager (or npm as an alternative)
 - A Firebase account (free tier works fine)
 
@@ -158,10 +165,10 @@ The theme automatically matches your operating system preference, but you can ma
 
 ## Tech Stack
 
-- **React 18** - Frontend framework
+- **React 19** - Frontend framework
 - **Vite 7** - Build tool and dev server
 - **React Router DOM 7** - Client-side routing
-- **Firebase** - Authentication and Firestore database
+- **Firebase 12.7** - Authentication and Firestore database
 - **Tailwind CSS 4** - Utility-first styling
 - **Framer Motion** - Animation library
 - **Lucide React** - Icon library
@@ -169,32 +176,6 @@ The theme automatically matches your operating system preference, but you can ma
 - **date-fns** - Date formatting and manipulation
 - **vite-plugin-pwa** - Progressive Web App support with Workbox
 - **uuid** - Unique device ID generation
-
-## Database Structure
-
-The app uses two main Firestore collections:
-
-### Users Collection
-
-```javascript
-{
-  uid: "user_id",
-  email: "user@example.com",
-  createdAt: "2024-01-01T00:00:00.000Z"
-}
-```
-
-### Tasks Collection
-
-```javascript
-{
-  id: "task_id",
-  title: "Task title",
-  deadline: "2024-01-01T00:00:00.000Z", // optional
-  completed: false,
-  createdAt: "2024-01-01T00:00:00.000Z"
-}
-```
 
 ## Deployment
 
@@ -240,28 +221,6 @@ Once deployed, users can install the app on their devices:
 - Works offline after first visit
 - Faster loading times
 - Native app-like experience
-
-### Firebase Security Rules
-
-Don't forget to set up Firestore security rules in your Firebase console:
-
-```javascript
-rules_version = '2';
-service cloud.firestore {
-  match /databases/{database}/documents {
-    // Users can only read/write their own user document
-    match /users/{userId} {
-      allow read, write: if request.auth.uid == userId;
-    }
-
-    // Tasks can be read/written by any authenticated user
-    // You may want to add userId field to tasks and restrict access
-    match /tasks/{taskId} {
-      allow read, write: if request.auth != null;
-    }
-  }
-}
-```
 
 ## Contributing
 

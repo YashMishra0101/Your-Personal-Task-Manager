@@ -2,14 +2,14 @@ import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 
 // Your web app's Firebase configuration
-// Replace these values with your own from the Firebase Console
+// All values are loaded from environment variables (.env file)
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: "personal-task-manager-bb73c.firebaseapp.com",
-  projectId: "personal-task-manager-bb73c",
-  storageBucket: "personal-task-manager-bb73c.firebasestorage.app",
-  messagingSenderId: "428761214884",
-  appId: "1:428761214884:web:577cc742aacb79b8389b31",
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
 };
 
 // Initialize Firebase
