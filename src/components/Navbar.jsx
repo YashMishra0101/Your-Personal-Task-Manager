@@ -10,12 +10,13 @@ import {
 } from "lucide-react";
 import { cn } from "../lib/utils";
 import { useAuth } from "../context/AuthContext";
+import { useUI } from "../context/UIContext";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function Navbar() {
   const { logout } = useAuth();
   const navigate = useNavigate();
-  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+  const { isMobileSidebarOpen, closeMobileSidebar } = useUI();
 
   const handleLogout = async (e) => {
     e?.preventDefault();
@@ -33,19 +34,8 @@ export default function Navbar() {
     { to: "/completed", icon: CheckCircle, label: "Completed" },
   ];
 
-  const closeMobileSidebar = () => setIsMobileSidebarOpen(false);
-
   return (
     <>
-      {/* Mobile Hamburger Button - Fixed Top Left (Now only for Settings/Logout) */}
-      <button
-        onClick={() => setIsMobileSidebarOpen(true)}
-        className="md:hidden fixed top-4 left-4 z-50 p-2 bg-surface/80 backdrop-blur-md rounded-xl shadow-sm border border-border text-primary hover:bg-surface-hover transition-colors"
-        aria-label="Open settings"
-      >
-        <Menu size={20} strokeWidth={2.5} />
-      </button>
-
       {/* Mobile Bottom Navigation Bar */}
       <nav className="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-surface/90 backdrop-blur-xl border-t border-border flex items-center justify-around px-2 z-50 pb-safe shadow-[0_-4px_12px_-1px_rgba(0,0,0,0.05)]">
         {mainNavItems.map(({ to, icon: Icon, label }) => (
@@ -107,8 +97,8 @@ export default function Navbar() {
               </button>
             </div>
 
-            <div className="flex-1 p-6 space-y-4">
-              <div className="mt-8 pt-8 border-t border-border">
+            <div className="flex-1 p-6 flex flex-col">
+              <div className="mt-auto pt-6 border-t border-border">
                 <button
                   onClick={handleLogout}
                   className="flex items-center space-x-4 w-full py-4 px-5 rounded-2xl text-red-500 bg-red-50 hover:bg-red-500 hover:text-white transition-all font-black"

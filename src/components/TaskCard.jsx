@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useTasks } from "../context/TaskContext";
-import { getRemainingTime, formatDeadlineDisplay } from "../lib/timeUtils";
+import { formatDeadlineDisplay } from "../lib/timeUtils";
 import {
   Check,
   Clock,
@@ -22,7 +22,6 @@ export default function TaskCard({ task }) {
   const { toggleTaskCompletion, deleteTask } = useTasks();
   const navigate = useNavigate();
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-  const timeLeft = getRemainingTime(task.deadline);
   const isOverdue = task.deadline && isPast(parseISO(task.deadline));
 
   const handleToggleComplete = async (e) => {
@@ -99,15 +98,6 @@ export default function TaskCard({ task }) {
 
           {!task.completed && task.deadline && (
             <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs mt-1">
-              <span
-                className={cn(
-                  "flex items-center space-x-1",
-                  isOverdue ? "text-red-500 font-semibold" : "text-accent"
-                )}
-              >
-                <Clock size={12} />
-                <span>{timeLeft}</span>
-              </span>
               <span className="text-muted-foreground flex items-center space-x-1">
                 <Calendar size={12} />
                 <span>{formatDeadlineDisplay(task.deadline)}</span>

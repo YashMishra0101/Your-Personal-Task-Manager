@@ -3,7 +3,7 @@ import { useTasks } from "../context/TaskContext";
 import { useNavigate } from "react-router-dom";
 import Layout from "../components/Layout";
 import { ArrowLeft, Clock, Calendar as CalendarIcon } from "lucide-react";
-import { endOfDay, format } from "date-fns";
+import { endOfDay, format, addDays, startOfDay } from "date-fns";
 
 export default function AddTask() {
   const { addTask } = useTasks();
@@ -12,11 +12,9 @@ export default function AddTask() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [date, setDate] = useState("");
-  const [time, setTime] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const dateInputRef = useRef(null);
-  const timeInputRef = useRef(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -26,12 +24,9 @@ export default function AddTask() {
 
     let deadline = null;
     if (date) {
-      if (time) {
-        deadline = new Date(`${date}T${time}`).toISOString();
-      } else {
-        // Default to end of day if time is missing
-        deadline = endOfDay(new Date(date)).toISOString();
-      }
+      // User specified only date - default to end of that day (11:59:59 PM)
+      const selectedDate = new Date(date);
+      deadline = endOfDay(selectedDate).toISOString();
     }
 
     await addTask({
@@ -77,11 +72,11 @@ export default function AddTask() {
           />
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
-          {/* Date Field */}
+        <div className="grid grid-cols-1 gap-4">
+          {/* Deadline Field */}
           <div className="space-y-2">
             <label className="text-sm font-medium text-muted-foreground">
-              Date
+              Deadline
             </label>
             <div className="relative">
               <input
@@ -90,34 +85,12 @@ export default function AddTask() {
                 value={date}
                 min={format(new Date(), "yyyy-MM-dd")}
                 onChange={(e) => setDate(e.target.value)}
-                className="w-full p-3 pr-10 rounded-xl bg-muted/50 border border-border focus:border-primary focus:ring-2 focus:ring-primary/20 text-primary transition-all"
+                className="w-full p-3 pr-12 rounded-xl bg-muted/50 border border-border focus:border-primary focus:ring-2 focus:ring-primary/20 text-primary transition-all"
               />
               <CalendarIcon
-                size={18}
+                size={20}
                 onClick={() => dateInputRef.current?.showPicker()}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground cursor-pointer hover:text-primary transition-colors"
-              />
-            </div>
-          </div>
-
-          {/* Time Field with Clock Icon */}
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-muted-foreground">
-              Time (Optional)
-            </label>
-            <div className="relative">
-              <input
-                ref={timeInputRef}
-                type="time"
-                value={time}
-                onChange={(e) => setTime(e.target.value)}
-                disabled={!date}
-                className="w-full p-3 pr-10 rounded-xl bg-muted/50 border border-border focus:border-primary focus:ring-2 focus:ring-primary/20 text-primary disabled:opacity-50 transition-all"
-              />
-              <Clock
-                size={18}
-                onClick={() => timeInputRef.current?.showPicker()}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground cursor-pointer hover:text-primary transition-colors disabled:opacity-50"
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground cursor-pointer hover:text-primary transition-colors"
               />
             </div>
           </div>
