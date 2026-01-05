@@ -18,8 +18,8 @@ import {
   isPast,
   parseISO,
   differenceInDays,
-  differenceInHours,
-  differenceInMinutes,
+  intervalToDuration,
+  addDays,
 } from "date-fns";
 import { getRemainingTime, formatDeadlineDisplay } from "../lib/timeUtils";
 import { cn } from "../lib/utils";
@@ -86,8 +86,18 @@ export default function TaskDetails() {
     if (isPast(end)) return { days: 0, hours: 0, minutes: 0, isOverdue: true };
 
     const days = differenceInDays(end, now);
-    const hours = differenceInHours(end, now) % 24;
-    const minutes = differenceInMinutes(end, now) % 60;
+
+    // add days to start to get the remainder duration
+    const daysAdded = addDays(now, days);
+
+    // Get the duration for the remainder
+    const duration = intervalToDuration({
+      start: daysAdded,
+      end: end,
+    });
+
+    const hours = duration.hours || 0;
+    const minutes = duration.minutes || 0;
 
     return { days, hours, minutes, isOverdue: false };
   };
