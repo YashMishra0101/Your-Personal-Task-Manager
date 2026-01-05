@@ -1,116 +1,107 @@
 # Task Manager
 
-A modern, secure task management application built with React, Firebase, and Vite. Features a beautiful UI with dark mode support and enhanced security through device-limited authentication.
+A modern task management application built with React and Firebase. This app helps you organize your daily tasks with an intuitive interface, complete with dark mode support and enhanced security features.
 
 ![Task Manager](https://img.shields.io/badge/Status-Production%20Ready-green)
 ![React](https://img.shields.io/badge/React-18.3-blue)
 ![Firebase](https://img.shields.io/badge/Firebase-12.7-orange)
 
-## ✨ Features
+## Preview
 
-### Core Functionality
+![Login Page](C:/Users/yashr/.gemini/antigravity/brain/ff5d4323-62e6-489e-8c00-455606997fe2/login_page_1767645060804.png)
 
-- ✅ **Task Management**: Create, edit, complete, and delete tasks
-- 📅 **Deadlines**: Set date and time for task deadlines
-- 🎯 **Task Categorization**: Organize tasks by "Created Today" and "Remaining"
-- ✔️ **Task Completion**: Mark tasks as complete and view completed tasks separately
-- 📊 **Statistics Dashboard**: View pending and completed task counts
+## Features
 
-### Security
+### Task Management
 
-- 🔐 **Device Limit Protection**: Limit account access to 2 devices maximum
-- 🛡️ **Firebase Authentication**: Secure email/password authentication
-- 🔑 **Password Reset**: Email-based password recovery
-- 📱 **Device Management**: View and remove registered devices
+- Create, edit, and delete tasks with ease
+- Set deadlines with date and time pickers
+- Mark tasks as complete and track your progress
+- View tasks organized by "Created Today" and "Remaining"
+- See your completed tasks in a separate view
+- Quick statistics showing pending and completed task counts
+
+### Security & Authentication
+
+- Secure email/password authentication powered by Firebase
+- Password reset functionality via email
+- Protected routes ensuring only authenticated users can access tasks
 
 ### User Experience
 
-- 🌓 **Dark/Light Mode**: Automatic system theme detection with manual toggle
-- 📱 **Responsive Design**: Optimized for mobile, tablet, and desktop
-- 🎨 **Modern UI**: Clean design with smooth animations using Framer Motion
-- 🔔 **Toast Notifications**: Real-time feedback for all actions
-- ⚠️ **Confirmation Dialogs**: Prevent accidental deletions
-- ♿ **Accessible**: ARIA labels, keyboard navigation, and proper semantic HTML
+- **Dark/Light Mode**: Automatically detects your system preference, with a manual toggle available
+- **Responsive Design**: Works seamlessly on mobile, tablet, and desktop
+- **Smooth Animations**: Powered by Framer Motion for a polished feel
+- **Toast Notifications**: Get instant feedback for all your actions
+- **Confirmation Dialogs**: Prevents accidental deletions
+- **Accessibility**: Built with ARIA labels, keyboard navigation, and semantic HTML
 
 ### Progressive Web App (PWA)
 
-- 📲 **Installable**: Install on laptop or smartphone without app stores
-- 🔌 **Offline Support**: Works without internet connection
-- ⚡ **Fast Performance**: Cached assets for instant loading
-- 🖥️ **Standalone Mode**: Full-screen app experience (no browser UI)
-- 🎯 **Native Feel**: Bottom navigation for thumb accessibility on mobile
-- 🔄 **Auto-Updates**: Service worker updates automatically
+- Install the app on your device without visiting an app store
+- Works offline after initial load
+- Fast performance with cached assets
+- Full-screen standalone mode (no browser UI)
+- Mobile-optimized with bottom navigation for easy thumb access
+- Automatic updates via service worker
 
-## 🚀 Getting Started
+## Getting Started
 
-### Prerequisites
+### What You'll Need
 
-- Node.js (v16 or higher)
-- npm or pnpm
-- Firebase account
+- Node.js version 16 or higher
+- pnpm package manager (or npm as an alternative)
+- A Firebase account (free tier works fine)
 
-### Installation
+### Setup Instructions
 
-1. **Clone the repository**
+**1. Clone and Install**
 
-   ```bash
-   git clone <repository-url>
-   cd Task Manager
-   ```
+```bash
+git clone <repository-url>
+cd Task Manager
+pnpm install
+```
 
-2. **Install dependencies**
+> **Note:** This project uses pnpm. If you don't have it installed, run `npm install -g pnpm` or use `npm install` as an alternative.
 
-   ```bash
-   pnpm install
-   # or
-   npm install
-   ```
+**2. Firebase Configuration**
 
-3. **Set up Firebase**
+Head over to the [Firebase Console](https://console.firebase.google.com) and:
 
-   - Go to [Firebase Console](https://console.firebase.google.com)
-   - Create a new project
-   - Enable Email/Password authentication
-   - Create a Firestore database
-   - Get your Firebase configuration
+- Create a new project
+- Enable Email/Password authentication in the Authentication section
+- Create a Firestore database
+- Copy your Firebase configuration details
 
-4. **Configure environment variables**
+**3. Environment Variables**
 
-   - Copy `.env.example` to `.env`
+Create a `.env` file in the root directory with your Firebase credentials:
 
-   ```bash
-   cp .env.example .env
-   ```
+```env
+VITE_FIREBASE_API_KEY=your_api_key_here
+VITE_FIREBASE_AUTH_DOMAIN=your_project_id.firebaseapp.com
+VITE_FIREBASE_PROJECT_ID=your_project_id
+VITE_FIREBASE_STORAGE_BUCKET=your_project_id.firebasestorage.app
+VITE_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+VITE_FIREBASE_APP_ID=your_app_id
+```
 
-   - Fill in your Firebase credentials in `.env`:
+**4. Run the App**
 
-   ```env
-   VITE_FIREBASE_API_KEY=your_api_key_here
-   VITE_FIREBASE_AUTH_DOMAIN=your_project_id.firebaseapp.com
-   VITE_FIREBASE_PROJECT_ID=your_project_id
-   VITE_FIREBASE_STORAGE_BUCKET=your_project_id.firebasestorage.app
-   VITE_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
-   VITE_FIREBASE_APP_ID=your_app_id
-   ```
+```bash
+pnpm run dev
+```
 
-5. **Run the development server**
+Open your browser and navigate to `http://localhost:5173`
 
-   ```bash
-   pnpm run dev
-   # or
-   npm run dev
-   ```
-
-6. **Open your browser**
-   Navigate to `http://localhost:5173`
-
-## 📁 Project Structure
+## Project Structure
 
 ```
 Task Manager/
-├── public/              # Static assets
+├── public/              # Static assets and PWA files
 ├── src/
-│   ├── assets/         # Images, icons, etc.
+│   ├── assets/         # Images and icons
 │   ├── components/     # Reusable React components
 │   │   ├── ConfirmDialog.jsx
 │   │   ├── Layout.jsx
@@ -118,10 +109,10 @@ Task Manager/
 │   │   ├── ProtectedRoute.jsx
 │   │   ├── TaskCard.jsx
 │   │   └── ThemeToggle.jsx
-│   ├── context/        # React Context providers
+│   ├── context/        # React Context for state management
 │   │   ├── AuthContext.jsx
 │   │   └── TaskContext.jsx
-│   ├── lib/            # Utility functions
+│   ├── lib/            # Utility functions and Firebase config
 │   │   ├── device.js
 │   │   ├── firebase.js
 │   │   ├── timeUtils.js
@@ -129,87 +120,71 @@ Task Manager/
 │   ├── pages/          # Page components
 │   │   ├── AddTask.jsx
 │   │   ├── Completed.jsx
-│   │   ├── DeviceManagement.jsx
 │   │   ├── EditTask.jsx
 │   │   ├── ForgotPassword.jsx
 │   │   ├── Home.jsx
 │   │   ├── Login.jsx
 │   │   ├── NotFound.jsx
 │   │   └── Signup.jsx
-│   ├── App.jsx         # Main app component with routing
-│   ├── main.jsx        # App entry point
+│   ├── App.jsx         # Main app with routing
+│   ├── main.jsx        # Entry point
 │   └── index.css       # Global styles
-├── .env                # Environment variables (DO NOT COMMIT)
-├── .env.example        # Environment variables template
+├── .env                # Your Firebase credentials (never commit this!)
 ├── .gitignore
 ├── package.json
 └── README.md
 ```
 
-## 🔒 Security Features
+## Security Features
 
-### Device Limit Protection
+### Security Best Practices
 
-This application implements a unique security feature that limits each account to **2 devices maximum**. This prevents unauthorized account sharing and enhances security.
+The app follows several security best practices:
 
-- When logging in from a new device, it's automatically registered
-- Once 2 devices are registered, login from a 3rd device will be blocked
-- Users can manage their devices in the Device Management page
-- Users can remove old devices to add new ones
+- Environment variables are gitignored to prevent credential leaks
+- Firebase Security Rules should be configured (see deployment section)
+- All forms include input validation
+- Password requirements enforce a minimum of 6 characters
+- Error messages are designed to not expose sensitive information
 
-### Best Practices
+## Theme System
 
-- ✅ `.env` file is gitignored (credentials never committed)
-- ✅ Firebase Security Rules should be configured
-- ✅ Input validation on all forms
-- ✅ Secure password requirements (minimum 6 characters)
-- ✅ Error messages don't expose sensitive information
+The app includes a sophisticated theme system with two modes:
 
-## 🎨 Theme System
+- **Light Theme**: Clean design with a fresh green color palette
+- **Dark Theme**: Professional black color scheme that's easy on the eyes
 
-The app supports both light and dark themes:
+The theme automatically matches your operating system preference, but you can manually toggle between light and dark mode using the button in the header.
 
-- **Light Theme**: Fresh green color palette
-- **Dark Theme**: Professional black color scheme
-- **System Theme**: Automatically matches OS preference
-- Manual theme toggle available in the header
+## Tech Stack
 
-## 🛠️ Technologies Used
+- **React 18** - Frontend framework
+- **Vite 7** - Build tool and dev server
+- **React Router DOM 7** - Client-side routing
+- **Firebase** - Authentication and Firestore database
+- **Tailwind CSS 4** - Utility-first styling
+- **Framer Motion** - Animation library
+- **Lucide React** - Icon library
+- **Sonner** - Toast notifications
+- **date-fns** - Date formatting and manipulation
+- **vite-plugin-pwa** - Progressive Web App support with Workbox
+- **uuid** - Unique device ID generation
 
-- **Frontend Framework**: React 18
-- **Build Tool**: Vite 7
-- **PWA**: vite-plugin-pwa (Workbox)
-- **Routing**: React Router DOM 7
-- **Backend/Database**: Firebase (Auth + Firestore)
-- **Styling**: Tailwind CSS 4
-- **Animations**: Framer Motion
-- **Icons**: Lucide React
-- **Notifications**: Sonner
-- **Date Handling**: date-fns
-- **Utilities**: clsx, tailwind-merge, uuid
+## Database Structure
 
-## 📱 Firestore Database Structure
+The app uses two main Firestore collections:
 
-### Collections
-
-#### `users`
+### Users Collection
 
 ```javascript
 {
   uid: "user_id",
   email: "user@example.com",
-  createdAt: "2024-01-01T00:00:00.000Z",
-  devices: [
-    {
-      deviceId: "uuid-v4",
-      addedAt: "2024-01-01T00:00:00.000Z",
-      userAgent: "Mozilla/5.0..."
-    }
-  ]
+  createdAt: "2024-01-01T00:00:00.000Z"
 }
 ```
 
-#### `tasks`
+### Tasks Collection
 
 ```javascript
 {
@@ -221,65 +196,66 @@ The app supports both light and dark themes:
 }
 ```
 
-## 🚀 Deployment
+## Deployment
 
-### Build for Production
+### Building for Production
 
 ```bash
 pnpm run build
-# or
-npm run build
 ```
 
-The build output will be in the `dist/` directory.
+This creates an optimized production build in the `dist/` directory.
 
-### Deploy to Vercel (Recommended)
+### Deploying to Vercel
 
-1. Push your code to GitHub
-2. Import project in Vercel
-3. Add environment variables in Vercel dashboard
-4. Deploy!
+Vercel is the recommended deployment platform:
 
-### Install as PWA (Progressive Web App)
+1. Push your code to a GitHub repository
+2. Import the project in your Vercel dashboard
+3. Add your environment variables in the Vercel project settings
+4. Click deploy and you're done!
 
-After deployment, users can install the app:
+### Installing as a PWA
 
-**Desktop (Chrome/Edge):**
+Once deployed, users can install the app on their devices:
 
-1. Visit the deployed URL
-2. Click the install button (⊕) in the address bar
-3. Or use menu → "Install Task Manager"
-4. App opens in standalone window
+**On Desktop (Chrome/Edge):**
 
-**Mobile (Android Chrome):**
+1. Visit your deployed URL
+2. Look for the install icon (⊕) in the address bar
+3. Click it, or go to the browser menu and select "Install Task Manager"
+4. The app will open in its own window without browser UI
 
-1. Visit the deployed URL on Chrome mobile
+**On Mobile (Android Chrome):**
+
+1. Open the deployed URL in Chrome
 2. Tap "Add to Home Screen" when prompted
-3. Or use menu → "Add to Home Screen"
-4. App icon appears on home screen
-5. Opens full-screen like a native app
+3. If you don't see the prompt, tap the menu and select "Add to Home Screen"
+4. The app icon will appear on your home screen
+5. Tap it to open the app in full-screen mode
 
-**Benefits:**
+**Benefits of PWA Installation:**
 
-- 📱 Install without app store
-- 🔌 Works offline
-- ⚡ Faster loading
-- 🖥️ No browser UI
+- No app store required
+- Works offline after first visit
+- Faster loading times
+- Native app-like experience
 
 ### Firebase Security Rules
 
-Make sure to configure Firestore security rules:
+Don't forget to set up Firestore security rules in your Firebase console:
 
 ```javascript
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Users collection
+    // Users can only read/write their own user document
     match /users/{userId} {
       allow read, write: if request.auth.uid == userId;
     }
 
-    // Tasks collection (simplified - adjust based on your needs)
+    // Tasks can be read/written by any authenticated user
+    // You may want to add userId field to tasks and restrict access
     match /tasks/{taskId} {
       allow read, write: if request.auth != null;
     }
@@ -287,29 +263,30 @@ service cloud.firestore {
 }
 ```
 
-## 🤝 Contributing
+## Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+Contributions are welcome! If you'd like to improve this project, feel free to fork the repository and submit a pull request.
 
-## 📄 License
+## License
 
 This project is open source and available under the MIT License.
 
-## 🐛 Known Issues & Future Enhancements
+## Future Enhancements
 
-- [ ] Add task categories/tags
-- [ ] Add task search and filtering
-- [ ] Add task priority levels
-- [ ] Add recurring tasks
-- [ ] Add task sharing/collaboration
-- [ ] Add email notifications for deadlines
-- [ ] Add PWA support for offline access
-- [ ] Add data export/import functionality
+Here are some features that could be added in the future:
 
-## 📞 Support
+- [ ] Task categories and custom tags
+- [ ] Search and filter functionality
+- [ ] Priority levels for tasks
+- [ ] Recurring tasks
+- [ ] Task sharing and collaboration
+- [ ] Email notifications for upcoming deadlines
+- [ ] Data export and import functionality
 
-If you encounter any issues or have questions, please create an issue in the repository.
+## Support
+
+If you run into any issues or have questions, please open an issue in the repository.
 
 ---
 
-Made with ❤️ using React and Firebase
+Built with React and Firebase

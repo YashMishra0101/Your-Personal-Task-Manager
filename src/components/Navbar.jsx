@@ -152,10 +152,6 @@ export default function Navbar() {
         </div>
 
         <div className="p-4 mt-auto space-y-2 pb-8">
-          <div className="px-4 text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/40 mb-2">
-            System
-          </div>
-
           <button
             onClick={handleLogout}
             className="flex items-center space-x-3 w-full py-3 px-5 rounded-xl text-muted-foreground hover:text-red-500 hover:bg-red-500/10 transition-all font-bold"
