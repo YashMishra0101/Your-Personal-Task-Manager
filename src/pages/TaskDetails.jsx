@@ -76,7 +76,8 @@ export default function TaskDetails() {
     if (isPast(end)) return { days: 0, isOverdue: true };
 
     const totalMinutes = differenceInMinutes(end, now);
-    const days = Math.floor(totalMinutes / (24 * 60));
+    // Add 1 to include the deadline day itself (inclusive calculation)
+    const days = Math.floor(totalMinutes / (24 * 60)) + 1;
 
     return { days, isOverdue: false };
   };

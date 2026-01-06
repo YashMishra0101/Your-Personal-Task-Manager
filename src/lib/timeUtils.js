@@ -18,7 +18,8 @@ export function getRemainingTime(deadline) {
   const totalMinutes = differenceInMinutes(deadlineDate, now);
 
   // Calculate days, hours, and remaining minutes
-  const days = Math.floor(totalMinutes / (24 * 60));
+  // Add 1 to include the deadline day itself (inclusive calculation)
+  const days = Math.floor(totalMinutes / (24 * 60)) + 1;
   const hours = Math.floor((totalMinutes % (24 * 60)) / 60);
   const minutes = totalMinutes % 60;
 
