@@ -230,7 +230,12 @@ export default function TaskDetails() {
                       >
                         {formatDeadlineDisplay(task.deadline)}
                       </div>
-                      <div className="text-xs font-medium mt-1 inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-muted/50 text-muted-foreground">
+                      <div className={cn(
+                        "text-xs font-medium mt-1 inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md",
+                        isOverdue 
+                          ? "bg-red-500/10 text-red-500" 
+                          : "bg-muted/50 text-muted-foreground"
+                      )}>
                         <Clock size={12} />
                         {isOverdue ? (
                           "Overdue"

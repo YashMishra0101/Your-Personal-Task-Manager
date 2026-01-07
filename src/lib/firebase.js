@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
+import { getFirestore, enableIndexedDbPersistence } from "firebase/firestore";
 
 // Your web app's Firebase configuration
 // All values are loaded from environment variables (.env file)
@@ -22,6 +22,18 @@ try {
   if (firebaseConfig.apiKey) {
     app = initializeApp(firebaseConfig);
     db = getFirestore(app);
+    
+    // Enable offline persistence for Firestore
+    // This allows the app to work offline and sync when connection is restored
+    enableIndexedDbPersistence(db).catch((err) => {
+      if (err.code === 'failed-precondition') {
+        // Multiple tabs open, persistence can only be enabled in one tab at a time.
+        console.warn('Persistence failed: Multiple tabs open');
+      } else if (err.code === 'unimplemented') {
+        // The current browser doesn't support persistence
+        console.warn('Persistence not available in this browser');
+      }
+    });
   } else {
     console.warn(
       "Firebase config missing. App will run in demo/offline mode where possible."

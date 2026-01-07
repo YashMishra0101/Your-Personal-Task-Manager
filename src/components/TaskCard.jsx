@@ -98,7 +98,10 @@ export default function TaskCard({ task }) {
 
           {!task.completed && task.deadline && (
             <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs mt-1">
-              <span className="text-muted-foreground flex items-center space-x-1">
+              <span className={cn(
+                "flex items-center space-x-1",
+                isOverdue ? "text-red-500" : "text-muted-foreground"
+              )}>
                 <Calendar size={12} />
                 <span>{formatDeadlineDisplay(task.deadline)}</span>
               </span>
@@ -109,7 +112,10 @@ export default function TaskCard({ task }) {
                 );
                 const isLastDay = timeRemaining === "LAST_DAY";
                 return (
-                  <span className="flex items-center space-x-1 font-medium text-muted-foreground">
+                  <span className={cn(
+                    "flex items-center space-x-1 font-medium",
+                    isOverdue ? "text-red-500" : "text-muted-foreground"
+                  )}>
                     <Clock size={12} />
                     {isLastDay ? (
                       <span>

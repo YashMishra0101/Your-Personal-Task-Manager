@@ -2,6 +2,7 @@ import React from "react";
 import Navbar from "./Navbar";
 import ThemeToggle from "./ThemeToggle";
 import InstallPrompt from "./InstallPrompt";
+import OfflineIndicator from "./OfflineIndicator";
 import { useAuth } from "../context/AuthContext";
 import { useUI } from "../context/UIContext";
 import { useNavigate } from "react-router-dom";
@@ -36,7 +37,8 @@ export default function Layout({ children, title }) {
             </h1>
           </div>
 
-          <div className="flex items-center space-x-2 absolute right-2 md:static">
+          <div className="flex items-center space-x-3 absolute right-2 md:static font-semibold">
+            <OfflineIndicator />
             <ThemeToggle />
           </div>
         </header>
