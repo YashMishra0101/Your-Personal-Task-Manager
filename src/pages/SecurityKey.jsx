@@ -9,6 +9,7 @@ export default function SecurityKey() {
   const [key, setKey] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [attemptsLeft, setAttemptsLeft] = useState(3);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -21,13 +22,24 @@ export default function SecurityKey() {
       await verifySecurityKey(key.trim());
       navigate("/");
     } catch (err) {
-      setError(err.message || "Invalid Security Key");
+      const newAttemptsLeft = attemptsLeft - 1;
+      setAttemptsLeft(newAttemptsLeft);
+
+      if (newAttemptsLeft <= 0) {
+        await logout();
+        navigate("/login");
+      } else {
+        setError(
+          `Invalid Security Key. You have ${newAttemptsLeft} attempt${newAttemptsLeft === 1 ? "" : "s"
+          } left.`
+        );
+      }
     } finally {
       setLoading(false);
     }
   };
 
-  const handleSignOut = async () => {
+  const handleBackToLogin = async () => {
     try {
       await logout();
       navigate("/login");
@@ -91,14 +103,14 @@ export default function SecurityKey() {
 
           <button
             type="button"
-            onClick={handleSignOut}
+            onClick={handleBackToLogin}
             className="w-full mt-4 py-3 rounded-2xl bg-muted/30 text-muted-foreground font-medium hover:bg-muted/50 hover:text-foreground transition-all flex items-center justify-center gap-2 group"
           >
             <LogOut
               size={18}
               className="group-hover:-translate-x-0.5 transition-transform"
             />
-            <span>Sign Out</span>
+            <span>Back to Login Page</span>
           </button>
         </form>
 
