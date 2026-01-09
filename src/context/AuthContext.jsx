@@ -62,6 +62,7 @@ export function AuthProvider({ children }) {
         email,
         password
       );
+      setCurrentUser(userCredential.user);
       return userCredential;
     } catch (error) {
       throw new Error("Invalid credentials.");

@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import { useAuth } from "../context/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { LockKeyhole, ArrowRight, Loader, LogOut } from "lucide-react";
 
 export default function SecurityKey() {
   const { verifySecurityKey, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const { email, password } = location.state || {};
   const [key, setKey] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -39,13 +41,10 @@ export default function SecurityKey() {
     }
   };
 
-  const handleBackToLogin = async () => {
-    try {
-      await logout();
-      navigate("/login");
-    } catch (error) {
-      console.error("Sign out failed:", error);
-    }
+  const handleBackToLogin = () => {
+    navigate("/login", {
+      state: { email, password },
+    });
   };
 
   return (
