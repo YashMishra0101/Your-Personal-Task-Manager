@@ -12,6 +12,7 @@ import {
   Circle,
   RotateCcw,
   CalendarCheck,
+  Bell,
 } from "lucide-react";
 import { format, isPast, parseISO, differenceInMinutes } from "date-fns";
 import { formatDeadlineDisplay } from "../lib/timeUtils";
@@ -111,61 +112,62 @@ export default function TaskDetails() {
 
   return (
     <Layout title="Task Details">
-      <div className="max-w-5xl mx-auto px-4 py-8 pb-24">
-        {/* Navigation & Actions Header */}
-        <div className="flex items-center justify-between mb-8">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-10 pb-24">
+        {/* Navigation & Actions */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-10">
           <button
             onClick={() => navigate(-1)}
-            className="group flex items-center gap-2 px-3 py-2 -ml-7 md:-ml-3 mr-2 md:mr-0 text-muted-foreground hover:text-primary rounded-xl transition-all"
+            className="flex items-center text-muted-foreground hover:text-primary transition-colors group self-start sm:self-auto"
           >
-            <div className="p-2 bg-surface group-hover:bg-surface-hover rounded-full transition-colors border border-transparent group-hover:border-border">
-              <ArrowLeft size={20} />
+            <div className="p-2 rounded-full group-hover:bg-primary/10 transition-colors">
+              <ArrowLeft size={24} />
             </div>
-            <span className="font-medium hidden sm:inline">Back</span>
+            <span className="font-semibold text-lg ml-2">Back</span>
           </button>
 
-          <div className="flex items-center gap-3 -mr-4 md:mr-0">
+          <div className="flex items-center gap-3 self-end sm:self-auto">
             {!task.completed && (
               <Link
                 to={`/edit/${task.id}`}
-                className="flex items-center gap-2 px-3 py-2 sm:px-4 sm:py-2.5 bg-surface border border-border hover:border-primary/50 text-foreground hover:text-primary rounded-xl transition-all shadow-sm active:scale-95 text-sm font-semibold"
+                className="flex items-center gap-2 px-5 py-3 bg-primary/5 text-primary hover:bg-primary hover:text-white rounded-2xl transition-all font-semibold active:scale-95"
               >
                 <Pencil size={18} />
-                <span className="hidden sm:inline">Edit</span>
+                <span>Edit</span>
               </Link>
             )}
             <button
               onClick={() => setShowDeleteDialog(true)}
-              className="flex items-center gap-2 px-3 py-2 sm:px-4 sm:py-2.5 bg-surface border border-border hover:border-red-500/50 text-foreground hover:text-red-500 rounded-xl transition-all shadow-sm active:scale-95 text-sm font-semibold"
+              className="flex items-center gap-2 px-5 py-3 bg-red-500/5 text-red-500 hover:bg-red-500 hover:text-white rounded-2xl transition-all font-semibold active:scale-95"
             >
               <Trash2 size={18} />
-              <span className="hidden sm:inline">Delete</span>
+              <span>Delete</span>
             </button>
           </div>
         </div>
 
-        {/* Hero Section */}
-        <div className="mb-12 space-y-6">
-          <div className="flex flex-wrap items-center gap-3">
+        {/* Header - Status & Title */}
+        <div className="mb-12">
+          <div className="flex flex-wrap items-center gap-4 mb-6">
             <button
               onClick={handleToggleComplete}
               className={cn(
-                "inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-bold border transition-all cursor-pointer",
+                "inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-bold border transition-all cursor-pointer shadow-sm active:scale-95",
                 task.completed
-                  ? "bg-primary/10 border-primary/20 text-primary"
-                  : "bg-surface border-border text-muted-foreground hover:border-primary/50 hover:text-primary"
+                  ? "bg-green-500/10 border-green-500/20 text-green-600"
+                  : "bg-surface border-border text-foreground hover:border-primary/50"
               )}
             >
               {task.completed ? (
-                <CheckCircle size={16} />
+                <CheckCircle size={18} className="text-green-600" />
               ) : (
-                <Circle size={16} />
+                <Circle size={18} className="text-muted-foreground" />
               )}
-              <span>{task.completed ? "Completed" : "Active"}</span>
+              <span>{task.completed ? "Completed" : "Active Task"}</span>
             </button>
+
             {isOverdue && !task.completed && (
-              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-red-500/10 text-red-500 border border-red-500/20">
-                <Clock size={14} />
+              <span className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full text-sm font-bold bg-red-500/10 text-red-500 border border-red-500/20">
+                <Clock size={16} />
                 Overdue
               </span>
             )}
@@ -173,8 +175,8 @@ export default function TaskDetails() {
 
           <h1
             className={cn(
-              "text-4xl md:text-5xl font-black tracking-tight leading-tight text-foreground break-words break-all",
-              task.completed && "opacity-60 decoration-4 decoration-primary/30"
+              "text-5xl md:text-6xl font-black tracking-tight leading-[1.1] text-foreground wrap-break-word break-all",
+              task.completed && "opacity-50 decoration-4 decoration-current line-through"
             )}
           >
             {task.title}
@@ -182,120 +184,134 @@ export default function TaskDetails() {
         </div>
 
         {/* Content Section */}
-        <div className="space-y-8 md:space-y-12">
-          {/* Description */}
-          <div className="space-y-4">
-            <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
-              <span className="w-1 h-4 bg-primary rounded-full"></span>
+        <div className="grid grid-cols-1 gap-10">
+
+          {/* Description Card */}
+          <div className="space-y-3">
+            <div className="flex items-center gap-2 text-sm font-bold text-muted-foreground uppercase tracking-widest pl-1">
+              <div className="w-1.5 h-1.5 rounded-full bg-primary"></div>
               Description
-            </h3>
-            <div className="bg-surface/50 backdrop-blur-sm p-8 rounded-3xl border border-border/50 text-lg leading-relaxed text-foreground/90 whitespace-pre-wrap shadow-sm break-words break-all">
-              {task.description ? (
-                task.description
-              ) : (
-                <span className="text-muted-foreground italic">
-                  No description provided for this task.
-                </span>
-              )}
+            </div>
+            <div className="bg-surface p-8 rounded-4xl border border-border/60 shadow-sm">
+              <p className={cn(
+                "text-lg leading-relaxed whitespace-pre-wrap wrap-break-word break-all",
+                task.description ? "text-foreground/90" : "text-muted-foreground italic"
+              )}>
+                {task.description || "No specific details provided for this task."}
+              </p>
             </div>
           </div>
 
-          {/* Timeline Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-y-12 md:gap-8">
+          {/* Details Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
             {/* Target Date */}
-            <div className="space-y-4">
-              <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
-                <span className="w-1 h-4 bg-accent rounded-full"></span>
+            <div className="space-y-3">
+              <div className="flex items-center gap-2 text-sm font-bold text-muted-foreground uppercase tracking-widest pl-1">
+                <div className="w-1.5 h-1.5 rounded-full bg-blue-500"></div>
                 Target Date
-              </h3>
-              <div className="bg-surface p-6 rounded-3xl border border-border shadow-sm h-full">
+              </div>
+              <div className="bg-surface p-6 rounded-4xl border border-border/60 shadow-sm h-full flex flex-col justify-center min-h-[140px]">
                 {task.deadline ? (
-                  <div className="flex items-start gap-4">
-                    <div
-                      className={cn(
-                        "p-3 rounded-2xl",
-                        isOverdue
-                          ? "bg-red-500/10 text-red-500"
-                          : "bg-primary/10 text-primary"
-                      )}
-                    >
-                      <Calendar size={28} />
+                  <div className="flex items-center gap-5">
+                    <div className={cn(
+                      "p-4 rounded-2xl shrink-0",
+                      isOverdue ? "bg-red-500/10 text-red-500" : "bg-blue-500/10 text-blue-600"
+                    )}>
+                      <Calendar size={32} strokeWidth={1.5} />
                     </div>
                     <div>
-                      <div
-                        className={cn(
-                          "font-bold text-2xl md:text-3xl tabular-nums",
-                          isOverdue ? "text-red-500" : "text-primary"
-                        )}
-                      >
+                      <div className="text-2xl font-bold tabular-nums text-foreground">
                         {formatDeadlineDisplay(task.deadline)}
                       </div>
                       <div className={cn(
-                        "text-xs font-medium mt-1 inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md",
-                        isOverdue 
-                          ? "bg-red-500/10 text-red-500" 
-                          : "bg-muted/50 text-muted-foreground"
+                        "text-sm font-medium mt-1 inline-flex items-center gap-1.5",
+                        isOverdue ? "text-red-500" : "text-muted-foreground"
                       )}>
-                        <Clock size={12} />
                         {isOverdue ? (
                           "Overdue"
                         ) : timeDetails?.isLastDay ? (
-                          <span>
-                            {timeDetails?.days} day remaining{" "}
-                            <span className="text-red-500 font-bold bg-red-500/10 px-1.5 py-0.5 rounded border border-red-500/20">
-                              (Last Day)
-                            </span>
+                          <span className="flex items-center gap-1.5">
+                            <Clock size={14} /> 1 day left <span className="text-red-500 font-bold text-xs bg-red-50 px-1.5 py-0.5 rounded ml-1">Last Day</span>
                           </span>
                         ) : (
-                          `${timeDetails?.days} ${
-                            timeDetails?.days === 1 ? "day" : "days"
-                          } remaining`
+                          <span className="flex items-center gap-1.5">
+                            <Clock size={14} /> {timeDetails?.days} days left
+                          </span>
                         )}
                       </div>
                     </div>
                   </div>
                 ) : (
                   <div className="flex items-center gap-4 opacity-50">
-                    <div className="p-3 bg-muted/30 rounded-2xl text-muted-foreground">
-                      <Calendar size={28} />
+                    <div className="p-4 bg-muted/50 rounded-2xl text-muted-foreground">
+                      <Calendar size={32} />
                     </div>
-                    <div>
-                      <div className="font-medium text-foreground text-xl">
-                        No Deadline Set
-                      </div>
-                    </div>
+                    <span className="text-xl font-medium text-muted-foreground">No Date Set</span>
                   </div>
                 )}
               </div>
             </div>
 
             {/* Created On */}
-            <div className="space-y-4">
-              <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
-                <span className="w-1 h-4 bg-muted-foreground/50 rounded-full"></span>
+            <div className="space-y-3">
+              <div className="flex items-center gap-2 text-sm font-bold text-muted-foreground uppercase tracking-widest pl-1">
+                <div className="w-1.5 h-1.5 rounded-full bg-purple-500"></div>
                 Created On
-              </h3>
-              <div className="bg-surface p-6 rounded-3xl border border-border shadow-sm h-full flex items-center">
-                <div className="flex items-start gap-4 md:-mt-9">
-                  <div className="p-3 bg-muted/30 rounded-2xl text-muted-foreground ">
-                    <CalendarCheck size={28} />
+              </div>
+              <div className="bg-surface p-6 rounded-4xl border border-border/60 shadow-sm h-full flex flex-col justify-center min-h-[140px]">
+                <div className="flex items-center gap-5">
+                  <div className="p-4 bg-purple-500/10 rounded-2xl text-purple-600 shrink-0">
+                    <CalendarCheck size={32} strokeWidth={1.5} />
                   </div>
                   <div>
-                    <div className="font-bold text-2xl md:text-3xl tabular-nums text-foreground">
-                      {task.createdAt
-                        ? format(parseISO(task.createdAt), "EEE, MMM d")
-                        : "N/A"}
+                    <div className="text-2xl font-bold tabular-nums text-foreground">
+                      {task.createdAt ? format(parseISO(task.createdAt), "MMM d, yyyy") : "N/A"}
                     </div>
-                    <div className="text-xs font-medium mt-1 inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-muted/50 text-muted-foreground">
-                      <Clock size={12} />
-                      {task.createdAt
-                        ? format(parseISO(task.createdAt), "h:mm a")
-                        : ""}
+                    <div className="text-sm font-medium text-muted-foreground mt-1 flex items-center gap-1.5">
+                      <Clock size={14} />
+                      {task.createdAt ? format(parseISO(task.createdAt), "h:mm a") : ""}
                     </div>
                   </div>
                 </div>
               </div>
             </div>
+
+            {/* Alarm Settings - Full Width if Set */}
+            {task.alarm && task.alarm.enabled && (
+              <div className="space-y-3 md:col-span-2 mt-6">
+                <div className="flex items-center gap-2 text-sm font-bold text-muted-foreground uppercase tracking-widest pl-1">
+                  <div className="w-1.5 h-1.5 rounded-full bg-orange-500"></div>
+                  Alarm
+                </div>
+                <div className="bg-surface p-6 rounded-4xl border border-border/60 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-6">
+                  <div className="flex items-center gap-5">
+                    <div className="p-4 bg-orange-500/10 rounded-2xl text-orange-600 shrink-0">
+                      <Bell size={32} strokeWidth={1.5} />
+                    </div>
+                    <div>
+                      <div className="text-3xl font-black tabular-nums text-foreground">
+                        {task.alarm.time}
+                      </div>
+                      <div className="text-sm font-medium text-muted-foreground mt-1 flex items-center gap-1.5">
+                        <Calendar size={14} />
+                        {task.alarm.date ? format(new Date(task.alarm.date), "EEEE, MMMM d") : ""}
+                      </div>
+                    </div>
+                  </div>
+
+                  {task.alarm.triggered ? (
+                    <div className="px-4 py-2 bg-orange-500/10 text-orange-600 rounded-xl font-bold text-sm border border-orange-500/20">
+                      Ringed
+                    </div>
+                  ) : (
+                    <div className="px-4 py-2 bg-green-500/10 text-green-600 rounded-xl font-bold text-sm border border-green-500/20">
+                      Active
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>

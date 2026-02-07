@@ -10,6 +10,7 @@ import {
   RotateCcw,
   ChevronDown,
   ChevronUp,
+  Bell,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "../lib/utils";
@@ -130,6 +131,14 @@ export default function TaskCard({ task }) {
                   </span>
                 );
               })()}
+
+              {/* Alarm Indicator */}
+              {task.alarm && task.alarm.enabled && (
+                <span className="flex items-center space-x-1 text-muted-foreground" title={`Alarm set for ${task.alarm.date} at ${task.alarm.time}`}>
+                  <Bell size={12} className={task.alarm.triggered ? "text-muted-foreground/50" : "text-primary"} />
+                  <span>{task.alarm.time}</span>
+                </span>
+              )}
             </div>
           )}
         </div>

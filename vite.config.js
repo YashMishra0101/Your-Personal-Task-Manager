@@ -81,6 +81,7 @@ export default defineConfig({
         ],
         navigateFallback: "/index.html",
         navigateFallbackDenylist: [/^\/api/],
+        importScripts: ["/sw-custom.js"],
       },
       devOptions: {
         enabled: false,

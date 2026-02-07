@@ -23,8 +23,8 @@ A modern task management application built with React and Firebase. This app hel
 
 ## 📸 App Previews
 
-| | |
-|:-------------------------:|:-------------------------:|
+|                                   |                                   |
+| :-------------------------------: | :-------------------------------: |
 | ![Screenshot 1](src/assets/1.png) | ![Screenshot 2](src/assets/2.png) |
 | ![Screenshot 3](src/assets/3.png) | ![Screenshot 4](src/assets/4.png) |
 | ![Screenshot 5](src/assets/5.png) | ![Screenshot 6](src/assets/6.png) |
@@ -41,6 +41,13 @@ A modern task management application built with React and Firebase. This app hel
 - See your completed tasks in a separate view
 - Quick statistics showing pending and completed task counts
 
+### 🔔 Native Alarm System
+
+- **Cross-Platform Alarms**: Sets alarms that work on both mobile and desktop.
+- **Background Notifications**: Triggers system-level notifications even when the app is in the background or closed (on supported devices).
+- **Audio Alerts**: Plays a continuous alarm sound until dismissed.
+- **Smart Wake-up**: Clicking the notification instantly opens and focuses the app.
+
 ### Security & Authentication
 
 - Secure email/password authentication powered by Firebase
@@ -55,10 +62,11 @@ A modern task management application built with React and Firebase. This app hel
 1. Go to your Firebase Console → Firestore Database
 2. Create a new collection called `security`
 3. Add a document with ID `1`
-4. Add a field called `key` with your chosen security key (e.g., "90741209756")
+4. Add a field called `key` with your chosen security key (e.g., "5269MYEX#&!?dwtv")
 5. This key will be used to validate access to your tasks
 
 #### Security Best Practices
+
 - Environment variables are gitignored to prevent credential leaks
 - Firebase Security Rules should be configured
 - All forms include input validation
@@ -81,7 +89,7 @@ Experience seamless task management even without internet connection - just like
 - **📱 Full Offline Support**: View, create, edit, and delete tasks without internet
 - **💾 Smart Data Caching**: Dual-layer persistence (Firestore IndexedDB + localStorage)
 - **🔄 Automatic Sync**: All offline changes sync automatically when reconnected
-- **🎨 Professional Indicators**: 
+- **🎨 Professional Indicators**:
   - Offline: Amber banner showing "You're offline. Viewing cached data."
   - Online: Green banner showing "Back online. Syncing data..."
 - **⚡ Optimistic Updates**: Instant UI feedback for all operations
