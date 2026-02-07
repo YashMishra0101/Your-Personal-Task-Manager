@@ -240,11 +240,24 @@ Once deployed, users can install the app on their devices:
 
 ## Contributing
 
-Contributions are welcome! If you'd like to improve this project, feel free to fork the repository and submit a pull request.
+## 🤝 Contributing
+
+This project is fully open source, and we welcome contributions from everyone! Whether you want to fix a bug, add a new feature, or improve documentation, your help is appreciated.
+
+Here's how you can contribute:
+1. Fork the repository
+2. Create a new branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+Feel free to open an issue for any bugs or feature requests!
 
 ## License
 
-This project is open source and available under the MIT License.
+## 📄 License
+
+This project is open source and available under the [MIT License](LICENSE). You are free to use, modify, and distribute this software as per the license terms.
 
 ## Future Enhancements
 
