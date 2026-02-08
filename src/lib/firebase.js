@@ -1,5 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore, enableIndexedDbPersistence } from "firebase/firestore";
+import { getMessaging, isSupported } from "firebase/messaging";
 
 // Your web app's Firebase configuration
 // All values are loaded from environment variables (.env file)
@@ -22,7 +23,7 @@ try {
   if (firebaseConfig.apiKey) {
     app = initializeApp(firebaseConfig);
     db = getFirestore(app);
-    
+
     // Enable offline persistence for Firestore
     // This allows the app to work offline and sync when connection is restored
     enableIndexedDbPersistence(db).catch((err) => {
@@ -51,4 +52,16 @@ try {
 import { getAuth } from "firebase/auth";
 const safeAuth = app ? getAuth(app) : null;
 
-export { db, safeAuth as auth };
+// Initialize Firebase Cloud Messaging
+let messaging = null;
+if (app) {
+  isSupported().then((supported) => {
+    if (supported) {
+      messaging = getMessaging(app);
+    }
+  }).catch((err) => {
+    console.warn("Firebase Messaging not supported:", err);
+  });
+}
+
+export { db, safeAuth as auth, messaging };

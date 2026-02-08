@@ -15,7 +15,7 @@ import {
   Bell,
 } from "lucide-react";
 import { format, isPast, parseISO, differenceInMinutes } from "date-fns";
-import { formatDeadlineDisplay } from "../lib/timeUtils";
+import { formatDeadlineDisplay, format12Hour } from "../lib/timeUtils";
 import { cn } from "../lib/utils";
 import ConfirmDialog from "../components/ConfirmDialog";
 import { toast } from "sonner";
@@ -291,7 +291,7 @@ export default function TaskDetails() {
                     </div>
                     <div>
                       <div className="text-3xl font-black tabular-nums text-foreground">
-                        {task.alarm.time}
+                        {format12Hour(task.alarm.time)}
                       </div>
                       <div className="text-sm font-medium text-muted-foreground mt-1 flex items-center gap-1.5">
                         <Calendar size={14} />

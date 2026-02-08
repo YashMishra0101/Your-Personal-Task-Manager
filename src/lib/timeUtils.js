@@ -46,3 +46,38 @@ export function isCreatedToday(dateJson) {
   const date = dateJson.toDate ? dateJson.toDate() : new Date(dateJson);
   return isSameDay(date, new Date());
 }
+
+/**
+ * Convert 24-hour time format to 12-hour format with AM/PM
+ * @param {string} time24 - Time in HH:MM format (24-hour)
+ * @returns {string} - Time in h:MM AM/PM format (12-hour)
+ */
+export function format12Hour(time24) {
+  if (!time24 || typeof time24 !== 'string') {
+    return time24;
+  }
+
+  const [hours, minutes] = time24.split(':');
+  const hour = parseInt(hours, 10);
+  const minute = minutes || '00';
+
+  if (isNaN(hour)) {
+    return time24;
+  }
+
+  const period = hour >= 12 ? 'PM' : 'AM';
+  const hour12 = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
+
+  return `${hour12}:${minute} ${period}`;
+}
+
+/**
+ * Get current time in 24-hour format for input fields
+ * @returns {string} - Current time in HH:MM format
+ */
+export function getCurrentTime24() {
+  const now = new Date();
+  const hours = String(now.getHours()).padStart(2, '0');
+  const minutes = String(now.getMinutes()).padStart(2, '0');
+  return `${hours}:${minutes}`;
+}

@@ -27,3 +27,9 @@ dist-ssr
 *.sln
 *.sw?
 .env
+
+# Firebase
+.firebase/
+firebase-debug.log
+firebase-debug.*.log
+.firebaserc

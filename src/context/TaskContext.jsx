@@ -11,6 +11,8 @@ import {
   deleteDoc,
 } from "firebase/firestore";
 import { useNetworkStatus } from "../hooks/useNetworkStatus";
+import { requestFCMPermission, setupForegroundMessageListener } from "../lib/fcm";
+import { useAuth } from "./AuthContext";
 
 const TaskContext = createContext();
 
@@ -23,6 +25,7 @@ export function TaskProvider({ children }) {
   const [loading, setLoading] = useState(true);
   const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
   const isOnline = useNetworkStatus();
+  const { currentUser } = useAuth();
 
   // Alarm State
   const [activeAlarm, setActiveAlarm] = useState(null);
@@ -48,6 +51,20 @@ export function TaskProvider({ children }) {
   const toggleTheme = () => {
     setTheme((prev) => (prev === "dark" ? "light" : "dark"));
   };
+
+  // Initialize Firebase Cloud Messaging for push notifications
+  useEffect(() => {
+    if (currentUser) {
+      // Set up foreground message listener
+      setupForegroundMessageListener();
+
+      // Request FCM permission and token
+      // This will be called when alarm is enabled, but we set up listener here
+      requestFCMPermission(currentUser.uid).catch((error) => {
+        console.log("FCM permission request:", error);
+      });
+    }
+  }, [currentUser]);
 
   // Load tasks from localStorage on mount
   useEffect(() => {

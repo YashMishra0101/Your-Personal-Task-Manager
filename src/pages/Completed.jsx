@@ -10,16 +10,34 @@ export default function Completed() {
   return (
     <Layout title="Completed">
       {completedTasks.length > 0 ? (
-        <div className="space-y-1">
-          {completedTasks.map((task) => (
-            <TaskCard key={task.id} task={task} />
-          ))}
+        <div className="space-y-6">
+          <div className="flex items-center gap-3 px-1">
+            <div className="h-1.5 w-1.5 rounded-full bg-green-500"></div>
+            <h3 className="text-lg font-bold text-primary">
+              Completed Tasks
+            </h3>
+            <div className="px-3 py-1 bg-green-500/10 text-green-600 rounded-full text-xs font-bold">
+              {completedTasks.length}
+            </div>
+            <div className="h-px flex-1 bg-linear-to-r from-border to-transparent"></div>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {completedTasks.map((task) => (
+              <TaskCard key={task.id} task={task} />
+            ))}
+          </div>
         </div>
       ) : (
-        <div className="text-center py-20 text-muted-foreground">
-          <div className="text-6xl mb-4">✨</div>
-          <p className="text-lg font-medium">No completed tasks yet.</p>
-          <p className="text-sm mt-2">Complete some tasks to see them here!</p>
+        <div className="flex flex-col items-center justify-center py-20 text-center">
+          <div className="w-48 h-48 mb-6 bg-surface-hover rounded-full flex items-center justify-center border border-border">
+            <div className="text-6xl">✨</div>
+          </div>
+          <h3 className="text-xl font-bold text-primary mb-2">
+            No completed tasks yet
+          </h3>
+          <p className="text-muted-foreground max-w-xs mx-auto">
+            Complete some tasks to see them appear here with a sense of accomplishment!
+          </p>
         </div>
       )}
     </Layout>

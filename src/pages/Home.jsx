@@ -48,6 +48,13 @@ export default function Home() {
           {/* Section 1: Created Today */}
           {createdToday.length > 0 && (
             <section>
+              <div className="flex items-center gap-3 mb-5 px-1">
+                <div className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse"></div>
+                <h3 className="text-lg font-bold text-primary">
+                  Created Today
+                </h3>
+                <div className="h-px flex-1 bg-linear-to-r from-border to-transparent"></div>
+              </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {createdToday.map((task) => (
                   <TaskCard key={task.id} task={task} />
@@ -59,9 +66,13 @@ export default function Home() {
           {/* Section 2: Remaining */}
           {remaining.length > 0 && (
             <section>
-              <h3 className="text-lg font-semibold text-primary/80 mb-4 px-1">
-                Remaining Tasks
-              </h3>
+              <div className="flex items-center gap-3 mb-5 px-1">
+                <div className="h-1.5 w-1.5 rounded-full bg-accent"></div>
+                <h3 className="text-lg font-bold text-primary/80">
+                  Remaining Tasks
+                </h3>
+                <div className="h-px flex-1 bg-linear-to-r from-border to-transparent"></div>
+              </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {remaining.map((task) => (
                   <TaskCard key={task.id} task={task} />

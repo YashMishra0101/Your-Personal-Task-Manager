@@ -36,9 +36,12 @@ A modern task management application built with React and Firebase. This app hel
 ### 🔔 Native Alarm System
 
 - **Cross-Platform Alarms**: Sets alarms that work on both mobile and desktop.
-- **Background Notifications**: Triggers system-level notifications even when the app is in the background or closed (on supported devices).
+- **Push Notifications**: Triggers notifications even when the app is completely closed (requires Firebase Cloud Functions setup).
+- **Background Notifications**: Works when the app is in the background or minimized.
 - **Audio Alerts**: Plays a continuous alarm sound until dismissed.
 - **Smart Wake-up**: Clicking the notification instantly opens and focuses the app.
+
+> **Note:** For full "closed app" functionality, see [FIREBASE_SETUP.md](FIREBASE_SETUP.md) for Cloud Functions configuration.
 
 ### Security & Authentication
 
@@ -146,6 +149,20 @@ pnpm run dev
 ```
 
 Open your browser and navigate to `http://localhost:5173`
+
+**5. (Optional) Enable Push Notifications for Alarms**
+
+To receive alarm notifications even when the app is completely closed:
+
+```bash
+# Quick setup (5 minutes)
+See QUICK_START_PUSH.md for step-by-step guide
+```
+
+Or see detailed documentation:
+- [Quick Start Guide](QUICK_START_PUSH.md) - 5-minute setup
+- [Detailed Setup](FIREBASE_SETUP.md) - Complete documentation
+- [Technical Overview](PUSH_NOTIFICATIONS.md) - How it works
 
 ## Project Structure
 
