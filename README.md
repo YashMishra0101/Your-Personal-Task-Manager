@@ -27,7 +27,7 @@
 <td align="center">🔒<br/><b>100% Private</b><br/>Your data stays yours</td>
 <td align="center">⚙️<br/><b>Full Control</b><br/>Complete security control</td>
 <td align="center">🛡️<br/><b>No Tracking</b><br/>No analytics or spying</td>
-<td align="center">📱<br/><b>Install Anywhere</b><br/>PC, Laptop, Mobile — Use Everywhere</td>
+<td align="center">📱<br/><b>Install Anywhere</b><br/>PC, Laptop, Mobile, Use Everywhere</td>
 </tr>
 </table>
 
@@ -234,6 +234,7 @@ When a user logs in, the app:
 
 This dual-authentication system ensures your tasks remain private and secure, even in shared or public deployments.
 
+> ⚠️ **Important:** No public signup page is available. For security reasons, users must create their account and set the security key directly in Firebase Console before using the app.
 
 **6️⃣ Launch Development Server**
 ```bash
