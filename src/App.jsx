@@ -11,12 +11,9 @@ import TaskDetails from "./pages/TaskDetails";
 import ProtectedRoute from "./components/ProtectedRoute";
 import SecurityRoute from "./components/SecurityRoute";
 
-import AlarmModal from "./components/AlarmModal";
-
 export default function App() {
   return (
     <>
-      <AlarmModal />
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route

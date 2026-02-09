@@ -12,10 +12,9 @@ import {
   Circle,
   RotateCcw,
   CalendarCheck,
-  Bell,
 } from "lucide-react";
 import { format, isPast, parseISO, differenceInMinutes } from "date-fns";
-import { formatDeadlineDisplay, format12Hour } from "../lib/timeUtils";
+import { formatDeadlineDisplay } from "../lib/timeUtils";
 import { cn } from "../lib/utils";
 import ConfirmDialog from "../components/ConfirmDialog";
 import { toast } from "sonner";
@@ -175,7 +174,7 @@ export default function TaskDetails() {
 
           <h1
             className={cn(
-              "text-5xl md:text-6xl font-black tracking-tight leading-[1.1] text-foreground wrap-break-word break-all",
+              "text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black tracking-tight leading-tight text-foreground wrap-break-word",
               task.completed && "opacity-50 decoration-4 decoration-current line-through"
             )}
           >
@@ -192,9 +191,9 @@ export default function TaskDetails() {
               <div className="w-1.5 h-1.5 rounded-full bg-primary"></div>
               Description
             </div>
-            <div className="bg-surface p-8 rounded-4xl border border-border/60 shadow-sm">
+            <div className="bg-surface p-8 rounded-3xl border border-border/60 shadow-sm">
               <p className={cn(
-                "text-lg leading-relaxed whitespace-pre-wrap wrap-break-word break-all",
+                "text-lg leading-relaxed whitespace-pre-wrap wrap-break-word",
                 task.description ? "text-foreground/90" : "text-muted-foreground italic"
               )}>
                 {task.description || "No specific details provided for this task."}
@@ -211,7 +210,7 @@ export default function TaskDetails() {
                 <div className="w-1.5 h-1.5 rounded-full bg-blue-500"></div>
                 Target Date
               </div>
-              <div className="bg-surface p-6 rounded-4xl border border-border/60 shadow-sm h-full flex flex-col justify-center min-h-[140px]">
+              <div className="bg-surface p-6 rounded-3xl border border-border/60 shadow-sm h-full flex flex-col justify-center min-h-[140px]">
                 {task.deadline ? (
                   <div className="flex items-center gap-5">
                     <div className={cn(
@@ -232,7 +231,7 @@ export default function TaskDetails() {
                           "Overdue"
                         ) : timeDetails?.isLastDay ? (
                           <span className="flex items-center gap-1.5">
-                            <Clock size={14} /> 1 day left <span className="text-red-500 font-bold text-xs bg-red-50 px-1.5 py-0.5 rounded ml-1">Last Day</span>
+                            <Clock size={14} /> 1 day left <span className="text-red-500 font-bold text-xs bg-red-50 dark:bg-red-500/10 px-1.5 py-0.5 rounded ml-1">Last Day</span>
                           </span>
                         ) : (
                           <span className="flex items-center gap-1.5">
@@ -259,7 +258,7 @@ export default function TaskDetails() {
                 <div className="w-1.5 h-1.5 rounded-full bg-purple-500"></div>
                 Created On
               </div>
-              <div className="bg-surface p-6 rounded-4xl border border-border/60 shadow-sm h-full flex flex-col justify-center min-h-[140px]">
+              <div className="bg-surface p-6 rounded-3xl border border-border/60 shadow-sm h-full flex flex-col justify-center min-h-[140px]">
                 <div className="flex items-center gap-5">
                   <div className="p-4 bg-purple-500/10 rounded-2xl text-purple-600 shrink-0">
                     <CalendarCheck size={32} strokeWidth={1.5} />
@@ -276,42 +275,6 @@ export default function TaskDetails() {
                 </div>
               </div>
             </div>
-
-            {/* Alarm Settings - Full Width if Set */}
-            {task.alarm && task.alarm.enabled && (
-              <div className="space-y-3 md:col-span-2 mt-6">
-                <div className="flex items-center gap-2 text-sm font-bold text-muted-foreground uppercase tracking-widest pl-1">
-                  <div className="w-1.5 h-1.5 rounded-full bg-orange-500"></div>
-                  Alarm
-                </div>
-                <div className="bg-surface p-6 rounded-4xl border border-border/60 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-6">
-                  <div className="flex items-center gap-5">
-                    <div className="p-4 bg-orange-500/10 rounded-2xl text-orange-600 shrink-0">
-                      <Bell size={32} strokeWidth={1.5} />
-                    </div>
-                    <div>
-                      <div className="text-3xl font-black tabular-nums text-foreground">
-                        {format12Hour(task.alarm.time)}
-                      </div>
-                      <div className="text-sm font-medium text-muted-foreground mt-1 flex items-center gap-1.5">
-                        <Calendar size={14} />
-                        {task.alarm.date ? format(new Date(task.alarm.date), "EEEE, MMMM d") : ""}
-                      </div>
-                    </div>
-                  </div>
-
-                  {task.alarm.triggered ? (
-                    <div className="px-4 py-2 bg-orange-500/10 text-orange-600 rounded-xl font-bold text-sm border border-orange-500/20">
-                      Ringed
-                    </div>
-                  ) : (
-                    <div className="px-4 py-2 bg-green-500/10 text-green-600 rounded-xl font-bold text-sm border border-green-500/20">
-                      Active
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
           </div>
         </div>
       </div>

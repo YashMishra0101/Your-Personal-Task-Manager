@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useTasks } from "../context/TaskContext";
-import { formatDeadlineDisplay, getRemainingTime, format12Hour } from "../lib/timeUtils";
+import { formatDeadlineDisplay, getRemainingTime } from "../lib/timeUtils";
 import {
   Check,
   Clock,
@@ -8,9 +8,6 @@ import {
   Trash2,
   Pencil,
   RotateCcw,
-  ChevronDown,
-  ChevronUp,
-  Bell,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "../lib/utils";
@@ -131,14 +128,6 @@ export default function TaskCard({ task }) {
                   </span>
                 );
               })()}
-
-              {/* Alarm Indicator */}
-              {task.alarm && task.alarm.enabled && (
-                <span className="flex items-center space-x-1 text-muted-foreground" title={`Alarm set for ${task.alarm.date} at ${task.alarm.time}`}>
-                  <Bell size={12} className={task.alarm.triggered ? "text-muted-foreground/50" : "text-primary"} />
-                  <span>{format12Hour(task.alarm.time)}</span>
-                </span>
-              )}
             </div>
           )}
         </div>

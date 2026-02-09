@@ -41,7 +41,6 @@ This isn't just another to-do app—it's a **showcase of modern web development 
 - 🎨 **Premium UI/UX** - Thoughtfully designed with smooth animations and delightful interactions
 - 🔒 **Enterprise-Grade Security** - Multi-layer authentication with Firestore security rules
 - 🌐 **Offline-First Architecture** - Full CRUD operations without internet connection
-- 🔔 **Smart Alarm System** - Native-like notifications with 12-hour time format
 - 🎭 **Adaptive Theming** - Sophisticated light and dark modes that match your style
 - ♿ **Accessibility First** - WCAG compliant with keyboard navigation and screen reader support
 
@@ -62,10 +61,6 @@ This isn't just another to-do app—it's a **showcase of modern web development 
     <td><img src="src/assets/5.png" alt="Mobile View" /></td>
     <td><img src="src/assets/6.png" alt="Completed Tasks" /></td>
   </tr>
-  <tr>
-    <td><img src="src/assets/7.png" alt="Alarm System" /></td>
-    <td><img src="src/assets/8.png" alt="Responsive Design" /></td>
-  </tr>
 </table>
 
 ---
@@ -78,13 +73,6 @@ This isn't just another to-do app—it's a **showcase of modern web development 
 - **Quick Statistics** - Real-time overview of pending and completed tasks
 - **One-Click Actions** - Mark complete, edit, or delete with smooth animations
 - **Detailed Task View** - Rich descriptions with formatted dates and times
-
-### 🔔 Advanced Alarm System
-- **12-Hour Format** - User-friendly AM/PM time display
-- **Cross-Platform Alerts** - Works on desktop, mobile, and tablets
-- **Audio Notifications** - Continuous alarm sound until dismissed
-- **Smart Reminders** - Visual and audio cues for maximum effectiveness
-- **Background Support** - Get notified even when app is minimized
 
 ### 🔐 Security & Privacy
 - **Firebase Authentication** - Industry-standard email/password login
@@ -127,14 +115,14 @@ This isn't just another to-do app—it's a **showcase of modern web development 
 ## 🛠️ Technology Stack
 
 ### Core Technologies
-| Technology | Version | Purpose |
-|-----------|---------|---------|
-| **React** | 19 | UI framework with latest features |
-| **Vite** | 7 | Lightning-fast build tool |
-| **Firebase** | 12 | Authentication & Firestore database |
-| **Tailwind CSS** | 4 | Utility-first styling |
-| **Framer Motion** | Latest | Smooth animations |
-| **React Router** | 7 | Client-side routing |
+| Technology | Purpose |
+|-----------|---------|
+| **React** | UI framework with latest features |
+| **Vite** | Lightning-fast build tool |
+| **Firebase** | Authentication & Firestore database |
+| **Tailwind CSS** | Utility-first styling |
+| **Framer Motion** | Smooth animations |
+| **React Router** | Client-side routing |
 
 ### Development Tools
 - **pnpm** - Fast, disk space efficient package manager
@@ -257,7 +245,6 @@ Personal-Task-Manager/
 ├── 📁 src/
 │   ├── 📁 assets/          # Images & icons
 │   ├── 📁 components/      # Reusable UI components
-│   │   ├── AlarmModal.jsx
 │   │   ├── ConfirmDialog.jsx
 │   │   ├── Layout.jsx
 │   │   ├── Navbar.jsx

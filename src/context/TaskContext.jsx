@@ -11,7 +11,6 @@ import {
   deleteDoc,
 } from "firebase/firestore";
 import { useNetworkStatus } from "../hooks/useNetworkStatus";
-import { requestFCMPermission, setupForegroundMessageListener } from "../lib/fcm";
 import { useAuth } from "./AuthContext";
 
 const TaskContext = createContext();
@@ -26,10 +25,6 @@ export function TaskProvider({ children }) {
   const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
   const isOnline = useNetworkStatus();
   const { currentUser } = useAuth();
-
-  // Alarm State
-  const [activeAlarm, setActiveAlarm] = useState(null);
-  const audioRef = React.useRef(null);
 
   // Theme Management
   useEffect(() => {
@@ -51,20 +46,6 @@ export function TaskProvider({ children }) {
   const toggleTheme = () => {
     setTheme((prev) => (prev === "dark" ? "light" : "dark"));
   };
-
-  // Initialize Firebase Cloud Messaging for push notifications
-  useEffect(() => {
-    if (currentUser) {
-      // Set up foreground message listener
-      setupForegroundMessageListener();
-
-      // Request FCM permission and token
-      // This will be called when alarm is enabled, but we set up listener here
-      requestFCMPermission(currentUser.uid).catch((error) => {
-        console.log("FCM permission request:", error);
-      });
-    }
-  }, [currentUser]);
 
   // Load tasks from localStorage on mount
   useEffect(() => {
@@ -124,146 +105,6 @@ export function TaskProvider({ children }) {
       setLoading(false);
     }
   }, []);
-
-  // Alarm System
-  useEffect(() => {
-    const checkAlarms = () => {
-      const now = new Date();
-
-      // If an alarm is already ringing, don't trigger another one (FIFO/Priority)
-      if (activeAlarm) return;
-
-      tasks.forEach((task) => {
-        if (
-          task.alarm &&
-          task.alarm.enabled &&
-          !task.alarm.triggered &&
-          task.alarm.date &&
-          task.alarm.time
-        ) {
-          const alarmDateTime = new Date(
-            `${task.alarm.date}T${task.alarm.time}`
-          );
-
-          if (now >= alarmDateTime) {
-            // Trigger Alarm UI
-            setActiveAlarm(task);
-
-            // Trigger System Notification
-            if (Notification.permission === "granted") {
-              const notification = new Notification("Alarm Ringing!", {
-                body: `It's time for: ${task.title}`,
-                icon: "/icon-192.png", // Ensure this exists or use appropriate icon
-                requireInteraction: true, // Key for persisting notification
-                tag: `alarm-${task.id}`, // Prevent duplicates
-              });
-
-              notification.onclick = () => {
-                window.focus();
-                notification.close();
-              };
-            } else if (Notification.permission !== "denied") {
-              // Try to request if not denied, though usually requires user gesture
-              // We rely on explicit request elsewhere
-            }
-
-            // Play Sound Loop
-            if (!audioRef.current) {
-              audioRef.current = new Audio("/audio.mp3");
-              audioRef.current.loop = true;
-            }
-            audioRef.current
-              .play()
-              .catch((e) => console.error("Error playing alarm:", e));
-          }
-        }
-      });
-    };
-
-    const intervalId = setInterval(checkAlarms, 1000);
-    return () => clearInterval(intervalId);
-  }, [tasks, activeAlarm]);
-
-  // Schedule background notifications (for PWA/Mobile support)
-  useEffect(() => {
-    const scheduleNotifications = async () => {
-      if (!("Notification" in window) || Notification.permission !== "granted") return;
-
-      try {
-        const registration = await navigator.serviceWorker.ready;
-
-        // Check for Notification Triggers support (Experimental)
-        // This allows scheduling notifications even if the app is closed
-        if ("showTrigger" in Notification.prototype) {
-          tasks.forEach(async (task) => {
-            if (
-              task.alarm &&
-              task.alarm.enabled &&
-              !task.alarm.triggered &&
-              task.alarm.date &&
-              task.alarm.time
-            ) {
-              const alarmTime = new Date(`${task.alarm.date}T${task.alarm.time}`).getTime();
-              if (alarmTime > Date.now()) {
-                // @ts-ignore
-                await registration.showNotification(task.title, {
-                  body: "Alarm is ringing! Tap to open.",
-                  icon: "/icon-192.png",
-                  tag: `alarm-${task.id}`,
-                  // @ts-ignore
-                  showTrigger: new TimestampTrigger(alarmTime),
-                  requireInteraction: true,
-                });
-              }
-            }
-          });
-        }
-      } catch (error) {
-        console.log("Notification scheduling failed/not supported", error);
-      }
-    };
-
-    scheduleNotifications();
-  }, [tasks]);
-
-  const requestNotificationPermission = async () => {
-    if (!("Notification" in window)) {
-      console.log("This browser does not support desktop notifications");
-      return false;
-    }
-
-    if (Notification.permission === "granted") {
-      return true;
-    }
-
-    if (Notification.permission !== "denied") {
-      const permission = await Notification.requestPermission();
-      return permission === "granted";
-    }
-
-    return false;
-  };
-
-  const stopAlarm = () => {
-    if (activeAlarm) {
-      // Stop Audio
-      if (audioRef.current) {
-        audioRef.current.pause();
-        audioRef.current.currentTime = 0;
-      }
-
-      // Mark as triggered in DB
-      updateTask(activeAlarm.id, {
-        alarm: {
-          ...activeAlarm.alarm,
-          triggered: true,
-        },
-      });
-
-      // Clear UI
-      setActiveAlarm(null);
-    }
-  };
 
   const addTask = async (task) => {
     const newTask = {
@@ -391,9 +232,6 @@ export function TaskProvider({ children }) {
     theme,
     toggleTheme,
     isOnline,
-    activeAlarm,
-    stopAlarm,
-    requestNotificationPermission,
   };
 
   return <TaskContext.Provider value={value}>{children}</TaskContext.Provider>;
