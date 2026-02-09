@@ -68,7 +68,9 @@ This isn't just another to-do app—it's a **showcase of modern web development 
 ## ✨ Key Features
 
 ### 📋 Task Management
-- **Smart Organization** - Auto-categorized by "Today" and "Remaining" tasks
+- **Professional Filtering System** - Toggle between "All Tasks" and "By Date" views
+  - **All Tasks (Default)**: Clean grid view without grouping
+  - **By Date**: Smart grouping with "Today", "Yesterday", and full date labels
 - **Deadline Tracking** - Visual indicators for overdue, urgent, and upcoming tasks
 - **Quick Statistics** - Real-time overview of pending and completed tasks
 - **One-Click Actions** - Mark complete, edit, or delete with smooth animations

@@ -1,20 +1,58 @@
-import React from "react";
+import React, { useState } from "react";
 import { useTasks } from "../context/TaskContext";
 import Layout from "../components/Layout";
 import TaskCard from "../components/TaskCard";
 import { Link } from "react-router-dom";
-import { Plus } from "lucide-react";
-import { isCreatedToday } from "../lib/timeUtils";
+import { Plus, LayoutGrid, Calendar } from "lucide-react";
+import { format, parseISO, isSameDay } from "date-fns";
+import { cn } from "../lib/utils";
 
 export default function Home() {
   const { tasks, loading } = useTasks();
+  const [filterMode, setFilterMode] = useState("all"); // 'all' or 'by-date'
 
   const activeTasks = tasks.filter((t) => !t.completed);
   const completedTasks = tasks.filter((t) => t.completed);
 
-  // Group tasks
-  const createdToday = activeTasks.filter((t) => isCreatedToday(t.createdAt));
-  const remaining = activeTasks.filter((t) => !isCreatedToday(t.createdAt));
+  // Group tasks by date
+  const groupTasksByDate = (tasksList) => {
+    const grouped = {};
+
+    tasksList.forEach((task) => {
+      if (!task.createdAt) return;
+
+      const taskDate = parseISO(task.createdAt);
+      const dateKey = format(taskDate, "yyyy-MM-dd");
+
+      if (!grouped[dateKey]) {
+        grouped[dateKey] = {
+          date: taskDate,
+          tasks: [],
+        };
+      }
+
+      grouped[dateKey].tasks.push(task);
+    });
+
+    // Sort by date (newest first)
+    return Object.values(grouped).sort((a, b) => b.date - a.date);
+  };
+
+  const tasksByDate = groupTasksByDate(activeTasks);
+
+  const formatDateHeader = (date) => {
+    const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+
+    if (isSameDay(date, today)) {
+      return "Today";
+    } else if (isSameDay(date, yesterday)) {
+      return "Yesterday";
+    } else {
+      return format(date, "EEEE, MMMM d, yyyy");
+    }
+  };
 
   return (
     <Layout title="My Tasks">
@@ -24,9 +62,9 @@ export default function Home() {
           <div className="h-4 w-24 bg-surface-hover rounded"></div>
         </div>
       ) : activeTasks.length > 0 ? (
-        <div className="space-y-8">
+        <div className="space-y-6">
           {/* Stats Dashboard */}
-          <div className="grid grid-cols-2 gap-4 mb-8">
+          <div className="grid grid-cols-2 gap-4">
             <div className="bg-surface p-4 rounded-2xl border border-border/50 shadow-sm flex flex-col items-center justify-center text-center">
               <span className="text-4xl font-bold text-primary mb-1">
                 {activeTasks.length}
@@ -45,40 +83,65 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Section 1: Created Today */}
-          {createdToday.length > 0 && (
-            <section>
-              <div className="flex items-center gap-3 mb-5 px-1">
-                <div className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse"></div>
-                <h3 className="text-lg font-bold text-primary">
-                  Created Today
-                </h3>
-                <div className="h-px flex-1 bg-linear-to-r from-border to-transparent"></div>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {createdToday.map((task) => (
-                  <TaskCard key={task.id} task={task} />
-                ))}
-              </div>
-            </section>
-          )}
+          {/* Filter Toggle */}
+          <div className="flex items-center gap-3 bg-surface p-1.5 rounded-2xl border border-border/50 shadow-sm w-fit">
+            <button
+              onClick={() => setFilterMode("all")}
+              className={cn(
+                "flex items-center gap-2 px-4 py-2.5 rounded-xl font-semibold text-sm transition-all duration-200",
+                filterMode === "all"
+                  ? "bg-primary text-primary-foreground shadow-md"
+                  : "text-muted-foreground hover:text-primary hover:bg-surface-hover"
+              )}
+            >
+              <LayoutGrid size={16} strokeWidth={2.5} />
+              <span>All Tasks</span>
+            </button>
+            <button
+              onClick={() => setFilterMode("by-date")}
+              className={cn(
+                "flex items-center gap-2 px-4 py-2.5 rounded-xl font-semibold text-sm transition-all duration-200",
+                filterMode === "by-date"
+                  ? "bg-primary text-primary-foreground shadow-md"
+                  : "text-muted-foreground hover:text-primary hover:bg-surface-hover"
+              )}
+            >
+              <Calendar size={16} strokeWidth={2.5} />
+              <span>By Date</span>
+            </button>
+          </div>
 
-          {/* Section 2: Remaining */}
-          {remaining.length > 0 && (
-            <section>
-              <div className="flex items-center gap-3 mb-5 px-1">
-                <div className="h-1.5 w-1.5 rounded-full bg-accent"></div>
-                <h3 className="text-lg font-bold text-primary/80">
-                  Remaining Tasks
-                </h3>
-                <div className="h-px flex-1 bg-linear-to-r from-border to-transparent"></div>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {remaining.map((task) => (
-                  <TaskCard key={task.id} task={task} />
-                ))}
-              </div>
-            </section>
+          {/* Tasks Display */}
+          {filterMode === "all" ? (
+            // All Tasks View - No Grouping
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {activeTasks.map((task) => (
+                <TaskCard key={task.id} task={task} />
+              ))}
+            </div>
+          ) : (
+            // By Date View - Grouped by Creation Date
+            <div className="space-y-8">
+              {tasksByDate.map((group) => (
+                <section key={format(group.date, "yyyy-MM-dd")}>
+                  <div className="flex items-center gap-3 mb-5 px-1">
+                    <div className="h-1.5 w-1.5 rounded-full bg-primary"></div>
+                    <h3 className="text-lg font-bold text-primary">
+                      {formatDateHeader(group.date)}
+                    </h3>
+                    <div className="px-3 py-1 bg-primary/10 text-primary rounded-full text-xs font-bold">
+                      {group.tasks.length}
+                    </div>
+                    <div className="h-px flex-1 bg-linear-to-r from-border to-transparent"></div>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {group.tasks.map((task) => (
+                      <TaskCard key={task.id} task={task} />
+                    ))}
+                  </div>
+                </section>
+              ))}
+            </div>
           )}
         </div>
       ) : (

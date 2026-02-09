@@ -16,7 +16,7 @@ export default function Completed() {
             <h3 className="text-lg font-bold text-primary">
               Completed Tasks
             </h3>
-            <div className="px-3 py-1 bg-green-500/10 text-green-600 rounded-full text-xs font-bold">
+            <div className="px-3 py-1 bg-green-500/10 text-green-600 dark:text-green-500 rounded-full text-xs font-bold">
               {completedTasks.length}
             </div>
             <div className="h-px flex-1 bg-linear-to-r from-border to-transparent"></div>
