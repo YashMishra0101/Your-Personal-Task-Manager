@@ -50,20 +50,20 @@ This isn't just another to-do app—it's a **showcase of modern web development 
 
 <table>
   <tr>
-    <td><img src="src/assets/1.png" alt="Home Dashboard" /></td>
-    <td><img src="src/assets/2.png" alt="Task Details" /></td>
+    <td><img src="src/assets/1.png" alt="Screenshot 1" /></td>
+    <td><img src="src/assets/2.png" alt="Screenshot 2" /></td>
   </tr>
   <tr>
-    <td><img src="src/assets/3.png" alt="Add Task" /></td>
-    <td><img src="src/assets/4.png" alt="Dark Mode" /></td>
+    <td><img src="src/assets/3.png" alt="Screenshot 3" /></td>
+    <td><img src="src/assets/4.png" alt="Screenshot 4" /></td>
   </tr>
   <tr>
-    <td><img src="src/assets/5.png" alt="Mobile View" /></td>
-    <td><img src="src/assets/6.png" alt="Completed Tasks" /></td>
+    <td><img src="src/assets/5.png" alt="Screenshot 5" /></td>
+    <td><img src="src/assets/6.png" alt="Screenshot 6" /></td>
   </tr>
    <tr>
-    <td><img src="src/assets/7.png" alt="Mobile View" /></td>
-    <td><img src="src/assets/8.png" alt="Completed Tasks" /></td>
+    <td><img src="src/assets/7.png" alt="Screenshot 7" /></td>
+    <td><img src="src/assets/8.png" alt="Screenshot 8" /></td>
   </tr>
 </table>
 
@@ -420,8 +420,7 @@ Future enhancements we're considering:
 Having trouble? We're here to help!
 
 - 🐛 **Bug Reports:** [Open an issue](https://github.com/YashMishra0101/Personal-Task-Manager/issues)
-- 💡 **Feature Requests:** [Start a discussion](https://github.com/YashMishra0101/Personal-Task-Manager/discussions)
-- 📧 **Email:** your.email@example.com
+- 📧 **Email:** yashrkm0011@gmail.com
 - 🌟 **Show your support:** Star this repository!
 
 ---

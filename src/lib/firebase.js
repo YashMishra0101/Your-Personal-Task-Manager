@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getFirestore, enableIndexedDbPersistence } from "firebase/firestore";
+import { initializeFirestore, persistentLocalCache, persistentMultipleTabManager } from "firebase/firestore";
 import { getMessaging, isSupported } from "firebase/messaging";
 
 // Your web app's Firebase configuration
@@ -22,18 +22,13 @@ try {
   // Only initialize if we have at least an API key, otherwise mock/fail gracefully
   if (firebaseConfig.apiKey) {
     app = initializeApp(firebaseConfig);
-    db = getFirestore(app);
 
-    // Enable offline persistence for Firestore
-    // This allows the app to work offline and sync when connection is restored
-    enableIndexedDbPersistence(db).catch((err) => {
-      if (err.code === 'failed-precondition') {
-        // Multiple tabs open, persistence can only be enabled in one tab at a time.
-        console.warn('Persistence failed: Multiple tabs open');
-      } else if (err.code === 'unimplemented') {
-        // The current browser doesn't support persistence
-        console.warn('Persistence not available in this browser');
-      }
+    // Initialize Firestore with persistent cache (new API)
+    // This replaces the deprecated enableIndexedDbPersistence()
+    db = initializeFirestore(app, {
+      localCache: persistentLocalCache({
+        tabManager: persistentMultipleTabManager()
+      })
     });
   } else {
     console.warn(

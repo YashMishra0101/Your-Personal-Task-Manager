@@ -129,18 +129,16 @@ export default function TaskDetails() {
 
   return (
     <Layout title="Task Details">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-10 pb-24">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-3 pb-24">
         {/* Navigation & Actions */}
         <div className="flex flex-col gap-4 mb-10">
           {/* Back Button */}
           <button
             onClick={() => navigate(-1)}
-            className="flex items-center text-muted-foreground hover:text-primary transition-colors group self-start"
+            className="flex items-center gap-2 px-4 py-3 bg-transparent border border-border/60 text-muted-foreground hover:bg-muted/50 hover:text-foreground rounded-2xl transition-all font-semibold active:scale-95 group self-start"
           >
-            <div className="p-2 rounded-full group-hover:bg-primary/10 transition-colors">
-              <ArrowLeft size={24} />
-            </div>
-            <span className="font-semibold text-lg ml-2">Back</span>
+            <ArrowLeft size={20} className="transition-transform group-hover:-translate-x-1" />
+            <span>Back</span>
           </button>
 
           {/* Action Buttons - Responsive Layout */}

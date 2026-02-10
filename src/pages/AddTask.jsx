@@ -2,8 +2,9 @@ import React, { useState, useRef } from "react";
 import { useTasks } from "../context/TaskContext";
 import { useNavigate } from "react-router-dom";
 import Layout from "../components/Layout";
-import { Calendar as CalendarIcon, Plus, X, CheckSquare } from "lucide-react";
+import { Calendar as CalendarIcon, Plus, CheckSquare } from "lucide-react";
 import { endOfDay, format } from "date-fns";
+import SubtaskEditItem from "../components/SubtaskEditItem";
 
 export default function AddTask() {
   const { addTask } = useTasks();
@@ -33,6 +34,13 @@ export default function AddTask() {
 
     setSubtasks([...subtasks, newSubtask]);
     setNewSubtaskText("");
+  };
+
+  // Update subtask text
+  const updateSubtaskText = (id, newText) => {
+    setSubtasks(subtasks.map(st =>
+      st.id === id ? { ...st, text: newText } : st
+    ));
   };
 
   // Remove subtask
@@ -136,21 +144,12 @@ export default function AddTask() {
             {subtasks.length > 0 && (
               <div className="space-y-2 pt-2">
                 {subtasks.map((subtask) => (
-                  <div
+                  <SubtaskEditItem
                     key={subtask.id}
-                    className="flex items-center gap-3 p-3 bg-surface rounded-lg border border-border/50 group hover:border-border transition-all"
-                  >
-                    <CheckSquare size={18} className="text-muted-foreground shrink-0" />
-                    <span className="flex-1 text-sm text-foreground">{subtask.text}</span>
-                    <button
-                      type="button"
-                      onClick={() => removeSubtask(subtask.id)}
-                      className="opacity-0 group-hover:opacity-100 p-1 hover:bg-red-500/10 text-red-500 rounded transition-all"
-                      title="Remove subtask"
-                    >
-                      <X size={16} strokeWidth={2.5} />
-                    </button>
-                  </div>
+                    subtask={subtask}
+                    onUpdate={updateSubtaskText}
+                    onRemove={removeSubtask}
+                  />
                 ))}
                 <div className="text-xs text-muted-foreground pt-1 flex items-center gap-1.5">
                   <CheckSquare size={12} />
@@ -222,6 +221,6 @@ export default function AddTask() {
           </button>
         </div>
       </form>
-    </Layout>
+    </Layout >
   );
 }
