@@ -4,9 +4,9 @@
 
 <div align="center">
 
-![React](https://img.shields.io/badge/React-19-61dafb?style=for-the-badge&logo=react&logoColor=white)
-![Firebase](https://img.shields.io/badge/Firebase-12-ffca28?style=for-the-badge&logo=firebase&logoColor=black)
-![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-38bdf8?style=for-the-badge&logo=tailwind-css&logoColor=white)
+![React](https://img.shields.io/badge/React-61dafb?style=for-the-badge&logo=react&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38bdf8?style=for-the-badge&logo=tailwind-css&logoColor=white)
+![Firebase](https://img.shields.io/badge/Firebase-ffca28?style=for-the-badge&logo=firebase&logoColor=black)
 ![PWA](https://img.shields.io/badge/PWA-Enabled-5A0FC8?style=for-the-badge&logo=pwa&logoColor=white)
 
 ![No Ads](https://img.shields.io/badge/🚫_Ads-No_Ads-success?style=for-the-badge)
@@ -60,6 +60,10 @@ This isn't just another to-do app—it's a **showcase of modern web development 
   <tr>
     <td><img src="src/assets/5.png" alt="Mobile View" /></td>
     <td><img src="src/assets/6.png" alt="Completed Tasks" /></td>
+  </tr>
+   <tr>
+    <td><img src="src/assets/7.png" alt="Mobile View" /></td>
+    <td><img src="src/assets/8.png" alt="Completed Tasks" /></td>
   </tr>
 </table>
 
