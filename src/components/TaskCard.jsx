@@ -94,6 +94,23 @@ export default function TaskCard({ task }) {
             {task.title}
           </h3>
 
+          {/* Subtasks Progress (if any) */}
+          {task.subtasks && task.subtasks.length > 0 && (
+            <div className="mt-2 flex items-center gap-2">
+              <div className="flex-1 h-1.5 bg-muted rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-accent transition-all duration-300"
+                  style={{
+                    width: `${(task.subtasks.filter(st => st.completed).length / task.subtasks.length) * 100}%`
+                  }}
+                ></div>
+              </div>
+              <span className="text-xs text-muted-foreground font-medium tabular-nums">
+                {task.subtasks.filter(st => st.completed).length}/{task.subtasks.length}
+              </span>
+            </div>
+          )}
+
           {!task.completed && task.deadline && (
             <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs mt-1">
               <span className={cn(

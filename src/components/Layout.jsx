@@ -32,7 +32,7 @@ export default function Layout({ children, title }) {
 
           {/* Main Heading - Centered on Mobile (adjusted for button presence) */}
           <div className="flex-1 min-w-0 flex items-center">
-            <h1 className="text-lg sm:text-xl md:text-2xl font-black bg-linear-to-r from-primary to-accent bg-clip-text text-transparent uppercase tracking-wider truncate">
+            <h1 className="text-lg sm:text-xl md:text-2xl font-bold text-primary tracking-wide truncate">
               {title || "Task Manager"}
             </h1>
           </div>

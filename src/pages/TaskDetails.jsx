@@ -22,7 +22,7 @@ import { toast } from "sonner";
 export default function TaskDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { tasks, toggleTaskCompletion, deleteTask } = useTasks();
+  const { tasks, toggleTaskCompletion, deleteTask, updateTask } = useTasks();
 
   const [task, setTask] = useState(null);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
@@ -35,6 +35,24 @@ export default function TaskDetails() {
     }
     setLoading(false);
   }, [id, tasks]);
+
+  // Toggle subtask completion
+  const toggleSubtask = async (subtaskId) => {
+    if (!task) return;
+
+    const updatedSubtasks = task.subtasks.map(st =>
+      st.id === subtaskId ? { ...st, completed: !st.completed } : st
+    );
+
+    try {
+      await updateTask(task.id, {
+        subtasks: updatedSubtasks,
+      });
+      toast.success("Subtask updated");
+    } catch (error) {
+      toast.error("Failed to update subtask");
+    }
+  };
 
   if (loading) {
     return (
@@ -113,10 +131,11 @@ export default function TaskDetails() {
     <Layout title="Task Details">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 py-10 pb-24">
         {/* Navigation & Actions */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-10">
+        <div className="flex flex-col gap-4 mb-10">
+          {/* Back Button */}
           <button
             onClick={() => navigate(-1)}
-            className="flex items-center text-muted-foreground hover:text-primary transition-colors group self-start sm:self-auto"
+            className="flex items-center text-muted-foreground hover:text-primary transition-colors group self-start"
           >
             <div className="p-2 rounded-full group-hover:bg-primary/10 transition-colors">
               <ArrowLeft size={24} />
@@ -124,7 +143,9 @@ export default function TaskDetails() {
             <span className="font-semibold text-lg ml-2">Back</span>
           </button>
 
-          <div className="flex items-center gap-3 self-end sm:self-auto">
+          {/* Action Buttons - Responsive Layout */}
+          <div className="flex items-center justify-between gap-3">
+            {/* Edit Button - Left on mobile, always visible */}
             {!task.completed && (
               <Link
                 to={`/edit/${task.id}`}
@@ -134,6 +155,11 @@ export default function TaskDetails() {
                 <span>Edit</span>
               </Link>
             )}
+
+            {/* Spacer on mobile if no edit button */}
+            {task.completed && <div className="flex-1 sm:hidden"></div>}
+
+            {/* Delete Button - Right aligned */}
             <button
               onClick={() => setShowDeleteDialog(true)}
               className="flex items-center gap-2 px-5 py-3 bg-red-500/5 text-red-500 hover:bg-red-500 hover:text-white rounded-2xl transition-all font-semibold active:scale-95"
@@ -144,46 +170,57 @@ export default function TaskDetails() {
           </div>
         </div>
 
-        {/* Header - Status & Title */}
-        <div className="mb-12">
-          <div className="flex flex-wrap items-center gap-4 mb-6">
-            <button
-              onClick={handleToggleComplete}
-              className={cn(
-                "inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-bold border transition-all cursor-pointer shadow-sm active:scale-95",
-                task.completed
-                  ? "bg-green-500/10 border-green-500/20 text-green-600"
-                  : "bg-surface border-border text-foreground hover:border-primary/50"
-              )}
-            >
-              {task.completed ? (
-                <CheckCircle size={18} className="text-green-600" />
-              ) : (
-                <Circle size={18} className="text-muted-foreground" />
-              )}
-              <span>{task.completed ? "Completed" : "Active Task"}</span>
-            </button>
-
-            {isOverdue && !task.completed && (
-              <span className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full text-sm font-bold bg-red-500/10 text-red-500 border border-red-500/20">
-                <Clock size={16} />
-                Overdue
-              </span>
-            )}
-          </div>
-
-          <h1
-            className={cn(
-              "text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black tracking-tight leading-tight text-foreground wrap-break-word",
-              task.completed && "opacity-50 decoration-4 decoration-current line-through"
-            )}
-          >
-            {task.title}
-          </h1>
-        </div>
-
         {/* Content Section */}
         <div className="grid grid-cols-1 gap-10">
+          {/* Task Heading Card - Consistent with other fields */}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2 text-sm font-bold text-muted-foreground uppercase tracking-widest pl-1">
+                <div className="w-1.5 h-1.5 rounded-full bg-primary"></div>
+                Task Heading
+              </div>
+
+              {/* Status Indicator - Smaller and better positioned */}
+              <button
+                onClick={handleToggleComplete}
+                className={cn(
+                  "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border transition-all cursor-pointer shadow-sm active:scale-95",
+                  task.completed
+                    ? "bg-green-500/10 border-green-500/20 text-green-600"
+                    : "bg-surface border-border text-foreground hover:border-primary/50"
+                )}
+              >
+                {task.completed ? (
+                  <CheckCircle size={14} className="text-green-600" />
+                ) : (
+                  <Circle size={14} className="text-muted-foreground" />
+                )}
+                <span>{task.completed ? "Completed" : "Active"}</span>
+              </button>
+            </div>
+
+            {/* Heading in white box */}
+            <div className="bg-surface p-8 rounded-3xl border border-border/60 shadow-sm">
+              <h1
+                className={cn(
+                  "text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight leading-tight text-foreground wrap-break-word",
+                  task.completed && "opacity-50 decoration-2 decoration-current line-through"
+                )}
+              >
+                {task.title}
+              </h1>
+
+              {/* Overdue indicator inside heading box */}
+              {isOverdue && !task.completed && (
+                <div className="mt-4 pt-4 border-t border-border/50">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-red-500/10 text-red-500 border border-red-500/20">
+                    <Clock size={14} />
+                    Overdue
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
 
           {/* Description Card */}
           <div className="space-y-3">
@@ -200,6 +237,69 @@ export default function TaskDetails() {
               </p>
             </div>
           </div>
+
+          {/* Subtasks Section */}
+          {task.subtasks && task.subtasks.length > 0 && (
+            <div className="space-y-3">
+              <div className="flex items-center gap-2 text-sm font-bold text-muted-foreground uppercase tracking-widest pl-1">
+                <div className="w-1.5 h-1.5 rounded-full bg-accent"></div>
+                Subtasks
+              </div>
+              <div className="bg-surface p-6 rounded-3xl border border-border/60 shadow-sm">
+                <div className="space-y-3">
+                  {task.subtasks.map((subtask) => (
+                    <label
+                      key={subtask.id}
+                      htmlFor={`subtask-${subtask.id}`}
+                      className={cn(
+                        "flex items-start gap-4 p-4 rounded-xl border transition-all cursor-pointer group",
+                        subtask.completed
+                          ? "bg-primary/5 border-primary/20"
+                          : "bg-background border-border hover:border-primary/50 hover:bg-muted/30"
+                      )}
+                    >
+                      <input
+                        id={`subtask-${subtask.id}`}
+                        type="checkbox"
+                        checked={subtask.completed}
+                        onChange={() => toggleSubtask(subtask.id)}
+                        disabled={task.completed}
+                        className="w-5 h-5 mt-0.5 rounded border-2 border-border checked:border-primary checked:bg-primary text-primary-foreground focus:ring-2 focus:ring-primary/20 cursor-pointer transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                      />
+                      <span className={cn(
+                        "flex-1 text-base leading-relaxed transition-all",
+                        subtask.completed
+                          ? "text-muted-foreground line-through"
+                          : "text-foreground"
+                      )}>
+                        {subtask.text}
+                      </span>
+                    </label>
+                  ))}
+
+                  {/* Progress Indicator */}
+                  <div className="pt-3 mt-3 border-t border-border/50">
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-muted-foreground font-medium">
+                        Progress
+                      </span>
+                      <span className="font-bold text-primary">
+                        {task.subtasks.filter(st => st.completed).length} / {task.subtasks.length} completed
+                      </span>
+                    </div>
+                    <div className="mt-2 h-2 bg-muted rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-primary transition-all duration-300 rounded-full"
+                        style={{
+                          width: `${(task.subtasks.filter(st => st.completed).length / task.subtasks.length) * 100}%`
+                        }}
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Details Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -253,7 +353,7 @@ export default function TaskDetails() {
             </div>
 
             {/* Created On */}
-            <div className="space-y-3">
+            <div className="space-y-3 mt-6 md:mt-0">
               <div className="flex items-center gap-2 text-sm font-bold text-muted-foreground uppercase tracking-widest pl-1">
                 <div className="w-1.5 h-1.5 rounded-full bg-purple-500"></div>
                 Created On

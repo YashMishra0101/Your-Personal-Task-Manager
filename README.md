@@ -71,6 +71,7 @@ This isn't just another to-do app—it's a **showcase of modern web development 
 - **Professional Filtering System** - Toggle between "All Tasks" and "By Date" views
   - **All Tasks (Default)**: Clean grid view without grouping
   - **By Date**: Smart grouping with "Today", "Yesterday", and full date labels
+- **Subtasks / Checklist** - Break down tasks into smaller actionable items with checkboxes
 - **Deadline Tracking** - Visual indicators for overdue, urgent, and upcoming tasks
 - **Quick Statistics** - Real-time overview of pending and completed tasks
 - **One-Click Actions** - Mark complete, edit, or delete with smooth animations
