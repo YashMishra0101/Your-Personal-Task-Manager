@@ -12,7 +12,6 @@ export default function Home() {
   const [filterMode, setFilterMode] = useState("all"); // 'all' or 'by-date'
 
   const activeTasks = tasks.filter((t) => !t.completed);
-  const completedTasks = tasks.filter((t) => t.completed);
 
   // Group tasks by date
   const groupTasksByDate = (tasksList) => {
@@ -63,52 +62,42 @@ export default function Home() {
         </div>
       ) : activeTasks.length > 0 ? (
         <div className="space-y-6">
-          {/* Stats Dashboard */}
-          <div className="grid grid-cols-2 gap-4">
-            <div className="bg-surface p-4 rounded-2xl border border-border/50 shadow-sm flex flex-col items-center justify-center text-center">
-              <span className="text-4xl font-bold text-primary mb-1">
-                {activeTasks.length}
-              </span>
-              <span className="text-sm text-muted-foreground font-medium">
-                Pending Tasks
-              </span>
+          {/* Filter Toggle + Active Tasks */}
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+            {/* Filter Toggle */}
+            <div className="flex items-center bg-surface p-1.5 rounded-2xl border border-border/50 shadow-sm w-fit">
+              <button
+                onClick={() => setFilterMode("all")}
+                className={cn(
+                  "flex items-center gap-2 px-4 py-2.5 rounded-xl font-semibold text-sm transition-all duration-200",
+                  filterMode === "all"
+                    ? "bg-primary text-primary-foreground shadow-md"
+                    : "text-muted-foreground hover:text-primary hover:bg-surface-hover"
+                )}
+              >
+                <LayoutGrid size={16} strokeWidth={2.5} />
+                <span>All Tasks</span>
+              </button>
+              <button
+                onClick={() => setFilterMode("by-date")}
+                className={cn(
+                  "flex items-center gap-2 px-4 py-2.5 rounded-xl font-semibold text-sm transition-all duration-200",
+                  filterMode === "by-date"
+                    ? "bg-primary text-primary-foreground shadow-md"
+                    : "text-muted-foreground hover:text-primary hover:bg-surface-hover"
+                )}
+              >
+                <Calendar size={16} strokeWidth={2.5} />
+                <span>By Date</span>
+              </button>
             </div>
-            <div className="bg-surface p-4 rounded-2xl border border-border/50 shadow-sm flex flex-col items-center justify-center text-center">
-              <span className="text-4xl font-bold text-muted-foreground mb-1">
-                {completedTasks.length}
-              </span>
-              <span className="text-sm text-muted-foreground font-medium">
-                Completed
-              </span>
-            </div>
-          </div>
 
-          {/* Filter Toggle */}
-          <div className="flex items-center gap-3 bg-surface p-1.5 rounded-2xl border border-border/50 shadow-sm w-fit">
-            <button
-              onClick={() => setFilterMode("all")}
-              className={cn(
-                "flex items-center gap-2 px-4 py-2.5 rounded-xl font-semibold text-sm transition-all duration-200",
-                filterMode === "all"
-                  ? "bg-primary text-primary-foreground shadow-md"
-                  : "text-muted-foreground hover:text-primary hover:bg-surface-hover"
-              )}
-            >
-              <LayoutGrid size={16} strokeWidth={2.5} />
-              <span>All Tasks</span>
-            </button>
-            <button
-              onClick={() => setFilterMode("by-date")}
-              className={cn(
-                "flex items-center gap-2 px-4 py-2.5 rounded-xl font-semibold text-sm transition-all duration-200",
-                filterMode === "by-date"
-                  ? "bg-primary text-primary-foreground shadow-md"
-                  : "text-muted-foreground hover:text-primary hover:bg-surface-hover"
-              )}
-            >
-              <Calendar size={16} strokeWidth={2.5} />
-              <span>By Date</span>
-            </button>
+            {/* Active Tasks */}
+            <div className="bg-surface p-1.5 rounded-2xl border border-border/50 shadow-sm w-fit mb-0.5">
+              <span className="flex items-center px-4 py-2.5 rounded-xl font-semibold text-sm bg-primary text-primary-foreground shadow-md">
+                {activeTasks.length} Active Tasks
+              </span>
+            </div>
           </div>
 
           {/* Tasks Display */}

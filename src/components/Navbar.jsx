@@ -36,30 +36,6 @@ export default function Navbar() {
 
   return (
     <>
-      {/* Mobile Bottom Navigation Bar */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-surface/90 backdrop-blur-xl border-t border-border flex items-center justify-around px-2 z-50 pb-safe shadow-[0_-4px_12px_-1px_rgba(0,0,0,0.05)]">
-        {mainNavItems.map(({ to, icon: Icon, label }) => (
-          <NavLink
-            key={to}
-            to={to}
-            className={({ isActive }) =>
-              cn(
-                "flex flex-col items-center justify-center space-y-1 transition-all w-1/3 py-1",
-                isActive ? "text-primary scale-105" : "text-muted-foreground"
-              )
-            }
-          >
-            {({ isActive }) => (
-              <>
-                <Icon size={22} strokeWidth={isActive ? 2.5 : 2} />
-                <span className="text-[10px] font-bold uppercase tracking-tighter truncate w-full text-center px-1">
-                  {label}
-                </span>
-              </>
-            )}
-          </NavLink>
-        ))}
-      </nav>
 
       {/* Mobile Sidebar Overlay */}
       <AnimatePresence>
@@ -86,7 +62,7 @@ export default function Navbar() {
           >
             <div className="p-6 border-b border-border flex justify-between items-center bg-primary/5">
               <span className="text-sm font-black uppercase tracking-widest text-primary">
-                Account Settings
+                Navigation
               </span>
               <button
                 onClick={closeMobileSidebar}
@@ -98,6 +74,32 @@ export default function Navbar() {
             </div>
 
             <div className="flex-1 p-6 flex flex-col">
+              {/* Navigation Links */}
+              <div className="space-y-2 pt-2">
+                {mainNavItems.map(({ to, icon: Icon, label }) => (
+                  <NavLink
+                    key={to}
+                    to={to}
+                    onClick={closeMobileSidebar}
+                    className={({ isActive }) =>
+                      cn(
+                        "flex items-center space-x-3 w-full py-3.5 px-5 rounded-xl transition-all font-bold",
+                        isActive
+                          ? "text-primary bg-primary/10 shadow-sm"
+                          : "text-muted-foreground hover:text-primary hover:bg-surface-hover"
+                      )
+                    }
+                  >
+                    {({ isActive }) => (
+                      <>
+                        <Icon size={18} strokeWidth={isActive ? 2.5 : 2} />
+                        <span className="text-sm">{label}</span>
+                      </>
+                    )}
+                  </NavLink>
+                ))}
+              </div>
+
               <div className="mt-auto pt-6 border-t border-border">
                 <button
                   onClick={handleLogout}
@@ -110,7 +112,7 @@ export default function Navbar() {
             </div>
 
             <div className="p-6 bg-muted/20 text-[10px] text-center text-muted-foreground font-medium">
-              Personal Task Manager v2.0
+              Personal Task Manager v3
             </div>
           </motion.div>
         )}
@@ -119,7 +121,10 @@ export default function Navbar() {
       {/* Desktop Sidebar */}
       <nav className="hidden md:flex flex-col w-64 h-screen bg-surface border-r border-border sticky top-0 shrink-0 shadow-[4px_0_12px_-1px_rgba(0,0,0,0.02)]">
         <div className="p-8">
-          <h1 className="text-xl font-black bg-linear-to-br from-primary to-accent bg-clip-text text-transparent">
+          <h1
+            className="text-xl font-extrabold bg-linear-to-br from-primary to-accent bg-clip-text text-transparent tracking-tight"
+            style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+          >
             Task Manager
           </h1>
         </div>
@@ -151,14 +156,19 @@ export default function Navbar() {
           ))}
         </div>
 
-        <div className="p-4 mt-auto space-y-2 pb-8">
-          <button
-            onClick={handleLogout}
-            className="flex items-center space-x-3 w-full py-3 px-5 rounded-xl text-muted-foreground hover:text-red-500 hover:bg-red-500/10 transition-all font-bold"
-          >
-            <LogOut size={18} />
-            <span className="text-sm">Sign Out</span>
-          </button>
+        <div className="mt-auto flex flex-col">
+          <div className="p-4 px-6">
+            <button
+              onClick={handleLogout}
+              className="flex items-center space-x-3 w-full py-3.5 px-5 rounded-xl text-red-500 bg-red-50 hover:bg-red-500 hover:text-white transition-all font-bold"
+            >
+              <LogOut size={18} strokeWidth={2.5} />
+              <span className="text-sm">Sign Out</span>
+            </button>
+          </div>
+          <div className="p-4 pb-8 bg-muted/20 text-[10px] text-center text-muted-foreground font-medium">
+            Personal Task Manager v3
+          </div>
         </div>
       </nav>
     </>

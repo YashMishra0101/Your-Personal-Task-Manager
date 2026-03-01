@@ -36,7 +36,7 @@
 
 This isn't just another to-do app—it's a **showcase of modern web development best practices**:
 
-- ⚡ **Blazing Fast** - Built with Vite 7 for instant updates and optimal performance
+- ⚡ **Blazing Fast** - Built with Vite for instant updates and optimal performance
 - 📱 **True PWA** - Install on any device, works offline like a native app
 - 🎨 **Premium UI/UX** - Thoughtfully designed with smooth animations and delightful interactions
 - 🔒 **Enterprise-Grade Security** - Multi-layer authentication with Firestore security rules
@@ -77,7 +77,7 @@ This isn't just another to-do app—it's a **showcase of modern web development 
   - **By Date**: Smart grouping with "Today", "Yesterday", and full date labels
 - **Subtasks / Checklist** - Break down tasks into smaller actionable items with checkboxes
 - **Deadline Tracking** - Visual indicators for overdue, urgent, and upcoming tasks
-- **Quick Statistics** - Real-time overview of pending and completed tasks
+- **Active Tasks Counter** - Real-time overview of your active tasks
 - **One-Click Actions** - Mark complete, edit, or delete with smooth animations
 - **Detailed Task View** - Rich descriptions with formatted dates and times
 
@@ -105,7 +105,7 @@ This isn't just another to-do app—it's a **showcase of modern web development 
   - Light Mode: Fresh green palette for energetic daytime work
   - Dark Mode: Professional black theme for comfortable night use
   - System Auto-detect: Matches your OS preference automatically
-- **Responsive Layout** - Adapts beautifully from phone to ultrawide displays
+- **Responsive Layout** - Sidebar navigation on desktop, slide-out menu on mobile
 - **Toast Notifications** - Instant feedback for every action
 - **Confirmation Dialogs** - Prevents accidental deletions
 
@@ -115,7 +115,7 @@ This isn't just another to-do app—it's a **showcase of modern web development 
 - **Offline-First** - All features work without internet
 - **Fast Loading** - Service worker caches key assets
 - **Auto Updates** - Always get the latest features seamlessly
-- **Mobile Optimized** - Bottom navigation for easy thumb access
+- **Mobile Optimized** - Sidebar navigation with hamburger menu for clean mobile UX
 
 ---
 
@@ -253,10 +253,13 @@ Personal-Task-Manager/
 │   ├── 📁 assets/          # Images & icons
 │   ├── 📁 components/      # Reusable UI components
 │   │   ├── ConfirmDialog.jsx
+│   │   ├── InstallPrompt.jsx
 │   │   ├── Layout.jsx
 │   │   ├── Navbar.jsx
 │   │   ├── OfflineIndicator.jsx
 │   │   ├── ProtectedRoute.jsx
+│   │   ├── SecurityRoute.jsx
+│   │   ├── SubtaskEditItem.jsx
 │   │   ├── TaskCard.jsx
 │   │   └── ThemeToggle.jsx
 │   │

@@ -3,7 +3,7 @@ import { useTasks } from "../context/TaskContext";
 import { useNavigate, useParams } from "react-router-dom";
 import Layout from "../components/Layout";
 import { format, endOfDay } from "date-fns";
-import { Calendar as CalendarIcon, Plus, CheckSquare } from "lucide-react";
+import { Calendar as CalendarIcon, Plus, CheckSquare, ArrowLeft } from "lucide-react";
 import SubtaskEditItem from "../components/SubtaskEditItem";
 
 export default function EditTask() {
@@ -125,6 +125,16 @@ export default function EditTask() {
   return (
     <Layout title="Edit Task">
       <form onSubmit={handleSubmit} className="space-y-6 mt-4">
+        {/* Back Button */}
+        <button
+          type="button"
+          onClick={() => navigate(-1)}
+          className="flex items-center gap-2 px-4 py-3 bg-transparent border border-border/60 text-muted-foreground hover:bg-muted/50 hover:text-foreground rounded-2xl transition-all font-semibold active:scale-95 group self-start"
+        >
+          <ArrowLeft size={20} className="transition-transform group-hover:-translate-x-1" />
+          <span>Back</span>
+        </button>
+
         {/* Heading Field */}
         <div className="space-y-2">
           <label className="text-sm font-medium text-muted-foreground">

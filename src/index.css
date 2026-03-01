@@ -1,5 +1,6 @@
 @import "tailwindcss";
-@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap");
+
 
 @variant dark (&:where(.dark, .dark *));
 
@@ -84,4 +85,12 @@
     display: none;
     -webkit-appearance: none;
   }
+}
+
+/* ─── Animations ─── */
+@keyframes fire-flicker {
+  0%, 100% { transform: scale(1) rotate(-1deg); }
+  25% { transform: scale(1.15) rotate(2deg); }
+  50% { transform: scale(0.95) rotate(-2deg); }
+  75% { transform: scale(1.1) rotate(1deg); }
 }
