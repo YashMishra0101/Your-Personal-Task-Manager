@@ -166,7 +166,7 @@ export default function Navbar() {
               <span className="text-sm">Sign Out</span>
             </button>
           </div>
-          <div className="p-4 pb-8 bg-muted/20 text-[10px] text-center text-muted-foreground font-medium">
+          <div className="p-4 pb-8 bg-primary/5 text-[10px] text-center text-muted-foreground font-semibold">
             Personal Task Manager v3
           </div>
         </div>
