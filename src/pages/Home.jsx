@@ -12,6 +12,8 @@ export default function Home() {
   const [filterMode, setFilterMode] = useState("all"); // 'all' or 'by-date'
 
   const activeTasks = tasks.filter((t) => !t.completed);
+  const tasksWithDeadlines = activeTasks.filter((t) => t.deadline);
+  const tasksWithoutDeadlines = activeTasks.filter((t) => !t.deadline);
 
   // Group tasks by date
   const groupTasksByDate = (tasksList) => {
@@ -111,6 +113,27 @@ export default function Home() {
           ) : (
             // By Date View - Grouped by Creation Date
             <div className="space-y-8">
+              {/* Upcoming Deadlines Subsection */}
+              {tasksWithDeadlines.length > 0 && (
+                <section>
+                  <div className="flex items-center gap-3 mb-5 px-1">
+                    <div className="h-1.5 w-1.5 rounded-full bg-orange-500"></div>
+                    <h3 className="text-lg font-bold text-orange-500">
+                      Upcoming Deadlines
+                    </h3>
+                    <div className="px-3 py-1 bg-orange-500/10 text-orange-600 dark:text-orange-500 rounded-full text-xs font-bold">
+                      {tasksWithDeadlines.length}
+                    </div>
+                    <div className="h-px flex-1 bg-linear-to-r from-border to-transparent"></div>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {tasksWithDeadlines.map((task) => (
+                      <TaskCard key={task.id} task={task} />
+                    ))}
+                  </div>
+                </section>
+              )}
+
               {tasksByDate.map((group) => (
                 <section key={format(group.date, "yyyy-MM-dd")}>
                   <div className="flex items-center gap-3 mb-5 px-1">

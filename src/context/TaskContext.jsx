@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState, useEffect, useMemo } from "react";
 import { db } from "../lib/firebase";
 import {
   collection,
@@ -222,8 +222,26 @@ export function TaskProvider({ children }) {
     }
   };
 
+  const sortedTasks = useMemo(() => {
+    return [...tasks].sort((a, b) => {
+      const hasDeadlineA = !!a.deadline;
+      const hasDeadlineB = !!b.deadline;
+
+      if (hasDeadlineA && hasDeadlineB) {
+        return new Date(a.deadline) - new Date(b.deadline);
+      }
+      if (hasDeadlineA && !hasDeadlineB) {
+        return -1;
+      }
+      if (!hasDeadlineA && hasDeadlineB) {
+        return 1;
+      }
+      return 0;
+    });
+  }, [tasks]);
+
   const value = {
-    tasks,
+    tasks: sortedTasks,
     loading,
     addTask,
     toggleTaskCompletion,
