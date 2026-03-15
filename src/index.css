@@ -94,3 +94,13 @@
   50% { transform: scale(0.95) rotate(-2deg); }
   75% { transform: scale(1.1) rotate(1deg); }
 }
+
+@layer utilities {
+  .hidden-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .hidden-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}

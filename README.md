@@ -76,6 +76,7 @@ This isn't just another to-do app—it's a **showcase of modern web development 
   - **All Tasks (Default)**: Clean grid view without grouping
   - **By Date**: Smart grouping with "Today", "Yesterday", and full date labels
 - **Smart Deadline Prioritization** - Tasks with approaching deadlines are automatically sorted and grouped at the top of your feed so you automatically stay on schedule
+- **Custom Time Picker** - A sleek, responsive custom UI for selecting exact time deadlines down to the minute with 12-hour AM/PM support
 - **Subtasks / Checklist** - Break down tasks into smaller actionable items with checkboxes
 - **Deadline Tracking** - Visual indicators for overdue, urgent, and upcoming tasks
 - **Active Tasks Counter** - Real-time overview of your active tasks

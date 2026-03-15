@@ -315,11 +315,15 @@ export default function TaskDetails() {
                       "p-4 rounded-2xl shrink-0",
                       isOverdue ? "bg-red-500/10 text-red-500" : "bg-blue-500/10 text-blue-600"
                     )}>
-                      <Calendar size={32} strokeWidth={1.5} />
+                      {(task.timeValue && !task.dateValue && task.dateValue !== undefined) ? (
+                        <Clock size={32} strokeWidth={1.5} />
+                      ) : (
+                        <Calendar size={32} strokeWidth={1.5} />
+                      )}
                     </div>
                     <div>
                       <div className="text-2xl font-bold tabular-nums text-foreground">
-                        {formatDeadlineDisplay(task.deadline)}
+                        {formatDeadlineDisplay(task.deadline, task.timeValue, task.dateValue)}
                       </div>
                       <div className={cn(
                         "text-sm font-medium mt-1 inline-flex items-center gap-1.5",

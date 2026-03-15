@@ -3,8 +3,9 @@ import { useTasks } from "../context/TaskContext";
 import { useNavigate, useParams } from "react-router-dom";
 import Layout from "../components/Layout";
 import { format, endOfDay } from "date-fns";
-import { Calendar as CalendarIcon, Plus, CheckSquare, ArrowLeft } from "lucide-react";
+import { Calendar as CalendarIcon, Plus, CheckSquare, ArrowLeft, Clock as ClockIcon } from "lucide-react";
 import SubtaskEditItem from "../components/SubtaskEditItem";
+import TimePicker from "../components/TimePicker";
 
 export default function EditTask() {
   const { tasks, updateTask } = useTasks();
@@ -14,6 +15,7 @@ export default function EditTask() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [date, setDate] = useState("");
+  const [time, setTime] = useState("");
   const [includeLastDay, setIncludeLastDay] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [taskNotFound, setTaskNotFound] = useState(false);
@@ -34,8 +36,20 @@ export default function EditTask() {
       );
       setSubtasks(task.subtasks || []);
       if (task.deadline) {
-        const deadlineDate = new Date(task.deadline);
-        setDate(format(deadlineDate, "yyyy-MM-dd"));
+        if (task.dateValue !== undefined) {
+          setDate(task.dateValue || "");
+        } else {
+          setDate(format(new Date(task.deadline), "yyyy-MM-dd"));
+        }
+        
+        if (task.timeValue !== undefined) {
+          setTime(task.timeValue || "");
+        } else {
+          setTime("");
+        }
+      } else {
+        setDate("");
+        setTime("");
       }
     } else if (tasks.length > 0) {
       setTaskNotFound(true);
@@ -83,15 +97,23 @@ export default function EditTask() {
     setIsSubmitting(true);
 
     let deadline = null;
-    if (date) {
-      const selectedDate = new Date(date);
-      deadline = endOfDay(selectedDate).toISOString();
+    if (date || time) {
+      const selectedDate = date ? new Date(date) : new Date();
+      if (time) {
+        const [hours, minutes] = time.split(":");
+        selectedDate.setHours(parseInt(hours, 10), parseInt(minutes, 10), 0, 0);
+      } else {
+        selectedDate.setHours(23, 59, 59, 999);
+      }
+      deadline = selectedDate.toISOString();
     }
 
     await updateTask(id, {
       title,
       description: description.trim(),
       deadline,
+      timeValue: time || null,
+      dateValue: date || null,
       includeLastDay,
       subtasks: subtasks.length > 0 ? subtasks : null,
     });
@@ -219,27 +241,35 @@ export default function EditTask() {
               htmlFor="edit-date"
               className="text-sm font-medium text-muted-foreground"
             >
-              Deadline
+              Deadline & Time
             </label>
-            <div className="relative">
-              <input
-                id="edit-date"
-                ref={dateInputRef}
-                type="date"
-                value={date}
-                onChange={(e) => setDate(e.target.value)}
-                className="w-full p-3 pr-12 rounded-xl bg-muted/50 border border-border focus:border-primary focus:ring-2 focus:ring-primary/20 text-primary transition-all"
-              />
-              <CalendarIcon
-                size={20}
-                onClick={() => dateInputRef.current?.showPicker()}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground cursor-pointer hover:text-primary transition-colors"
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="relative">
+                <input
+                  id="edit-date"
+                  ref={dateInputRef}
+                  type="date"
+                  value={date}
+                  onChange={(e) => setDate(e.target.value)}
+                  className="w-full p-3 pr-12 rounded-xl bg-muted/50 border border-border focus:border-primary focus:ring-2 focus:ring-primary/20 text-primary transition-all"
+                />
+                <CalendarIcon
+                  size={20}
+                  onClick={() => dateInputRef.current?.showPicker()}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground cursor-pointer hover:text-primary transition-colors"
+                />
+              </div>
+              <TimePicker
+                value={time}
+                onChange={setTime}
+                onClear={() => setTime("")}
+                placeholder="Select time"
               />
             </div>
           </div>
 
           {/* Include Last Day Toggle */}
-          {date && (
+          {(date || time) && (
             <div className="flex items-start gap-3 p-4 bg-muted/30 rounded-xl border border-border">
               <input
                 type="checkbox"

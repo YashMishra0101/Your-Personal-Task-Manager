@@ -117,8 +117,12 @@ export default function TaskCard({ task }) {
                 "flex items-center space-x-1",
                 isOverdue ? "text-red-500" : "text-muted-foreground"
               )}>
-                <Calendar size={12} />
-                <span>{formatDeadlineDisplay(task.deadline)}</span>
+                {(task.timeValue && !task.dateValue && task.dateValue !== undefined) ? (
+                  <Clock size={12} />
+                ) : (
+                  <Calendar size={12} />
+                )}
+                <span>{formatDeadlineDisplay(task.deadline, task.timeValue, task.dateValue)}</span>
               </span>
               {(() => {
                 const timeRemaining = getRemainingTime(

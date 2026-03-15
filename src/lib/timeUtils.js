@@ -35,9 +35,27 @@ export function getRemainingTime(deadline, includeLastDay = true) {
   return `${days}d left`;
 }
 
-export function formatDeadlineDisplay(deadline) {
+export function formatDeadlineDisplay(deadline, timeValue, dateValue) {
   if (!deadline) return "";
-  return format(new Date(deadline), "EEE, MMM d");
+
+  // Legacy task support
+  if (dateValue === undefined && timeValue === undefined) {
+    return format(new Date(deadline), "EEE, MMM d");
+  }
+
+  const d = new Date(deadline);
+  const hasDate = !!dateValue;
+  const hasTime = !!timeValue;
+
+  if (hasDate && hasTime) {
+    return format(d, "EEE, MMM d • h:mm a");
+  } else if (!hasDate && hasTime) {
+    return format(d, "h:mm a");
+  } else if (hasDate && !hasTime) {
+    return format(d, "EEE, MMM d");
+  }
+
+  return format(d, "EEE, MMM d");
 }
 
 
