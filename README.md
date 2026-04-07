@@ -1,6 +1,6 @@
 # 🎯 Your Personal Task Manager
 
-> **A beautifully crafted, production-ready task management application that combines modern web technologies with an intuitive user experience.**
+> **A beautifully crafted, production-ready task management application packed with multiple advanced features, combining modern web technologies with an intuitive user experience. This isn’t just another to-do app, it’s built with performance, usability and scalability at its core.**
 
 <div align="center">
 
