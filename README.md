@@ -31,6 +31,7 @@
 </tr>
 </table>
 
+--- 
 
 ## 📸 Application Preview
 
