@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState, useEffect, useRef } from "react";
 import {
   signInWithEmailAndPassword,
   sendPasswordResetEmail,
@@ -10,8 +10,10 @@ import {
   collection,
   doc,
   getDoc,
+  getDocs,
   query,
   where,
+  limit,
   updateDoc,
   onSnapshot,
   serverTimestamp,
@@ -34,33 +36,78 @@ export function AuthProvider({ children }) {
   const [activeSessionId, setActiveSessionId] = useState(
     localStorage.getItem("activeSessionId") || null
   );
+  const activeSessionIdRef = useRef(activeSessionId);
+  const sessionCreationInFlightRef = useRef(false);
 
   const SESSION_TTL_MS = 24 * 60 * 60 * 1000;
+  const CLIENT_SESSION_ID_KEY = "clientSessionId";
+
+  useEffect(() => {
+    activeSessionIdRef.current = activeSessionId;
+  }, [activeSessionId]);
+
+  function getOrCreateClientSessionId(userId) {
+    let existing = sessionStorage.getItem(CLIENT_SESSION_ID_KEY);
+    if (existing) return existing;
+
+    const generated = `${userId}-${Date.now()}-${Math.random()
+      .toString(36)
+      .slice(2, 10)}`;
+    sessionStorage.setItem(CLIENT_SESSION_ID_KEY, generated);
+    return generated;
+  }
 
   async function createDeviceSession(user) {
     if (!db || !user) return null;
+    if (sessionCreationInFlightRef.current) return activeSessionIdRef.current;
 
-    const metadata = getDeviceMetadata();
-    const now = Date.now();
-    const expiresAt = new Date(now + SESSION_TTL_MS);
-    const sessionKey = `${metadata.deviceType}-${metadata.browser}-${metadata.os}-${now}`;
+    sessionCreationInFlightRef.current = true;
 
-    const docRef = await addDoc(collection(db, "deviceSessions"), {
-      userId: user.uid,
-      status: "active",
-      loginAt: serverTimestamp(),
-      clientLoginAt: new Date(),
-      lastSeenAt: serverTimestamp(),
-      expiresAt,
-      logoutAt: null,
-      logoutReason: null,
-      sessionKey,
-      ...metadata,
-    });
+    try {
+      const clientSessionId = getOrCreateClientSessionId(user.uid);
+      const existingQuery = query(
+        collection(db, "deviceSessions"),
+        where("clientSessionId", "==", clientSessionId),
+        limit(1)
+      );
+      const existingSnap = await getDocs(existingQuery);
 
-    localStorage.setItem("activeSessionId", docRef.id);
-    setActiveSessionId(docRef.id);
-    return docRef.id;
+      if (!existingSnap.empty) {
+        const existing = existingSnap.docs[0];
+        const existingData = existing.data();
+
+        if (existingData.status !== "logged_out") {
+          localStorage.setItem("activeSessionId", existing.id);
+          setActiveSessionId(existing.id);
+          return existing.id;
+        }
+      }
+
+      const metadata = getDeviceMetadata();
+      const now = Date.now();
+      const expiresAt = new Date(now + SESSION_TTL_MS);
+      const sessionKey = `${metadata.deviceType}-${metadata.browser}-${metadata.os}-${now}`;
+
+      const docRef = await addDoc(collection(db, "deviceSessions"), {
+        userId: user.uid,
+        clientSessionId,
+        status: "active",
+        loginAt: serverTimestamp(),
+        clientLoginAt: new Date(),
+        lastSeenAt: serverTimestamp(),
+        expiresAt,
+        logoutAt: null,
+        logoutReason: null,
+        sessionKey,
+        ...metadata,
+      });
+
+      localStorage.setItem("activeSessionId", docRef.id);
+      setActiveSessionId(docRef.id);
+      return docRef.id;
+    } finally {
+      sessionCreationInFlightRef.current = false;
+    }
   }
 
   async function markSessionLoggedOut(sessionId, reason = "logged_out") {
@@ -92,8 +139,8 @@ export function AuthProvider({ children }) {
       setLoading(false);
       // If user logs out, clear verification
       if (!user) {
-        if (activeSessionId) {
-          markSessionLoggedOut(activeSessionId, "session_ended");
+        if (activeSessionIdRef.current) {
+          markSessionLoggedOut(activeSessionIdRef.current, "session_ended");
           localStorage.removeItem("activeSessionId");
           setActiveSessionId(null);
         }
@@ -103,7 +150,7 @@ export function AuthProvider({ children }) {
     });
 
     return unsubscribe;
-  }, [activeSessionId]);
+  }, []);
 
   useEffect(() => {
     if (!db || !currentUser || activeSessionId) return;
@@ -204,7 +251,6 @@ export function AuthProvider({ children }) {
         password
       );
       setCurrentUser(userCredential.user);
-      await createDeviceSession(userCredential.user);
       return userCredential;
     } catch (error) {
       throw new Error("Invalid credentials.");
@@ -254,6 +300,7 @@ export function AuthProvider({ children }) {
       localStorage.removeItem("activeSessionId");
       setActiveSessionId(null);
     }
+    sessionStorage.removeItem(CLIENT_SESSION_ID_KEY);
     setIsSecurityVerified(false);
     localStorage.removeItem("isSecurityVerified");
     return signOut(auth);
@@ -263,6 +310,16 @@ export function AuthProvider({ children }) {
     ...session,
     isCurrentSession: session.id === activeSessionId,
   }));
+
+  const uniqueActiveDeviceCount = new Set(
+    sessionsWithCurrentFlag
+      .filter((session) => session.status === "active")
+      .map(
+        (session) =>
+          session.clientSessionId ||
+          `${session.userAgent || ""}-${session.deviceType || ""}-${session.browser || ""}-${session.os || ""}`
+      )
+  ).size;
 
   const value = {
     currentUser,
@@ -274,7 +331,7 @@ export function AuthProvider({ children }) {
     resetPassword,
     deviceSessions: sessionsWithCurrentFlag,
     deviceSessionsLoading,
-    activeSessionCount: sessionsWithCurrentFlag.filter((session) => session.status === "active").length,
+    activeSessionCount: uniqueActiveDeviceCount,
     activeSessionId,
   };
 
