@@ -16,7 +16,15 @@ import { Link, useNavigate } from "react-router-dom";
 import ConfirmDialog from "./ConfirmDialog";
 import { toast } from "sonner";
 
-export default function TaskCard({ task }) {
+export default function TaskCard({
+  task,
+  draggable = false,
+  isDragging = false,
+  onDragStart,
+  onDragEnd,
+  onDragOver,
+  onDrop,
+}) {
   const { toggleTaskCompletion, deleteTask } = useTasks();
   const navigate = useNavigate();
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
@@ -53,10 +61,16 @@ export default function TaskCard({ task }) {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, x: -100 }}
+        draggable={draggable}
+        onDragStart={onDragStart}
+        onDragEnd={onDragEnd}
+        onDragOver={onDragOver}
+        onDrop={onDrop}
         onClick={handleCardClick}
         className={cn(
           "group flex items-center p-4 mb-3 bg-surface hover:bg-surface-hover rounded-2xl shadow-sm border border-border transition-all cursor-pointer relative overflow-hidden active:scale-[0.98]",
-          task.completed ? "opacity-60" : ""
+          task.completed ? "opacity-60" : "",
+          isDragging ? "opacity-60" : ""
         )}
       >
         {/* Checkbox */}

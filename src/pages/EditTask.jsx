@@ -2,10 +2,11 @@ import React, { useState, useEffect, useRef } from "react";
 import { useTasks } from "../context/TaskContext";
 import { useNavigate, useParams } from "react-router-dom";
 import Layout from "../components/Layout";
-import { format, endOfDay } from "date-fns";
-import { Calendar as CalendarIcon, Plus, CheckSquare, ArrowLeft, Clock as ClockIcon } from "lucide-react";
+import { format } from "date-fns";
+import { Calendar as CalendarIcon, Plus, CheckSquare, ArrowLeft } from "lucide-react";
 import SubtaskEditItem from "../components/SubtaskEditItem";
 import TimePicker from "../components/TimePicker";
+import { useSubtasks } from "../hooks/useSubtasks";
 
 export default function EditTask() {
   const { tasks, updateTask } = useTasks();
@@ -20,9 +21,21 @@ export default function EditTask() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [taskNotFound, setTaskNotFound] = useState(false);
 
-  // Subtasks state
-  const [subtasks, setSubtasks] = useState([]);
-  const [newSubtaskText, setNewSubtaskText] = useState("");
+  const {
+    subtasks,
+    setSubtasks,
+    newSubtaskText,
+    setNewSubtaskText,
+    addSubtask,
+    updateSubtaskText,
+    removeSubtask,
+    moveSubtask,
+    handleSubtaskKeyPress,
+    draggedSubtaskId,
+    handleDragStart,
+    handleDragEnd,
+    handleDrop,
+  } = useSubtasks([]);
 
   const dateInputRef = useRef(null);
 
@@ -54,41 +67,7 @@ export default function EditTask() {
     } else if (tasks.length > 0) {
       setTaskNotFound(true);
     }
-  }, [id, tasks]);
-
-  // Add new subtask
-  const addSubtask = () => {
-    if (!newSubtaskText.trim()) return;
-
-    const newSubtask = {
-      id: Date.now().toString(),
-      text: newSubtaskText.trim(),
-      completed: false,
-    };
-
-    setSubtasks([...subtasks, newSubtask]);
-    setNewSubtaskText("");
-  };
-
-  // Update subtask text
-  const updateSubtaskText = (subtaskId, newText) => {
-    setSubtasks(subtasks.map(st =>
-      st.id === subtaskId ? { ...st, text: newText } : st
-    ));
-  };
-
-  // Remove subtask
-  const removeSubtask = (subtaskId) => {
-    setSubtasks(subtasks.filter(st => st.id !== subtaskId));
-  };
-
-  // Handle Enter key in subtask input
-  const handleSubtaskKeyPress = (e) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      addSubtask();
-    }
-  };
+  }, [id, tasks, setSubtasks]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -217,12 +196,22 @@ export default function EditTask() {
             {/* Subtasks List */}
             {subtasks.length > 0 && (
               <div className="space-y-2 pt-2">
-                {subtasks.map((subtask) => (
+                {subtasks.map((subtask, index) => (
                   <SubtaskEditItem
                     key={subtask.id}
                     subtask={subtask}
-                    onUpdate={(id, newText) => updateSubtaskText(id, newText)}
+                    onUpdate={updateSubtaskText}
                     onRemove={removeSubtask}
+                    onMoveUp={() => moveSubtask(subtask.id, "up")}
+                    onMoveDown={() => moveSubtask(subtask.id, "down")}
+                    canMoveUp={index > 0}
+                    canMoveDown={index < subtasks.length - 1}
+                    draggable
+                    isDragging={draggedSubtaskId === subtask.id}
+                    onDragStart={() => handleDragStart(subtask.id)}
+                    onDragEnd={handleDragEnd}
+                    onDragOver={(e) => e.preventDefault()}
+                    onDrop={() => handleDrop(subtask.id)}
                   />
                 ))}
                 <div className="text-xs text-muted-foreground pt-1 flex items-center gap-1.5">

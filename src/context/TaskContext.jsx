@@ -222,6 +222,39 @@ export function TaskProvider({ children }) {
     }
   };
 
+  const reorderTasks = async (orderedTaskIds) => {
+    if (!orderedTaskIds?.length) return;
+
+    const previousTasks = tasks;
+    const orderMap = new Map(
+      orderedTaskIds.map((taskId, index) => [taskId, index])
+    );
+
+    // Optimistic update for immediate UI response
+    setTasks((prev) =>
+      prev.map((task) =>
+        orderMap.has(task.id)
+          ? { ...task, manualOrder: orderMap.get(task.id) }
+          : task
+      )
+    );
+
+    try {
+      if (db && isOnline) {
+        await Promise.all(
+          orderedTaskIds.map((taskId, index) =>
+            updateDoc(doc(db, "tasks", taskId), { manualOrder: index })
+          )
+        );
+      } else {
+        console.log("Offline: task order updated locally");
+      }
+    } catch (e) {
+      console.error("Error updating task order in firebase:", e);
+      setTasks(previousTasks);
+    }
+  };
+
   const sortedTasks = useMemo(() => {
     return [...tasks].sort((a, b) => {
       const hasDeadlineA = !!a.deadline;
@@ -247,6 +280,7 @@ export function TaskProvider({ children }) {
     toggleTaskCompletion,
     deleteTask,
     updateTask,
+    reorderTasks,
     theme,
     toggleTheme,
     isOnline,

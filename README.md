@@ -78,6 +78,7 @@ This isn't just another to-do app—it's a **showcase of modern web development 
 - **Smart Deadline Prioritization** - Tasks with approaching deadlines are automatically sorted and grouped at the top of your feed so you automatically stay on schedule
 - **Custom Time Picker** - A sleek, responsive custom UI for selecting exact time deadlines down to the minute with 12-hour AM/PM support
 - **Subtasks / Checklist** - Break down tasks into smaller actionable items with checkboxes
+- **Drag-and-Drop Reordering** - Reorder tasks in "All Tasks" view and reorder subtasks in create/edit flows with intuitive drag-and-drop
 - **Deadline Tracking** - Visual indicators for overdue, urgent, and upcoming tasks
 - **Active Tasks Counter** - Real-time overview of your active tasks
 - **One-Click Actions** - Mark complete, edit, or delete with smooth animations
@@ -86,7 +87,9 @@ This isn't just another to-do app—it's a **showcase of modern web development 
 ### 🔐 Security & Privacy
 - **Firebase Authentication** - Industry-standard email/password login
 - **Security Key Protection** - Extra layer with Firestore-based access control
+- **App Lock (PIN Protection)** - Optional app-level PIN lock (4/6/8 digits) with identity verification (password or security key) before setup/reset/disable, plus configurable unlock duration for stronger personal-device security
 - **Protected Routes** - Automatic redirect for unauthorized access
+- **Device Activity Tracking** - Read-only session history that helps you monitor account access across devices, showing active/logged-out status, device type, browser/OS details, and precise login/logout timestamps for improved visibility and security awareness
 - **Environment Variables** - Secure credential management
 - **Input Validation** - Client-side and server-side data verification
 

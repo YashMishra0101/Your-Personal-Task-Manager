@@ -4,6 +4,8 @@ import {
   ListTodo,
   PlusCircle,
   CheckCircle,
+  MonitorSmartphone,
+  LockKeyhole,
   LogOut,
   Menu,
   X,
@@ -32,6 +34,16 @@ export default function Navbar() {
     { to: "/", icon: ListTodo, label: "My Tasks" },
     { to: "/add", icon: PlusCircle, label: "Add New Task" },
     { to: "/completed", icon: CheckCircle, label: "Completed" },
+    {
+      to: "/device-activity",
+      icon: MonitorSmartphone,
+      label: "Device Activity",
+    },
+    {
+      to: "/app-lock",
+      icon: LockKeyhole,
+      label: "App Lock",
+    },
   ];
 
   return (
@@ -112,7 +124,7 @@ export default function Navbar() {
             </div>
 
             <div className="p-6 bg-muted/20 text-[10px] text-center text-muted-foreground font-medium">
-              Personal Task Manager v3
+              Personal Task Manager v4
             </div>
           </motion.div>
         )}
@@ -167,7 +179,7 @@ export default function Navbar() {
             </button>
           </div>
           <div className="p-4 pb-8 bg-primary/5 text-[10px] text-center text-muted-foreground font-semibold">
-            Personal Task Manager v3
+            Personal Task Manager v4
           </div>
         </div>
       </nav>

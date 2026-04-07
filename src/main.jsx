@@ -6,28 +6,31 @@ import "./index.css";
 import { TaskProvider } from "./context/TaskContext";
 import { AuthProvider } from "./context/AuthContext";
 import { UIProvider } from "./context/UIContext";
+import { AppLockProvider } from "./context/AppLockContext";
 import { Toaster } from "sonner";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <BrowserRouter>
       <AuthProvider>
-        <TaskProvider>
-          <UIProvider>
-            {/* Global UI State Provider */}
-            <App />
-            <Toaster
-              position="top-center"
-              richColors
-              closeButton
-              toastOptions={{
-                style: {
-                  borderRadius: "12px",
-                },
-              }}
-            />
-          </UIProvider>
-        </TaskProvider>
+        <AppLockProvider>
+          <TaskProvider>
+            <UIProvider>
+              {/* Global UI State Provider */}
+              <App />
+              <Toaster
+                position="top-center"
+                richColors
+                closeButton
+                toastOptions={{
+                  style: {
+                    borderRadius: "12px",
+                  },
+                }}
+              />
+            </UIProvider>
+          </TaskProvider>
+        </AppLockProvider>
       </AuthProvider>
     </BrowserRouter>
   </React.StrictMode>

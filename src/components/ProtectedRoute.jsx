@@ -1,9 +1,12 @@
 import React from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { useAppLock } from "../context/AppLockContext";
 
 export default function ProtectedRoute({ children }) {
+  const location = useLocation();
   const { currentUser, isSecurityVerified } = useAuth();
+  const { loading, isLocked } = useAppLock();
 
   if (!currentUser) {
     return <Navigate to="/login" replace />;
@@ -12,6 +15,12 @@ export default function ProtectedRoute({ children }) {
   // If logged in but security key not verified, redirect to check page
   if (!isSecurityVerified) {
     return <Navigate to="/security-check" replace />;
+  }
+
+  if (loading) return null;
+
+  if (isLocked && location.pathname !== "/unlock") {
+    return <Navigate to="/unlock" replace />;
   }
 
   return children;

@@ -8,6 +8,9 @@ import Login from "./pages/Login";
 import SecurityKey from "./pages/SecurityKey";
 import NotFound from "./pages/NotFound";
 import TaskDetails from "./pages/TaskDetails";
+import DeviceActivity from "./pages/DeviceActivity";
+import AppLockSettings from "./pages/AppLockSettings";
+import AppUnlock from "./pages/AppUnlock";
 import ProtectedRoute from "./components/ProtectedRoute";
 import SecurityRoute from "./components/SecurityRoute";
 
@@ -54,6 +57,30 @@ export default function App() {
           element={
             <ProtectedRoute>
               <Completed />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/device-activity"
+          element={
+            <ProtectedRoute>
+              <DeviceActivity />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/app-lock"
+          element={
+            <ProtectedRoute>
+              <AppLockSettings />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/unlock"
+          element={
+            <ProtectedRoute>
+              <AppUnlock />
             </ProtectedRoute>
           }
         />

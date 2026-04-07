@@ -145,3 +145,44 @@ exports.testAlarm = functions.https.onRequest(async (req, res) => {
         res.status(500).send("Error sending test notification");
     }
 });
+
+/**
+ * Marks stale active sessions as expired.
+ * A session expires if expiresAt <= now and status is still active.
+ */
+exports.expireInactiveSessions = functions.pubsub
+    .schedule("every 15 minutes")
+    .timeZone("Asia/Kolkata")
+    .onRun(async () => {
+        const now = admin.firestore.Timestamp.now();
+        const db = admin.firestore();
+
+        try {
+            const snapshot = await db
+                .collection("deviceSessions")
+                .where("status", "==", "active")
+                .where("expiresAt", "<=", now.toDate())
+                .get();
+
+            if (snapshot.empty) {
+                console.log("No expired sessions to update.");
+                return null;
+            }
+
+            const batch = db.batch();
+            snapshot.forEach((sessionDoc) => {
+                batch.update(sessionDoc.ref, {
+                    status: "expired",
+                    logoutAt: admin.firestore.FieldValue.serverTimestamp(),
+                    logoutReason: "session_expired",
+                });
+            });
+
+            await batch.commit();
+            console.log(`Expired ${snapshot.size} stale active sessions.`);
+            return null;
+        } catch (error) {
+            console.error("Error expiring sessions:", error);
+            return null;
+        }
+    });

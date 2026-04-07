@@ -1,7 +1,21 @@
 import React, { useState, useRef, useEffect } from "react";
-import { CheckSquare, X, Pencil, Check, XCircle } from "lucide-react";
+import { CheckSquare, X, Pencil, Check, XCircle, ArrowUp, ArrowDown, GripVertical } from "lucide-react";
 
-export default function SubtaskEditItem({ subtask, onUpdate, onRemove }) {
+export default function SubtaskEditItem({
+    subtask,
+    onUpdate,
+    onRemove,
+    onMoveUp,
+    onMoveDown,
+    canMoveUp = false,
+    canMoveDown = false,
+    draggable = false,
+    isDragging = false,
+    onDragStart,
+    onDragEnd,
+    onDragOver,
+    onDrop,
+}) {
     const [isEditing, setIsEditing] = useState(false);
     const [editedText, setEditedText] = useState(subtask.text);
     const inputRef = useRef(null);
@@ -70,7 +84,14 @@ export default function SubtaskEditItem({ subtask, onUpdate, onRemove }) {
     }
 
     return (
-        <div className="flex items-center gap-3 p-3 bg-surface rounded-lg border border-border/50 group hover:border-border transition-all">
+        <div
+            draggable={draggable}
+            onDragStart={onDragStart}
+            onDragEnd={onDragEnd}
+            onDragOver={onDragOver}
+            onDrop={onDrop}
+            className={`flex items-center gap-3 p-3 bg-surface rounded-lg border border-border/50 group hover:border-border transition-all ${isDragging ? "opacity-50" : ""}`}
+        >
             <CheckSquare size={18} className="text-muted-foreground shrink-0" />
             <span
                 className="flex-1 text-sm text-foreground cursor-pointer"
@@ -80,6 +101,33 @@ export default function SubtaskEditItem({ subtask, onUpdate, onRemove }) {
                 {subtask.text}
             </span>
             <div className="flex items-center opacity-0 group-hover:opacity-100 transition-opacity gap-1">
+                <button
+                    type="button"
+                    className="p-1 text-muted-foreground cursor-grab active:cursor-grabbing rounded"
+                    title="Drag to reorder"
+                    aria-label="Drag to reorder"
+                    onMouseDown={(e) => e.preventDefault()}
+                >
+                    <GripVertical size={16} strokeWidth={2.5} />
+                </button>
+                <button
+                    type="button"
+                    onClick={onMoveUp}
+                    disabled={!canMoveUp}
+                    className="p-1 hover:bg-primary/10 text-primary rounded transition-all disabled:opacity-35 disabled:cursor-not-allowed disabled:hover:bg-transparent"
+                    title="Move up"
+                >
+                    <ArrowUp size={16} strokeWidth={2.5} />
+                </button>
+                <button
+                    type="button"
+                    onClick={onMoveDown}
+                    disabled={!canMoveDown}
+                    className="p-1 hover:bg-primary/10 text-primary rounded transition-all disabled:opacity-35 disabled:cursor-not-allowed disabled:hover:bg-transparent"
+                    title="Move down"
+                >
+                    <ArrowDown size={16} strokeWidth={2.5} />
+                </button>
                 <button
                     type="button"
                     onClick={() => setIsEditing(true)}

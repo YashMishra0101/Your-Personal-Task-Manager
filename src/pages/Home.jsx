@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useTasks } from "../context/TaskContext";
 import Layout from "../components/Layout";
 import TaskCard from "../components/TaskCard";
@@ -8,12 +8,38 @@ import { format, parseISO, isSameDay } from "date-fns";
 import { cn } from "../lib/utils";
 
 export default function Home() {
-  const { tasks, loading } = useTasks();
+  const { tasks, loading, reorderTasks } = useTasks();
   const [filterMode, setFilterMode] = useState("all"); // 'all' or 'by-date'
+  const [draggedTaskId, setDraggedTaskId] = useState(null);
+  const [localOrderIds, setLocalOrderIds] = useState([]);
 
   const activeTasks = tasks.filter((t) => !t.completed);
   const tasksWithDeadlines = activeTasks.filter((t) => t.deadline);
-  const tasksWithoutDeadlines = activeTasks.filter((t) => !t.deadline);
+  const orderedActiveTasks = useMemo(() => {
+    const taskById = new Map(activeTasks.map((task) => [task.id, task]));
+    const activeTaskIds = new Set(activeTasks.map((task) => task.id));
+
+    const storageOrder = [...activeTasks]
+      .sort((a, b) => {
+        const hasOrderA = Number.isInteger(a.manualOrder);
+        const hasOrderB = Number.isInteger(b.manualOrder);
+
+        if (hasOrderA && hasOrderB) return a.manualOrder - b.manualOrder;
+        if (hasOrderA && !hasOrderB) return -1;
+        if (!hasOrderA && hasOrderB) return 1;
+        return 0;
+      })
+      .map((task) => task.id);
+
+    const preferredOrder = localOrderIds.length > 0 ? localOrderIds : storageOrder;
+    const mergedOrder = preferredOrder
+      .filter((taskId) => activeTaskIds.has(taskId))
+      .concat(storageOrder.filter((taskId) => !preferredOrder.includes(taskId)));
+
+    return mergedOrder
+      .map((taskId) => taskById.get(taskId))
+      .filter(Boolean);
+  }, [activeTasks, localOrderIds]);
 
   // Group tasks by date
   const groupTasksByDate = (tasksList) => {
@@ -40,6 +66,32 @@ export default function Home() {
   };
 
   const tasksByDate = groupTasksByDate(activeTasks);
+
+  const handleDragStart = (taskId) => {
+    setDraggedTaskId(taskId);
+  };
+
+  const handleDragEnd = () => {
+    setDraggedTaskId(null);
+  };
+
+  const handleDropTask = async (targetTaskId) => {
+    if (!draggedTaskId || draggedTaskId === targetTaskId) return;
+
+    const currentOrder = orderedActiveTasks.map((task) => task.id);
+    const draggedIndex = currentOrder.indexOf(draggedTaskId);
+    const targetIndex = currentOrder.indexOf(targetTaskId);
+
+    if (draggedIndex === -1 || targetIndex === -1) return;
+
+    const nextOrder = [...currentOrder];
+    const [movedTaskId] = nextOrder.splice(draggedIndex, 1);
+    nextOrder.splice(targetIndex, 0, movedTaskId);
+
+    setLocalOrderIds(nextOrder);
+    setDraggedTaskId(null);
+    await reorderTasks(nextOrder);
+  };
 
   const formatDateHeader = (date) => {
     const today = new Date();
@@ -106,8 +158,17 @@ export default function Home() {
           {filterMode === "all" ? (
             // All Tasks View - No Grouping
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {activeTasks.map((task) => (
-                <TaskCard key={task.id} task={task} />
+              {orderedActiveTasks.map((task) => (
+                <TaskCard
+                  key={task.id}
+                  task={task}
+                  draggable
+                  isDragging={draggedTaskId === task.id}
+                  onDragStart={() => handleDragStart(task.id)}
+                  onDragEnd={handleDragEnd}
+                  onDragOver={(e) => e.preventDefault()}
+                  onDrop={() => handleDropTask(task.id)}
+                />
               ))}
             </div>
           ) : (
