@@ -16,29 +16,19 @@ export default function Home() {
   const activeTasks = tasks.filter((t) => !t.completed);
   const tasksWithDeadlines = activeTasks.filter((t) => t.deadline);
   const orderedActiveTasks = useMemo(() => {
+    // Context already sorts by manualOrder → createdAt desc.
+    // We only need to overlay the ephemeral drag order (localOrderIds).
+    if (localOrderIds.length === 0) return activeTasks;
+
     const taskById = new Map(activeTasks.map((task) => [task.id, task]));
     const activeTaskIds = new Set(activeTasks.map((task) => task.id));
+    const contextOrder = activeTasks.map((task) => task.id);
 
-    const storageOrder = [...activeTasks]
-      .sort((a, b) => {
-        const hasOrderA = Number.isInteger(a.manualOrder);
-        const hasOrderB = Number.isInteger(b.manualOrder);
-
-        if (hasOrderA && hasOrderB) return a.manualOrder - b.manualOrder;
-        if (hasOrderA && !hasOrderB) return -1;
-        if (!hasOrderA && hasOrderB) return 1;
-        return 0;
-      })
-      .map((task) => task.id);
-
-    const preferredOrder = localOrderIds.length > 0 ? localOrderIds : storageOrder;
-    const mergedOrder = preferredOrder
+    const mergedOrder = localOrderIds
       .filter((taskId) => activeTaskIds.has(taskId))
-      .concat(storageOrder.filter((taskId) => !preferredOrder.includes(taskId)));
+      .concat(contextOrder.filter((taskId) => !localOrderIds.includes(taskId)));
 
-    return mergedOrder
-      .map((taskId) => taskById.get(taskId))
-      .filter(Boolean);
+    return mergedOrder.map((taskId) => taskById.get(taskId)).filter(Boolean);
   }, [activeTasks, localOrderIds]);
 
   // Group tasks by date
@@ -88,9 +78,15 @@ export default function Home() {
     const [movedTaskId] = nextOrder.splice(draggedIndex, 1);
     nextOrder.splice(targetIndex, 0, movedTaskId);
 
+    // Apply the drag order immediately for a responsive feel
     setLocalOrderIds(nextOrder);
     setDraggedTaskId(null);
+
+    // Persist to Firestore, then clear the local override so the context's
+    // canonical sort (manualOrder → createdAt desc) takes over.
+    // This ensures any task created after a drag still appears at the top.
     await reorderTasks(nextOrder);
+    setLocalOrderIds([]);
   };
 
   const formatDateHeader = (date) => {

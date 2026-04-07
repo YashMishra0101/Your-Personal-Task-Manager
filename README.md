@@ -91,6 +91,7 @@ This isn’t just another to-do app — it’s a modern, production-ready task m
 - 📌 Active Tasks Counter — Real-time overview of pending tasks
 - ⚡ One-Click Actions — Instantly complete, edit, or delete tasks
 - 📖 Detailed Task View — Rich descriptions with formatted date and time
+- 📈 Task Progress Tracking — Update per-task completion (0–100%) and optionally mark tasks as unsuccessful, with status preview shown in Completed tasks
 
 ### 🔐 Security & Privacy
 - **Firebase Authentication** - Industry-standard email/password login

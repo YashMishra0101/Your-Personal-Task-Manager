@@ -107,11 +107,19 @@ export function TaskProvider({ children }) {
   }, []);
 
   const addTask = async (task) => {
+    const completionPercentage =
+      typeof task.completionPercentage === "number"
+        ? task.completionPercentage
+        : 0;
+    const isUnsuccessful = !!task.isUnsuccessful;
+
     const newTask = {
       ...task,
       id: `temp-${Date.now()}`, // Temporary ID for offline
       includeLastDay:
         task.includeLastDay !== undefined ? task.includeLastDay : true,
+      completionPercentage,
+      isUnsuccessful,
       completed: false,
       createdAt: new Date().toISOString(),
     };
@@ -125,6 +133,8 @@ export function TaskProvider({ children }) {
           ...task,
           includeLastDay:
             task.includeLastDay !== undefined ? task.includeLastDay : true,
+          completionPercentage,
+          isUnsuccessful,
           completed: false,
           createdAt: new Date().toISOString(),
         });
@@ -145,10 +155,38 @@ export function TaskProvider({ children }) {
   };
 
   const toggleTaskCompletion = async (taskId, currentStatus) => {
+    const taskToToggle = tasks.find((t) => t.id === taskId);
+    const nextCompletedStatus = !currentStatus;
+    const completionPercentage =
+      typeof taskToToggle?.completionPercentage === "number"
+        ? taskToToggle.completionPercentage
+        : 0;
+    const isUnsuccessful = !!taskToToggle?.isUnsuccessful;
+
+    const nextCompletionPercentage =
+      nextCompletedStatus && !isUnsuccessful && completionPercentage === 0
+        ? 100
+        : completionPercentage;
+
+    // Stamp completedAt when marking complete; clear it when uncompleting
+    const completedAt = nextCompletedStatus ? new Date().toISOString() : null;
+
+    const completionUpdates = {
+      completionPercentage: nextCompletionPercentage,
+      isUnsuccessful,
+      completedAt,
+    };
+
     // Optimistically update UI
     setTasks((prev) =>
       prev.map((t) =>
-        t.id === taskId ? { ...t, completed: !currentStatus } : t
+        t.id === taskId
+          ? {
+              ...t,
+              completed: nextCompletedStatus,
+              ...completionUpdates,
+            }
+          : t
       )
     );
 
@@ -156,7 +194,8 @@ export function TaskProvider({ children }) {
       if (db && isOnline) {
         const taskRef = doc(db, "tasks", taskId);
         await updateDoc(taskRef, {
-          completed: !currentStatus,
+          completed: nextCompletedStatus,
+          ...completionUpdates,
         });
       } else {
         console.log("Offline: Task status updated locally");
@@ -257,19 +296,19 @@ export function TaskProvider({ children }) {
 
   const sortedTasks = useMemo(() => {
     return [...tasks].sort((a, b) => {
-      const hasDeadlineA = !!a.deadline;
-      const hasDeadlineB = !!b.deadline;
+      // Use manualOrder only when BOTH tasks have it — that means they were
+      // explicitly drag-sorted relative to each other.
+      // If only one has manualOrder (e.g. a legacy reorder), fall through to
+      // createdAt so newly created tasks (no manualOrder) still appear at top.
+      const hasOrderA = Number.isInteger(a.manualOrder);
+      const hasOrderB = Number.isInteger(b.manualOrder);
 
-      if (hasDeadlineA && hasDeadlineB) {
-        return new Date(a.deadline) - new Date(b.deadline);
-      }
-      if (hasDeadlineA && !hasDeadlineB) {
-        return -1;
-      }
-      if (!hasDeadlineA && hasDeadlineB) {
-        return 1;
-      }
-      return 0;
+      if (hasOrderA && hasOrderB) return a.manualOrder - b.manualOrder;
+
+      // Fall back to createdAt descending (newest first)
+      const timeA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+      const timeB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+      return timeB - timeA;
     });
   }, [tasks]);
 

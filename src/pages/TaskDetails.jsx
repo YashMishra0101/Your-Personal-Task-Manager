@@ -27,11 +27,20 @@ export default function TaskDetails() {
   const [task, setTask] = useState(null);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [completionPercentage, setCompletionPercentage] = useState(0);
+  const [isUnsuccessful, setIsUnsuccessful] = useState(false);
+  const [isSavingProgress, setIsSavingProgress] = useState(false);
 
   useEffect(() => {
     const foundTask = tasks.find((t) => t.id === id);
     if (foundTask) {
       setTask(foundTask);
+      setCompletionPercentage(
+        typeof foundTask.completionPercentage === "number"
+          ? foundTask.completionPercentage
+          : 0
+      );
+      setIsUnsuccessful(!!foundTask.isUnsuccessful);
     }
     setLoading(false);
   }, [id, tasks]);
@@ -124,6 +133,22 @@ export default function TaskDetails() {
       navigate("/");
     } catch (error) {
       toast.error("Failed to delete task");
+    }
+  };
+
+  const handleSaveProgress = async () => {
+    if (!task) return;
+    try {
+      setIsSavingProgress(true);
+      await updateTask(task.id, {
+        completionPercentage: isUnsuccessful ? 0 : completionPercentage,
+        isUnsuccessful,
+      });
+      toast.success("Task progress updated");
+    } catch (error) {
+      toast.error("Failed to update task progress");
+    } finally {
+      setIsSavingProgress(false);
     }
   };
 
@@ -298,6 +323,57 @@ export default function TaskDetails() {
               </div>
             </div>
           )}
+
+          {/* Task Progress Section */}
+          <div className="space-y-3">
+            <div className="flex items-center gap-2 text-sm font-bold text-muted-foreground uppercase tracking-widest pl-1">
+              <div className="w-1.5 h-1.5 rounded-full bg-primary"></div>
+              Task Progress
+            </div>
+            <div className="bg-surface p-6 rounded-3xl border border-border/60 shadow-sm space-y-5">
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-sm font-medium text-muted-foreground">
+                    Completion
+                  </span>
+                  <span className="text-sm font-bold text-primary">
+                    {isUnsuccessful ? "Unsuccessful" : `${completionPercentage}%`}
+                  </span>
+                </div>
+                <input
+                  type="range"
+                  min={0}
+                  max={100}
+                  step={1}
+                  value={completionPercentage}
+                  disabled={isUnsuccessful}
+                  onChange={(e) => setCompletionPercentage(Number(e.target.value))}
+                  className="w-full accent-primary disabled:opacity-50"
+                />
+              </div>
+
+              <label className="flex items-center gap-3 p-3 rounded-xl border border-border/60 bg-background cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={isUnsuccessful}
+                  onChange={(e) => setIsUnsuccessful(e.target.checked)}
+                  className="w-5 h-5 rounded border-border text-primary focus:ring-primary/20"
+                />
+                <span className="text-sm font-medium text-foreground">
+                  Mark as Unsuccessful
+                </span>
+              </label>
+
+              <button
+                type="button"
+                onClick={handleSaveProgress}
+                disabled={isSavingProgress}
+                className="px-4 py-2 rounded-xl bg-primary text-primary-foreground text-sm font-semibold disabled:opacity-50"
+              >
+                {isSavingProgress ? "Saving..." : "Save Progress"}
+              </button>
+            </div>
+          </div>
 
           {/* Details Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

@@ -27,17 +27,27 @@ export function useAuth() {
   return useContext(AuthContext);
 }
 
+// ---------------------------------------------------------------------------
+// Module-level singleton map for session-creation promises.
+// Lives OUTSIDE the component so it survives React StrictMode's double-mount.
+// Key: clientSessionId  →  Value: Promise<firestoreDocId | null>
+// Both racing invocations (StrictMode remount / fast re-render) share the same
+// Promise, so exactly one Firestore addDoc is ever executed per tab session.
+// ---------------------------------------------------------------------------
+const sessionCreationPromises = new Map();
+
 export function AuthProvider({ children }) {
   const [currentUser, setCurrentUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isSecurityVerified, setIsSecurityVerified] = useState(false);
   const [deviceSessions, setDeviceSessions] = useState([]);
   const [deviceSessionsLoading, setDeviceSessionsLoading] = useState(true);
+  const [deduplicatedSessionsCount, setDeduplicatedSessionsCount] = useState(0);
   const [activeSessionId, setActiveSessionId] = useState(
     localStorage.getItem("activeSessionId") || null
   );
   const activeSessionIdRef = useRef(activeSessionId);
-  const sessionCreationInFlightRef = useRef(false);
+  const duplicateCleanupInFlightRef = useRef(false);
 
   const SESSION_TTL_MS = 24 * 60 * 60 * 1000;
   const CLIENT_SESSION_ID_KEY = "clientSessionId";
@@ -59,55 +69,70 @@ export function AuthProvider({ children }) {
 
   async function createDeviceSession(user) {
     if (!db || !user) return null;
-    if (sessionCreationInFlightRef.current) return activeSessionIdRef.current;
 
-    sessionCreationInFlightRef.current = true;
+    // Derive the idempotency key for this browser tab session.
+    // getOrCreateClientSessionId writes to sessionStorage on first call, so any
+    // concurrent caller (e.g. StrictMode's second mount) will read the same key.
+    const clientSessionId = getOrCreateClientSessionId(user.uid);
 
-    try {
-      const clientSessionId = getOrCreateClientSessionId(user.uid);
-      const existingQuery = query(
-        collection(db, "deviceSessions"),
-        where("clientSessionId", "==", clientSessionId),
-        limit(1)
-      );
-      const existingSnap = await getDocs(existingQuery);
-
-      if (!existingSnap.empty) {
-        const existing = existingSnap.docs[0];
-        const existingData = existing.data();
-
-        if (existingData.status !== "logged_out") {
-          localStorage.setItem("activeSessionId", existing.id);
-          setActiveSessionId(existing.id);
-          return existing.id;
-        }
-      }
-
-      const metadata = getDeviceMetadata();
-      const now = Date.now();
-      const expiresAt = new Date(now + SESSION_TTL_MS);
-      const sessionKey = `${metadata.deviceType}-${metadata.browser}-${metadata.os}-${now}`;
-
-      const docRef = await addDoc(collection(db, "deviceSessions"), {
-        userId: user.uid,
-        clientSessionId,
-        status: "active",
-        loginAt: serverTimestamp(),
-        clientLoginAt: new Date(),
-        lastSeenAt: serverTimestamp(),
-        expiresAt,
-        logoutAt: null,
-        logoutReason: null,
-        sessionKey,
-        ...metadata,
-      });
-
-      localStorage.setItem("activeSessionId", docRef.id);
-      setActiveSessionId(docRef.id);
-      return docRef.id;
-    } finally {
-      sessionCreationInFlightRef.current = false;
+    // If a creation is already in-flight for this clientSessionId (same Promise),
+    // piggyback on it instead of launching a second Firestore addDoc.
+    if (sessionCreationPromises.has(clientSessionId)) {
+      return sessionCreationPromises.get(clientSessionId);
     }
+
+    const promise = (async () => {
+      try {
+        // Check Firestore: has this tab already created an active session?
+        const existingQuery = query(
+          collection(db, "deviceSessions"),
+          where("clientSessionId", "==", clientSessionId),
+          limit(1)
+        );
+        const existingSnap = await getDocs(existingQuery);
+
+        if (!existingSnap.empty) {
+          const existing = existingSnap.docs[0];
+          const existingData = existing.data();
+
+          if (existingData.status !== "logged_out") {
+            localStorage.setItem("activeSessionId", existing.id);
+            setActiveSessionId(existing.id);
+            return existing.id;
+          }
+        }
+
+        // No existing active session — create one
+        const metadata = getDeviceMetadata();
+        const now = Date.now();
+        const expiresAt = new Date(now + SESSION_TTL_MS);
+        const sessionKey = `${metadata.deviceType}-${metadata.browser}-${metadata.os}-${now}`;
+
+        const docRef = await addDoc(collection(db, "deviceSessions"), {
+          userId: user.uid,
+          clientSessionId,
+          status: "active",
+          loginAt: serverTimestamp(),
+          clientLoginAt: new Date(),
+          lastSeenAt: serverTimestamp(),
+          expiresAt,
+          logoutAt: null,
+          logoutReason: null,
+          sessionKey,
+          ...metadata,
+        });
+
+        localStorage.setItem("activeSessionId", docRef.id);
+        setActiveSessionId(docRef.id);
+        return docRef.id;
+      } finally {
+        // Release the lock so fresh logins after logout start a new promise
+        sessionCreationPromises.delete(clientSessionId);
+      }
+    })();
+
+    sessionCreationPromises.set(clientSessionId, promise);
+    return promise;
   }
 
   async function markSessionLoggedOut(sessionId, reason = "logged_out") {
@@ -202,6 +227,68 @@ export function AuthProvider({ children }) {
 
     return unsubscribe;
   }, [currentUser]);
+
+  useEffect(() => {
+    if (!db || !currentUser || deviceSessions.length === 0) return;
+    if (duplicateCleanupInFlightRef.current) return;
+
+    const activeWithClientId = deviceSessions.filter(
+      (session) => session.status === "active" && session.clientSessionId
+    );
+    if (activeWithClientId.length < 2) return;
+
+    const byClientSessionId = activeWithClientId.reduce((acc, session) => {
+      const key = session.clientSessionId;
+      if (!acc[key]) acc[key] = [];
+      acc[key].push(session);
+      return acc;
+    }, {});
+
+    const sessionsToClose = [];
+
+    Object.values(byClientSessionId).forEach((sessions) => {
+      if (sessions.length <= 1) return;
+
+      const sortedNewestFirst = [...sessions].sort((a, b) => {
+        const aTime = a.lastSeenAt?.toDate
+          ? a.lastSeenAt.toDate().getTime()
+          : a.clientLoginAt
+          ? new Date(a.clientLoginAt).getTime()
+          : 0;
+        const bTime = b.lastSeenAt?.toDate
+          ? b.lastSeenAt.toDate().getTime()
+          : b.clientLoginAt
+          ? new Date(b.clientLoginAt).getTime()
+          : 0;
+        return bTime - aTime;
+      });
+
+      sessionsToClose.push(...sortedNewestFirst.slice(1));
+    });
+
+    if (sessionsToClose.length === 0) return;
+
+    duplicateCleanupInFlightRef.current = true;
+    Promise.all(
+      sessionsToClose.map((session) =>
+        updateDoc(doc(db, "deviceSessions", session.id), {
+          status: "logged_out",
+          logoutAt: serverTimestamp(),
+          logoutReason: "deduplicated_session",
+          expiresAt: new Date(),
+        })
+      )
+    )
+      .catch((error) => {
+        console.error("Failed to cleanup duplicate sessions:", error);
+      })
+      .then(() => {
+        setDeduplicatedSessionsCount((prev) => prev + sessionsToClose.length);
+      })
+      .finally(() => {
+        duplicateCleanupInFlightRef.current = false;
+      });
+  }, [currentUser, deviceSessions]);
 
   useEffect(() => {
     if (!db || !currentUser || !activeSessionId) return;
@@ -333,6 +420,7 @@ export function AuthProvider({ children }) {
     deviceSessionsLoading,
     activeSessionCount: uniqueActiveDeviceCount,
     activeSessionId,
+    deduplicatedSessionsCount,
   };
 
   return (

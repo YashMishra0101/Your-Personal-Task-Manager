@@ -29,6 +29,15 @@ export default function TaskCard({
   const navigate = useNavigate();
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const isOverdue = task.deadline && isPast(parseISO(task.deadline));
+  const completionPercentage =
+    typeof task.completionPercentage === "number"
+      ? task.completionPercentage
+      : task.completed
+      ? 100
+      : 0;
+  const completionLabel = task.isUnsuccessful
+    ? "Unsuccessful"
+    : `${completionPercentage}% complete`;
 
   const handleToggleComplete = async (e) => {
     e.stopPropagation();
@@ -107,6 +116,11 @@ export default function TaskCard({
           >
             {task.title}
           </h3>
+          {task.completed && (
+            <p className="mt-1 text-[11px] font-semibold text-muted-foreground">
+              {completionLabel}
+            </p>
+          )}
 
           {/* Subtasks Progress (if any) */}
           {task.subtasks && task.subtasks.length > 0 && (

@@ -23,7 +23,7 @@ function formatTimestamp(value) {
   if (!value) return "—";
   const date = toDate(value);
   if (!date) return "—";
-  return format(date, "MMM d, yyyy • h:mm a");
+  return format(date, "d MMM yyyy • h:mm a");
 }
 
 function DeviceIcon({ type }) {
@@ -33,7 +33,12 @@ function DeviceIcon({ type }) {
 }
 
 export default function DeviceActivity() {
-  const { deviceSessions, deviceSessionsLoading, activeSessionCount } = useAuth();
+  const {
+    deviceSessions,
+    deviceSessionsLoading,
+    activeSessionCount,
+    deduplicatedSessionsCount,
+  } = useAuth();
   const [statusFilter, setStatusFilter] = useState("all");
 
   const stats = useMemo(() => {
@@ -81,6 +86,11 @@ export default function DeviceActivity() {
             <p className="text-2xl font-bold text-foreground mt-1">{stats.total}</p>
           </div>
         </div>
+        {deduplicatedSessionsCount > 0 && (
+          <p className="text-[11px] text-muted-foreground px-1">
+            Debug: auto-cleaned duplicate sessions: {deduplicatedSessionsCount}
+          </p>
+        )}
 
         <div className="flex flex-wrap gap-2">
           {statusOptions.map((option) => (
