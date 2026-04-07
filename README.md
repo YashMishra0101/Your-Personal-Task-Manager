@@ -32,20 +32,6 @@
 </table>
 
 
-## ⭐ Why This Project Stands Out
-
-This isn't just another to-do app—it's a **showcase of modern web development best practices**:
-
-- ⚡ **Blazing Fast** - Built with Vite for instant updates and optimal performance
-- 📱 **True PWA** - Install on any device, works offline like a native app
-- 🎨 **Premium UI/UX** - Thoughtfully designed with smooth animations and delightful interactions
-- 🔒 **Enterprise-Grade Security** - Multi-layer authentication with Firestore security rules
-- 🌐 **Offline-First Architecture** - Full CRUD operations without internet connection
-- 🎭 **Adaptive Theming** - Sophisticated light and dark modes that match your style
-- ♿ **Accessibility First** - WCAG compliant with keyboard navigation and screen reader support
-
----
-
 ## 📸 Application Preview
 
 <table>
@@ -65,24 +51,45 @@ This isn't just another to-do app—it's a **showcase of modern web development 
     <td><img src="src/assets/7.png" alt="Screenshot 7" /></td>
     <td><img src="src/assets/8.png" alt="Screenshot 8" /></td>
   </tr>
+  <tr>
+    <td><img src="src/assets/9.png" alt="Screenshot 9" /></td>
+    <td><img src="src/assets/10.png" alt="Screenshot 10" /></td>
+  </tr>
 </table>
 
 ---
 
 ## ✨ Key Features
 
-### 📋 Task Management
-- **Professional Filtering System** - Toggle between "All Tasks" and "By Date" views
-  - **All Tasks (Default)**: Clean grid view without grouping
-  - **By Date**: Smart grouping with "Today", "Yesterday", and full date labels
-- **Smart Deadline Prioritization** - Tasks with approaching deadlines are automatically sorted and grouped at the top of your feed so you automatically stay on schedule
-- **Custom Time Picker** - A sleek, responsive custom UI for selecting exact time deadlines down to the minute with 12-hour AM/PM support
-- **Subtasks / Checklist** - Break down tasks into smaller actionable items with checkboxes
-- **Drag-and-Drop Reordering** - Reorder tasks in "All Tasks" view and reorder subtasks in create/edit flows with intuitive drag-and-drop
-- **Deadline Tracking** - Visual indicators for overdue, urgent, and upcoming tasks
-- **Active Tasks Counter** - Real-time overview of your active tasks
-- **One-Click Actions** - Mark complete, edit, or delete with smooth animations
-- **Detailed Task View** - Rich descriptions with formatted dates and times
+This isn’t just another to-do app — it’s a modern, production-ready task management experience built with performance, usability, and scalability in mind.
+
+### ⚙️ Core Experience
+
+- ⚡ Blazing Fast — Powered by Vite for instant updates and optimal performance
+- 📱 True PWA — Install on any device and work seamlessly offline
+- 🌐 Offline-First Architecture — Full CRUD functionality even without internet
+- 🔒 Enterprise-Grade Security — Multi-layer authentication with Firestore security rules
+
+### 🎨 User Experience & Design
+
+- 🎨 Premium UI/UX — Smooth animations and thoughtfully crafted interactions
+- 🎭 Adaptive Theming — Elegant light and dark modes
+- ♿ Accessibility First — WCAG-compliant with keyboard and screen reader support
+
+### 🧠 Task Management Features
+
+- 📊 Professional Filtering System
+  - All Tasks (Default) — Clean, ungrouped grid view
+  - By Date — Smart grouping with Today, Yesterday, and full date labels
+
+- ⏳ Smart Deadline Prioritization — Automatically surfaces urgent and upcoming tasks at the top
+- 🕒 Custom Time Picker — Precise time selection with 12-hour AM/PM support
+- ✅ Subtasks / Checklist — Break tasks into smaller actionable steps
+- 🔄 Drag-and-Drop Reordering — Seamlessly reorder tasks and subtasks
+- 🚨 Deadline Tracking — Visual indicators for overdue, urgent, and upcoming tasks
+- 📌 Active Tasks Counter — Real-time overview of pending tasks
+- ⚡ One-Click Actions — Instantly complete, edit, or delete tasks
+- 📖 Detailed Task View — Rich descriptions with formatted date and time
 
 ### 🔐 Security & Privacy
 - **Firebase Authentication** - Industry-standard email/password login
