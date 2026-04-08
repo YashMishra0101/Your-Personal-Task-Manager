@@ -125,9 +125,9 @@ export function AppLockProvider({ children }) {
     }
 
     if (method === "security_key") {
-      const securitySnap = await getDoc(doc(db, "security", "1"));
+      const securitySnap = await getDoc(doc(db, "security", "key"));
       if (!securitySnap.exists()) return false;
-      return securitySnap.data().key === secret;
+      return securitySnap.data().securityKey === secret;
     }
 
     return false;

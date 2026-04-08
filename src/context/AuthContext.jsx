@@ -348,11 +348,11 @@ export function AuthProvider({ children }) {
     if (!db) throw new Error("Database unavailable.");
 
     try {
-      const securityRef = doc(db, "security", "1");
+      const securityRef = doc(db, "security", "key");
       const securitySnap = await getDoc(securityRef);
 
       if (securitySnap.exists()) {
-        const validKey = securitySnap.data().key;
+        const validKey = securitySnap.data().securityKey;
         if (inputKey === validKey) {
           setIsSecurityVerified(true);
           localStorage.setItem("isSecurityVerified", "true");

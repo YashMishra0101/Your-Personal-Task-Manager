@@ -33,3 +33,8 @@ dist-ssr
 firebase-debug.log
 firebase-debug.*.log
 .firebaserc
+*-key.json
+*.firebase-adminsdk-*.json
+
+# Migration & Temporary Files
+dev-dist/

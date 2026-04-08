@@ -1,407 +1,195 @@
-# 🎯 Your Personal Task Manager
+# 🎯 Personal Task Manager (v4.0)
 
-> **A beautifully crafted, production-ready task management application packed with multiple advanced features, combining modern web technologies with an intuitive user experience. This isn’t just another to-do app, it’s built with performance, usability and scalability at its core.**
+> **A premium, production-ready task management ecosystem. Engineered for performance, security, and a seamless offline-first experience.**
 
 <div align="center">
 
-![React](https://img.shields.io/badge/React-61dafb?style=for-the-badge&logo=react&logoColor=white)
-![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38bdf8?style=for-the-badge&logo=tailwind-css&logoColor=white)
-![Firebase](https://img.shields.io/badge/Firebase-ffca28?style=for-the-badge&logo=firebase&logoColor=black)
-![PWA](https://img.shields.io/badge/PWA-Enabled-5A0FC8?style=for-the-badge&logo=pwa&logoColor=white)
+[![React 19](https://img.shields.io/badge/React_19-61dafb?style=for-the-badge&logo=react&logoColor=white)](https://react.dev)
+[![Vite 8](https://img.shields.io/badge/Vite_8-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev)
+[![Tailwind 4](https://img.shields.io/badge/Tailwind_4-38bdf8?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com)
+[![Firebase](https://img.shields.io/badge/Firebase-ffca28?style=for-the-badge&logo=firebase&logoColor=black)](https://firebase.google.com)
+[![PWA](https://img.shields.io/badge/PWA-Enabled-5A0FC8?style=for-the-badge&logo=pwa&logoColor=white)](https://web.dev/progressive-web-apps/)
+[![Tracking](https://img.shields.io/badge/Tracking-Zero-000000?style=for-the-badge&logo=ghostery&logoColor=white)](#)
+[![Security](https://img.shields.io/badge/Security-Highest-red?style=for-the-badge&logo=securityscorecard&logoColor=white)](#)
+[![Free of Cost](https://img.shields.io/badge/Free_of_Cost-100%25-brightgreen?style=for-the-badge)](#)
 
-![No Ads](https://img.shields.io/badge/🚫_Ads-No_Ads-success?style=for-the-badge)
-![100% Private](https://img.shields.io/badge/🔒_Privacy-100%25_Private-blue?style=for-the-badge)
-![Full Control](https://img.shields.io/badge/⚙️_Control-Full_Security_Control-orange?style=for-the-badge)
+[![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
+[![Open Source](https://img.shields.io/badge/Open_Source-%E2%9D%A4-brightgreen?style=for-the-badge&logo=open-source-initiative&logoColor=white)](https://github.com/YashMishra0101/Personal-Task-Manager)
+[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-brightgreen.svg?style=for-the-badge)](https://github.com/YashMishra0101/Personal-Task-Manager/graphs/commit-activity)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-blue.svg?style=for-the-badge)](https://github.com/YashMishra0101/Personal-Task-Manager/pulls)
 
-### [Live Demo](#) • [Report Bug](#) • [Request Feature](#)
+### [✨ Explore Live Demo](#) • [🐛 Report a Bug](https://github.com/YashMishra0101/Personal-Task-Manager/issues) • [💡 Request Feature](https://github.com/YashMishra0101/Personal-Task-Manager/issues)
 
 </div>
 
 ---
 
-## 🔒 Privacy & Security First
+## 💎 Why This Project?
 
-<table>
-<tr>
-<td align="center">🚫<br/><b>No Ads</b><br/>Zero advertisements, ever</td>
-<td align="center">🔒<br/><b>100% Private</b><br/>Your data stays yours</td>
-<td align="center">⚙️<br/><b>Full Control</b><br/>Complete security control</td>
-<td align="center">🛡️<br/><b>No Tracking</b><br/>No analytics or spying</td>
-<td align="center">📱<br/><b>Install Anywhere</b><br/>PC, Laptop, Mobile, Use Everywhere</td>
-</tr>
-</table>
+This isn’t just another **to-do list**. It’s an exploration of **Modern Web Architecture** packed with **Multiple Features**. Designed for developers who care about **Privacy**, **Security**, and **Absolute Data Ownership**.
 
---- 
-
-## 📸 Application Preview
-
-<table>
-  <tr>
-    <td><img src="src/assets/1.png" alt="Screenshot 1" /></td>
-    <td><img src="src/assets/2.png" alt="Screenshot 2" /></td>
-  </tr>
-  <tr>
-    <td><img src="src/assets/3.png" alt="Screenshot 3" /></td>
-    <td><img src="src/assets/4.png" alt="Screenshot 4" /></td>
-  </tr>
-  <tr>
-    <td><img src="src/assets/5.png" alt="Screenshot 5" /></td>
-    <td><img src="src/assets/6.png" alt="Screenshot 6" /></td>
-  </tr>
-   <tr>
-    <td><img src="src/assets/7.png" alt="Screenshot 7" /></td>
-    <td><img src="src/assets/8.png" alt="Screenshot 8" /></td>
-  </tr>
-  <tr>
-    <td><img src="src/assets/9.png" alt="Screenshot 9" /></td>
-    <td><img src="src/assets/10.png" alt="Screenshot 10" /></td>
-  </tr>
-</table>
+### 🛡️ Privacy & Security Manifest
+Security isn't a feature; it's the foundation.
+- **Zero-Ad Experience**: No tracking, no analytics, no distractions.
+- **Multi-Layered Security**: Firebase Auth + Custom Security Key + In-App App Lock.
+- **Integrated Security Architecture**: Your sensitive data is protected by advanced PIN hashing and secondary security keys.
+- **Active Session Tracking**: Real-time visibility into your login history and device activity across all platforms.
+- **Full Security Control**: By cloning this repo and setting up your own Firebase instance, you have **100% control** over your data and access.
+- **Spark Plan Optimized**: This application is specifically engineered to run efficiently on the **Firebase Free (Spark) Tier**, meaning you get a production-ready system with $0 infrastructure costs.
+- **100% Free & No-Cost Setup**: There are no hidden fees, subscriptions, or payment methods required. You own the code, you own the data, and you pay absolutely nothing to keep it running.
+- **📱 Install Anywhere**: Optimized PWA support—install on your **PC, Laptop, or Mobile** device for a seamless "Use Everywhere" experience.
 
 ---
 
-## ✨ Key Features
-
-This isn’t just another to-do app — it’s a modern, production-ready task management experience built with performance, usability, and scalability in mind.
-
-### ⚙️ Core Experience
-
-- ⚡ Blazing Fast — Powered by Vite for instant updates and optimal performance
-- 📱 True PWA — Install on any device and work seamlessly offline
-- 🌐 Offline-First Architecture — Full CRUD functionality even without internet
-- 🔒 Enterprise-Grade Security — Multi-layer authentication with Firestore security rules
-
-### 🎨 User Experience & Design
-
-- 🎨 Premium UI/UX — Smooth animations and thoughtfully crafted interactions
-- 🎭 Adaptive Theming — Elegant light and dark modes
-- ♿ Accessibility First — WCAG-compliant with keyboard and screen reader support
-
-### 🧠 Task Management Features
-
-- 📊 Professional Filtering System
-  - All Tasks (Default) — Clean, ungrouped grid view
-  - By Date — Smart grouping with Today, Yesterday, and full date labels
-
-- ⏳ Smart Deadline Prioritization — Automatically surfaces urgent and upcoming tasks at the top
-- 🕒 Custom Time Picker — Precise time selection with 12-hour AM/PM support
-- ✅ Subtasks / Checklist — Break tasks into smaller actionable steps
-- 🔄 Drag-and-Drop Reordering — Seamlessly reorder tasks and subtasks
-- 🚨 Deadline Tracking — Visual indicators for overdue, urgent, and upcoming tasks
-- 📌 Active Tasks Counter — Real-time overview of pending tasks
-- ⚡ One-Click Actions — Instantly complete, edit, or delete tasks
-- 📖 Detailed Task View — Rich descriptions with formatted date and time
-- 📈 Task Progress Tracking — Update per-task completion (0–100%) and optionally mark tasks as unsuccessful, with status preview shown in Completed tasks
-
-### 🔐 Security & Privacy
-- **Firebase Authentication** - Industry-standard email/password login
-- **Security Key Protection** - Extra layer with Firestore-based access control
-- **App Lock (PIN Protection)** - Optional app-level PIN lock (4/6/8 digits) with identity verification (password or security key) before setup/reset/disable, plus configurable unlock duration for stronger personal-device security
-- **Protected Routes** - Automatic redirect for unauthorized access
-- **Device Activity Tracking** - Read-only session history that helps you monitor account access across devices, showing active/logged-out status, device type, browser/OS details, and precise login/logout timestamps for improved visibility and security awareness
-- **Environment Variables** - Secure credential management
-- **Input Validation** - Client-side and server-side data verification
-
-### 🌐 Offline Functionality
-**Experience seamless productivity, anywhere, anytime!**
-
-- 📱 **Full Offline Mode** - Create, edit, and delete tasks without internet
-- 💾 **Dual-Layer Caching** - Firestore IndexedDB + localStorage for reliability
-- 🔄 **Auto-Sync** - Changes sync automatically when connection restores
-- 🎨 **Status Indicators** - Clear visual feedback for online/offline state
-- ⚡ **Instant Updates** - Optimistic UI for immediate feedback
-- 🛡️ **Zero Data Loss** - Robust error handling ensures your data is safe
-
-### 🎨 User Experience
-- **Modern UI Design** - Clean, minimalist interface with thoughtful spacing
-- **Smooth Animations** - Powered by Framer Motion for buttery transitions
-- **Theme System**:
-  - Light Mode: Fresh green palette for energetic daytime work
-  - Dark Mode: Professional black theme for comfortable night use
-  - System Auto-detect: Matches your OS preference automatically
-- **Responsive Layout** - Sidebar navigation on desktop, slide-out menu on mobile
-- **Toast Notifications** - Instant feedback for every action
-- **Confirmation Dialogs** - Prevents accidental deletions
-
-### 📱 Progressive Web App (PWA)
-- **One-Click Install** - Add to home screen on any device
-- **Standalone Mode** - Runs in its own window without browser chrome
-- **Offline-First** - All features work without internet
-- **Fast Loading** - Service worker caches key assets
-- **Auto Updates** - Always get the latest features seamlessly
-- **Mobile Optimized** - Sidebar navigation with hamburger menu for clean mobile UX
-
----
-
-## 🛠️ Technology Stack
-
-### Core Technologies
-| Technology | Purpose |
-|-----------|---------|
-| **React** | UI framework with latest features |
-| **Vite** | Lightning-fast build tool |
-| **Firebase** | Authentication & Firestore database |
-| **Tailwind CSS** | Utility-first styling |
-| **Framer Motion** | Smooth animations |
-| **React Router** | Client-side routing |
-
-### Development Tools
-- **pnpm** - Fast, disk space efficient package manager
-- **vite-plugin-pwa** - PWA with Workbox integration
-- **date-fns** - Modern date utility library
-- **sonner** - Beautiful toast notifications
-- **lucide-react** - Clean, customizable icons
-
----
-
-## 🧑‍💻 Quick Start
-
-### Prerequisites
-- Node.js 18 or higher
-- pnpm (recommended) or npm
-- Firebase account (free tier works great!)
-
-### Installation
-
-**1️⃣ Clone the Repository**
-```bash
-git clone https://github.com/YashMishra0101/Personal-Task-Manager.git
-cd Personal-Task-Manager
-```
-
-**2️⃣ Install Dependencies**
-```bash
-pnpm install
-# or
-npm install
-```
-
-> 💡 **Tip:** This project uses pnpm for faster installs and better disk efficiency. Install it with `npm install -g pnpm`
-
-**3️⃣ Firebase Setup**
-
-1. Go to [Firebase Console](https://console.firebase.google.com)
-2. Create a new project
-3. Enable **Email/Password** authentication
-4. Create a **Firestore database**
-5. Set up **Security Key** (follow guide below)
-6. Copy your Firebase configuration
-
-**4️⃣ Environment Configuration**
-
-Create a `.env` file in the root directory:
-
-```env
-VITE_FIREBASE_API_KEY=your_api_key_here
-VITE_FIREBASE_AUTH_DOMAIN=your_project_id.firebaseapp.com
-VITE_FIREBASE_PROJECT_ID=your_project_id
-VITE_FIREBASE_STORAGE_BUCKET=your_project_id.firebasestorage.app
-VITE_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
-VITE_FIREBASE_APP_ID=your_app_id
-```
-
-**5️⃣ Security Key Setup (Important!)**
-
-This app implements a **dual-layer security system** for maximum protection of your personal data.
-
-**Why a Security Key?**
-
-While Firebase Authentication handles user login, the security key adds an **extra verification layer** at the database level. This means:
-- 🔐 Even if someone gets your Firebase credentials, they still can't access your tasks without the security key
-- 🛡️ Protects against unauthorized database access
-- 🔑 Acts like a master password for your Firestore database
-- 💼 Enterprise-grade security for personal use
-
-**Setup Instructions:**
-
-1. Open **Firebase Console** → **Firestore Database**
-2. Create a new collection named `security`
-3. Add a document with ID `1`
-4. Add a field: `key` = `"your-secret-key"`
-   
-   **Example:** `"5269MYEX#&!?dwtv"`
-   
-   > 💡 **Tip:** Use a strong, unique key with a mix of uppercase, lowercase, numbers, and special characters.
-
-5. **Save** the document
-
-**How It Works:**
-
-When a user logs in, the app:
-1. ✅ Authenticates via Firebase (email + password)
-2. ✅ Prompts for the security key
-3. ✅ Verifies the key against Firestore
-4. ✅ Only grants access if both checks pass
-
-**Security Best Practices:**
-
-- ⚠️ **Never commit** your security key to version control
-- 🔄 **Change the key periodically** for added security
-- 📝 **Keep a backup** of your key in a secure location
-- 🚫 **Don't share** your key with unauthorized users
-- 🔒 **Use a strong key** (minimum 12 characters recommended)
-
-This dual-authentication system ensures your tasks remain private and secure, even in shared or public deployments.
-
-> ⚠️ **Important:** No public signup page is available. For security reasons, users must create their account and set the security key directly in Firebase Console before using the app.
-
-**6️⃣ Launch Development Server**
-```bash
-pnpm run dev
-```
-
-Open [http://localhost:5173](http://localhost:5173) in your browser and start managing tasks! 🎉
-
----
-
-## 🌍 Deployment
-
-### Building for Production
-
-```bash
-pnpm run build
-```
-
-This generates an optimized production bundle in the `dist/` directory.
-
-### Deploy to Vercel (Recommended)
-
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new)
-
-**Steps:**
-1. Push your code to GitHub
-2. Import project in [Vercel Dashboard](https://vercel.com/dashboard)
-3. Add environment variables
-4. Click **Deploy**
-
-**Alternative Platforms:**
-- Netlify
-- Firebase Hosting
-- Cloudflare Pages
-- GitHub Pages (with routing config)
-
-### Install as PWA
-
-**Desktop (Chrome/Edge):**
-1. Visit your deployed URL
-2. Click the **install icon** (⊕) in address bar
-3. Select "Install Task Manager"
-4. App opens in standalone window
-
-**Mobile (Android):**
-1. Open URL in Chrome
-2. Tap "Add to Home Screen" prompt
-3. App icon appears on home screen
-4. Launch in full-screen mode
-
-**Benefits:**
-- ⚡ Instant loading
-- 📴 Works offline
-- 🖥️ Native app feel
-- 🔔 Push notifications
-
----
-
-## 🤝 Contributing
-
-We love contributions! This project is open source and welcomes improvements from developers of all skill levels.
-
-### How to Contribute
-
-1. **Fork** the repository
-2. **Create** your feature branch
-   ```bash
-   git checkout -b feature/AmazingFeature
-   ```
-3. **Commit** your changes
-   ```bash
-   git commit -m 'Add some AmazingFeature'
-   ```
-4. **Push** to the branch
-   ```bash
-   git push origin feature/AmazingFeature
-   ```
-5. **Open** a Pull Request
-
-### Contribution Ideas
-- 🐛 Report bugs
-- 💡 Suggest new features
-- 📝 Improve documentation
-- 🎨 Enhance UI/UX
-- ⚡ Optimize performance
-- ♿ Improve accessibility
-
----
-
-## 📄 License
-
-This project is licensed under a **Custom MIT License** with attribution requirement.
-
-**You are free to:**
-- ✅ Use commercially
-- ✅ Modify
-- ✅ Distribute
-- ✅ Private use
-
-**With the condition that:**
-- 📝 You must link back to this repository in your project's documentation or About section
-
-See the [LICENSE](LICENSE) file for the full terms.
-
----
-
-## 🗺️ Roadmap
-
-Future enhancements we're considering:
-
-- [ ] 🏷️ Task categories and custom tags
-- [ ] 🔍 Advanced search with filters
-- [ ] ⚡ Priority levels (Low, Medium, High, Urgent)
-- [ ] 🔁 Recurring tasks (daily, weekly, monthly)
-- [ ] 👥 Task sharing and collaboration
-- [ ] 📧 Email reminders for deadlines
-- [ ] 📊 Productivity analytics dashboard
-- [ ] 🎯 Goals and milestones tracking
-- [ ] 🔗 Integration with Google Calendar
-- [ ] 📤 Import/Export data (JSON, CSV)
-
-**Vote for features** by opening an issue with the "feature request" label!
-
----
-
-## 💬 Support & Contact
-
-Having trouble? We're here to help!
-
-- 🐛 **Bug Reports:** [Open an issue](https://github.com/YashMishra0101/Personal-Task-Manager/issues)
-- 📧 **Email:** yashrkm0011@gmail.com
-- 🌟 **Show your support:** Star this repository!
-
----
-
-## 🙏 Acknowledgments
-
-Special thanks to:
-<details>
-<summary>Open Source Libraries</summary>
-
-- [React](https://react.dev) - The foundation of this app
-- [Firebase](https://firebase.google.com) - Backend infrastructure
-- [Tailwind CSS](https://tailwindcss.com) - Utility-first styling
-- [Framer Motion](https://www.framer.com/motion) - Smooth animations
-- [Lucide Icons](https://lucide.dev) - Beautiful icon set
-- [Sonner](https://sonner.emilkowal.ski) - Toast notifications
-
-</details>
-
----
+## 📸 Visual Preview
 
 <div align="center">
 
-### Built with ❤️ using React and Firebase
+| 💡 Vision & Dashboard | 🔐 Security & Context |
+| :---: | :---: |
+| <img src="src/assets/1.png" width="400" alt="Dashboard Overview" /> | <img src="src/assets/2.png" width="400" alt="Security Checks" /> |
+| **Task Interaction** | **System Theme Support** |
+| <img src="src/assets/3.png" width="400" alt="Task Creation" /> | <img src="src/assets/4.png" width="400" alt="Dark Mode Support" /> |
+| **Detailed Views** | **Priority Matrices** |
+| <img src="src/assets/5.png" width="400" alt="Task Details" /> | <img src="src/assets/6.png" width="400" alt="Deadline Tracking" /> |
+| **Responsive Design** | **Device Activity** |
+| <img src="src/assets/7.png" width="400" alt="Mobile View" /> | <img src="src/assets/8.png" width="400" alt="Session Audit" /> |
+| **App Lock System** | **Personalization** |
+| <img src="src/assets/9.png" width="400" alt="PIN Security" /> | <img src="src/assets/10.png" width="400" alt="Profile Settings" /> |
+| **Future Readiness** | **Final Workflow** |
+| <img src="src/assets/11.png" width="400" alt="New Feature Preview" /> | <img src="src/assets/12.png" width="400" alt="Final Task Complete" /> |
 
-**Made by [Yash Mishra](https://github.com/YashMishra0101)**
+</div>
 
-[⭐ Star this repo](https://github.com/YashMishra0101/Personal-Task-Manager) • [🐛 Report Bug](https://github.com/YashMishra0101/Personal-Task-Manager/issues) • [💡 Request Feature](https://github.com/YashMishra0101/Personal-Task-Manager/issues)
+---
+
+## 🏗️ Technical Highlights
+
+### ⚡ Cutting-Edge Stack
+- **React 19 & Vite 8**: Built on the bleeding edge for optimal developer experience and sub-second HMR.
+- **Tailwind CSS 4**: Utilizing the latest JIT engine for ultra-lightweight production CSS.
+- **Framer Motion**: Purpose-built micro-interactions that make the UI feel alive and responsive.
+- **Offline-First (PWA)**: Using Workbox for intelligent caching. The app works flawlessly in a tunnel or on a plane.
+
+### 🧠 Advanced Architecture
+- **Persistent Firestore Cache**: Custom implementation of `persistentLocalCache` for instant data access even on cold starts.
+- **Atomic Context State**: State management split via dedicated Context Providers (Auth, AppLock, Tasks) to minimize re-renders.
+- **Intelligent Deduplication**: Module-level session management to prevent duplicate Firestore writes during React's StrictMode double-mounts.
+
+---
+
+## ✨ Feature Deep-Dive
+
+### 🧠 Task Management Features
+
+- **📊 Professional Filtering System**
+  - **All Tasks (Default)** — Clean, ungrouped grid view for a high-level overview.
+  - **By Date** — Smart grouping with relative headers (**Today**, **Yesterday**) and full date labels.
+- **⏳ Smart Deadline Prioritization** — Automatically surfaces urgent and upcoming task deadlines at the top of your "By Date" view.
+- **🕒 Custom Time Picker** — High-precision time selection implementation with full **12-hour AM/PM** support.
+- **✅ Subtasks / Checklist** — Break complex tasks into smaller actionable steps with independent progress tracking.
+- **🔄 Drag-and-Drop Reordering** — A high-performance manual reordering system to organize your workspace exactly how you want.
+- **🚨 Deadline Tracking** — Dynamic visual indicators and relative countdowns for overdue, urgent, and upcoming tasks.
+- **📌 Active Tasks Counter** — Real-time persistent overview of your total pending workload.
+- **⚡ One-Click Actions** — Engineered for speed: instantly complete, edit, or delete tasks directly from the dashboard.
+- **📖 Detailed Task View** — Rich description support with perfectly formatted date and time metadata.
+- **📈 Task Progress Tracking** — Granular completion updates (**0–100%**) with support for marking tasks as "Unsuccessful" for comprehensive productivity auditing.
+
+### 🔐 Security & User Safety
+- **Dual-Phase Login**: After standard Firebase Authentication, a secondary **Security Key** verifies the database access permission.
+- **App Lock System**: Configurable PIN-lock (4/6/8 digits) with "Session-based" or "Duration-based" timeouts.
+  - **🛡️ Full In-App Control**: Once the app is unlocked, you have **full authority** to update, change, or disable your PIN at any time via the internal settings.
+  - **🔒 Forbidden Reset Policy**: For maximum security, there is **no "Forgot PIN" option** on the lock screen. To regain access, the owner must manually disable the lock via the Firebase Console.
+- **Device Audit**: A comprehensive real-time log of every browser and device that has accessed your account, with unique identifiers.
+
+---
+
+## 🛠️ Installation & Setup
+
+### Prerequisites
+- **Node.js** 20+
+- **pnpm** (Recommended) or npm
+
+### Setup Steps
+1. **Clone the Repo**
+   ```bash
+   git clone https://github.com/YashMishra0101/Personal-Task-Manager.git
+   cd Personal-Task-Manager
+   ```
+
+2. **Install Dependencies**
+   ```bash
+   pnpm install
+   ```
+
+3. **Configure Environment**
+   Create a `.env` file from the example:
+   ```bash
+   cp .env.example .env
+   ```
+   Fill in your Firebase credentials.
+
+### 🛠️ Detailed Firebase Setup
+
+1. **Create a Firebase Project**: 
+   - Go to [Firebase Console](https://console.firebase.google.com/).
+   - Click "Add Project" and follow the setup wizard.
+   - **Plan**: The free **Spark Plan** is totally sufficient for this application.
+
+2. **Enable Authentication**:
+   - Navigate to **Build > Authentication**.
+   - Enable the **Email/Password** provider.
+   - (Optional) Create your primary user account here or use the app's login flow to register if enabled in rules.
+
+3. **Create Firestore Database**:
+   - Navigate to **Build > Firestore Database**.
+   - Create a database in **Production Mode** (or test mode if you're quick, but production is recommended).
+   - Choose a location nearest to you.
+
+4. **Initialize Security Key**:
+   - In Firestore, create a collection named `security`.
+   - Create a document with the exact ID `key`.
+   - Add a field named `securityKey` (String) and set its value (e.g., `MySecretKey123`).
+
+5. **Register Web App**:
+   - Go to **Project Settings (⚙️ icon)**.
+   - Click the `</>` icon at the bottom to register a Web App.
+   - Copy the `firebaseConfig` object values into your `.env` file.
+
+### 🏁 6. Start Developing
+   ```bash
+   pnpm dev
+   ```
+
+---
+
+
+## 🤝 Contributing
+
+This is a developer-friendly project! We value:
+- **Clean Code**: Follow the existing ESLint and Prettier configs.
+- **Performance**: Keep the bundle size small and logic efficient.
+- **UX**: Ensure every new feature feels premium.
+
+
+---
+
+## 📄 License & Attribution
+
+Licensed under the **MIT License**.
+
+> 💡 **Note**: While the license allows free use, I appreciate attribution by linking back to this repository in your project's 'About' section.
+
+
+> "Great things are done by a series of small things brought together."
+
+<div align="center">
+
+### Built with ❤️ by [Yash Mishra](https://github.com/YashMishra0101) with the help of AI tools
+
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/yash-mishra-356280223/)
+[![X](https://img.shields.io/badge/X-000000?style=for-the-badge&logo=x&logoColor=white)](https://x.com/YashRKMishra1)
+
+**[⭐ Star this repository to show your support!](#)**
 
 </div>
