@@ -181,7 +181,7 @@ Licensed under the **MIT License**.
 
 <div align="center">
 
-### Built with ❤️ by [Yash Mishra](https://github.com/YashMishra0101) with the help of AI tools
+### Built by [Yash RK Mishra](https://github.com/YashMishra0101) with AI tools 👨‍💻
 
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/yash-mishra-356280223/)
 [![X](https://img.shields.io/badge/X-000000?style=for-the-badge&logo=x&logoColor=white)](https://x.com/YashRKMishra1)
