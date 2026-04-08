@@ -18,7 +18,23 @@
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-brightgreen.svg?style=for-the-badge)](https://github.com/YashMishra0101/Personal-Task-Manager/graphs/commit-activity)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-blue.svg?style=for-the-badge)](https://github.com/YashMishra0101/Personal-Task-Manager/pulls)
 
-### [✨ Explore Live Demo](#) • [🐛 Report a Bug](https://github.com/YashMishra0101/Personal-Task-Manager/issues) • [💡 Request Feature](https://github.com/YashMishra0101/Personal-Task-Manager/issues)
+### [✨ Explore the Project](#) • [🐛 Report a Bug](https://github.com/YashMishra0101/Personal-Task-Manager/issues) • [💡 Request Feature](https://github.com/YashMishra0101/Personal-Task-Manager/issues)
+
+</div>
+
+---
+
+## 📸 Visual Preview
+
+<div align="center">
+
+| <img src="src/assets/1.png" width="400" alt="Dashboard Overview" /> | <img src="src/assets/2.png" width="400" alt="Security Checks" /> |
+| :---: | :---: |
+| <img src="src/assets/3.png" width="400" alt="Task Creation" /> | <img src="src/assets/4.png" width="400" alt="Dark Mode Support" /> |
+| <img src="src/assets/5.png" width="400" alt="Task Details" /> | <img src="src/assets/6.png" width="400" alt="Deadline Tracking" /> |
+| <img src="src/assets/7.png" width="400" alt="Mobile View" /> | <img src="src/assets/8.png" width="400" alt="Session Audit" /> |
+| <img src="src/assets/9.png" width="400" alt="PIN Security" /> | <img src="src/assets/10.png" width="400" alt="Profile Settings" /> |
+| <img src="src/assets/11.png" width="400" alt="New Feature Preview" /> | <img src="src/assets/12.png" width="400" alt="Final Task Complete" /> |
 
 </div>
 
@@ -38,28 +54,6 @@ Security isn't a feature; it's the foundation.
 - **Spark Plan Optimized**: This application is specifically engineered to run efficiently on the **Firebase Free (Spark) Tier**, meaning you get a production-ready system with $0 infrastructure costs.
 - **100% Free & No-Cost Setup**: There are no hidden fees, subscriptions, or payment methods required. You own the code, you own the data, and you pay absolutely nothing to keep it running.
 - **📱 Install Anywhere**: Optimized PWA support—install on your **PC, Laptop, or Mobile** device for a seamless "Use Everywhere" experience.
-
----
-
-## 📸 Visual Preview
-
-<div align="center">
-
-| 💡 Vision & Dashboard | 🔐 Security & Context |
-| :---: | :---: |
-| <img src="src/assets/1.png" width="400" alt="Dashboard Overview" /> | <img src="src/assets/2.png" width="400" alt="Security Checks" /> |
-| **Task Interaction** | **System Theme Support** |
-| <img src="src/assets/3.png" width="400" alt="Task Creation" /> | <img src="src/assets/4.png" width="400" alt="Dark Mode Support" /> |
-| **Detailed Views** | **Priority Matrices** |
-| <img src="src/assets/5.png" width="400" alt="Task Details" /> | <img src="src/assets/6.png" width="400" alt="Deadline Tracking" /> |
-| **Responsive Design** | **Device Activity** |
-| <img src="src/assets/7.png" width="400" alt="Mobile View" /> | <img src="src/assets/8.png" width="400" alt="Session Audit" /> |
-| **App Lock System** | **Personalization** |
-| <img src="src/assets/9.png" width="400" alt="PIN Security" /> | <img src="src/assets/10.png" width="400" alt="Profile Settings" /> |
-| **Future Readiness** | **Final Workflow** |
-| <img src="src/assets/11.png" width="400" alt="New Feature Preview" /> | <img src="src/assets/12.png" width="400" alt="Final Task Complete" /> |
-
-</div>
 
 ---
 
