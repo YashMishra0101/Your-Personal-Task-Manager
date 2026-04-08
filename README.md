@@ -44,6 +44,8 @@
 
 This isn’t just another **to-do list**. It’s an exploration of **Modern Web Architecture** packed with **Multiple Features**. Designed for developers who care about **Privacy**, **Security**, and **Absolute Data Ownership**.
 
+> **Born from personal necessity** — not just a project, but my **daily driver**. A tool I couldn’t find elsewhere, so I built it to solve my own needs and actively use it every day.
+
 ### 🛡️ Privacy & Security Manifest
 Security isn't a feature; it's the foundation.
 - **Zero-Ad Experience**: No tracking, no analytics, no distractions.
