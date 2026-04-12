@@ -1,7 +1,5 @@
 # 🎯 Personal Task Manager (v4.0)
 
-> **A premium, production-ready task management ecosystem. Engineered for performance, security, and a seamless offline-first experience.**
-
 <div align="center">
 
 [![React 19](https://img.shields.io/badge/React_19-61dafb?style=for-the-badge&logo=react&logoColor=white)](https://react.dev)
@@ -18,7 +16,7 @@
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-brightgreen.svg?style=for-the-badge)](https://github.com/YashMishra0101/Personal-Task-Manager/graphs/commit-activity)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-blue.svg?style=for-the-badge)](https://github.com/YashMishra0101/Personal-Task-Manager/pulls)
 
-### [✨ Explore the Project](#) • [🐛 Report a Bug](https://github.com/YashMishra0101/Personal-Task-Manager/issues) • [💡 Request Feature](https://github.com/YashMishra0101/Personal-Task-Manager/issues)
+### 🧑‍💻 Explore the Project • 🐛 Report a Bug • 💡 Request Feature
 
 </div>
 
@@ -42,20 +40,43 @@
 
 ## 💎 Why This Project?
 
-This isn’t just another **to-do list**. It’s an exploration of **Modern Web Architecture** packed with **Multiple Features**. Designed for developers who care about **Privacy**, **Security**, and **Absolute Data Ownership**.
+This is more than just another **To-Do List**. It is a **Production-Ready Task Management Ecosystem** engineered for high performance, **Robust Security** and a **Seamless Offline-First Experience**. It provides **Multiple Premium Features Completely Free of Cost**, while ensuring total **Privacy**, **Security** and **Absolute Data Ownership**.
 
-> **Born from personal necessity** — not just a project, but my **daily driver**. A tool I couldn’t find elsewhere, so I built it to solve my own needs and actively use it every day.
+> **Born from personal necessity** — not just a project, but my **daily driver**. It's a tool I couldn’t find elsewhere, so I built it to solve my own needs and actively use it every day.
 
-### 🛡️ Privacy & Security Manifest
+---
+## ✨ Feature Deep-Dive
+
+### 🧠 Task Management Features
+
+- **📊 Professional Filtering System**
+  - **🗂️ All Tasks (Default)** — Clean, ungrouped grid view for a high-level overview.
+  - **📅 By Date** — Smart grouping with relative headers (**Today**, **Yesterday**) and full date labels.
+- **⏳ Smart Deadline Prioritization** — Automatically surfaces urgent and upcoming task deadlines at the top of your "By Date" view.
+- **🕒 Custom Time Picker** — High-precision time selection implementation with full **12-hour AM/PM** support.
+- **✅ Subtasks / Checklist** — Break complex tasks into smaller actionable steps with independent progress tracking.
+- **🔄 Drag-and-Drop Reordering** — A high-performance manual reordering system to organize your workspace exactly how you want.
+- **🚨 Deadline Tracking** — Dynamic visual indicators and relative countdowns for overdue, urgent, and upcoming tasks.
+- **📌 Active Tasks Counter** — Real-time persistent overview of your total pending workload.
+- **⚡ One-Click Actions** — Engineered for speed: instantly complete, edit, or delete tasks directly from the dashboard.
+- **📖 Detailed Task View** — Rich description support with perfectly formatted date and time metadata.
+- **📈 Task Progress Tracking** — Granular completion updates (**0–100%**) with support for marking tasks as "Unsuccessful" for comprehensive productivity auditing.
+- **📓 Personal Notes** — A dedicated space for random thoughts and ideas with a minimalist editor and instant search.
+- **💰 100% Free & No-Cost Setup** — There are no hidden fees, subscriptions, or payment methods required. You own the code, you own the data, and you pay absolutely nothing to keep it running.
+- **📱 Install Anywhere** — Optimized PWA support; install on your **PC, Laptop, or Mobile** device for a seamless "Use Everywhere" experience.
+
+## 🛡️ Privacy & Security
 Security isn't a feature; it's the foundation.
-- **Zero-Ad Experience**: No tracking, no analytics, no distractions.
-- **Multi-Layered Security**: Firebase Auth + Custom Security Key + In-App App Lock.
-- **Integrated Security Architecture**: Your sensitive data is protected by advanced PIN hashing and secondary security keys.
-- **Active Session Tracking**: Real-time visibility into your login history and device activity across all platforms.
-- **Full Security Control**: By cloning this repo and setting up your own Firebase instance, you have **100% control** over your data and access.
-- **Spark Plan Optimized**: This application is specifically engineered to run efficiently on the **Firebase Free (Spark) Tier**, meaning you get a production-ready system with $0 infrastructure costs.
-- **100% Free & No-Cost Setup**: There are no hidden fees, subscriptions, or payment methods required. You own the code, you own the data, and you pay absolutely nothing to keep it running.
-- **📱 Install Anywhere**: Optimized PWA support—install on your **PC, Laptop, or Mobile** device for a seamless "Use Everywhere" experience.
+
+- **🚫 Zero-Ad & Zero-Tracking**: No tracking, no analytics, no third-party distractions. 100% focused on your data.
+- **⚙️ Full Data Sovereignty**: By cloning this repo and setting up your own Firebase instance, you have **100% control** over your infrastructure.
+- **🛡️ Multi-Layered Security**: Optimized integration of Firebase Auth + Custom Security Key + Local App PIN Lock.
+- **🔐 Dual-Phase Login**: After standard Firebase Authentication, a secondary **Security Key** verifies the database access permission.
+- **🔒 App Lock System**: Configurable PIN-lock (4/6/8 digits) with "Session-based" or "Duration-based" timeouts.
+  - **🛠️ Full In-App Control**: Once the app is unlocked, you have **full authority** to update, change, or disable your PIN at any time.
+  - **🚫 Forbidden Reset Policy**: For maximum security, there is **no "Forgot PIN" option**. Access must be regained manually via the Firebase Console (Owner only).
+- **🕵️ Device Audit**: A comprehensive real-time log of every browser and device that has accessed your account, with unique identifiers and session tracking.
+- **💰 Spark Plan Optimized**: Engineered to run efficiently on the **Firebase Free (Spark) Tier**, giving you a production-ready system with $0 infrastructure costs.
 
 ---
 
@@ -71,33 +92,6 @@ Security isn't a feature; it's the foundation.
 - **Persistent Firestore Cache**: Custom implementation of `persistentLocalCache` for instant data access even on cold starts.
 - **Atomic Context State**: State management split via dedicated Context Providers (Auth, AppLock, Tasks) to minimize re-renders.
 - **Intelligent Deduplication**: Module-level session management to prevent duplicate Firestore writes during React's StrictMode double-mounts.
-
----
-
-## ✨ Feature Deep-Dive
-
-### 🧠 Task Management Features
-
-- **📊 Professional Filtering System**
-  - **All Tasks (Default)** — Clean, ungrouped grid view for a high-level overview.
-  - **By Date** — Smart grouping with relative headers (**Today**, **Yesterday**) and full date labels.
-- **⏳ Smart Deadline Prioritization** — Automatically surfaces urgent and upcoming task deadlines at the top of your "By Date" view.
-- **🕒 Custom Time Picker** — High-precision time selection implementation with full **12-hour AM/PM** support.
-- **✅ Subtasks / Checklist** — Break complex tasks into smaller actionable steps with independent progress tracking.
-- **🔄 Drag-and-Drop Reordering** — A high-performance manual reordering system to organize your workspace exactly how you want.
-- **🚨 Deadline Tracking** — Dynamic visual indicators and relative countdowns for overdue, urgent, and upcoming tasks.
-- **📌 Active Tasks Counter** — Real-time persistent overview of your total pending workload.
-- **⚡ One-Click Actions** — Engineered for speed: instantly complete, edit, or delete tasks directly from the dashboard.
-- **📖 Detailed Task View** — Rich description support with perfectly formatted date and time metadata.
-- **📈 Task Progress Tracking** — Granular completion updates (**0–100%**) with support for marking tasks as "Unsuccessful" for comprehensive productivity auditing.
-- **📓 Personal Notes** — A dedicated space for random thoughts and ideas with a minimalist editor and instant search.
-
-### 🔐 Security & User Safety
-- **Dual-Phase Login**: After standard Firebase Authentication, a secondary **Security Key** verifies the database access permission.
-- **App Lock System**: Configurable PIN-lock (4/6/8 digits) with "Session-based" or "Duration-based" timeouts.
-  - **🛡️ Full In-App Control**: Once the app is unlocked, you have **full authority** to update, change, or disable your PIN at any time via the internal settings.
-  - **🔒 Forbidden Reset Policy**: For maximum security, there is **no "Forgot PIN" option** on the lock screen. To regain access, the owner must manually disable the lock via the Firebase Console.
-- **Device Audit**: A comprehensive real-time log of every browser and device that has accessed your account, with unique identifiers.
 
 ---
 
