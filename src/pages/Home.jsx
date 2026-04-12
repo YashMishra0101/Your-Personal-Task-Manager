@@ -3,7 +3,7 @@ import { useTasks } from "../context/TaskContext";
 import Layout from "../components/Layout";
 import TaskCard from "../components/TaskCard";
 import { Link } from "react-router-dom";
-import { Plus, LayoutGrid, Calendar } from "lucide-react";
+import { Plus, LayoutGrid, Calendar, Search } from "lucide-react";
 import { format, parseISO, isSameDay } from "date-fns";
 import { cn } from "../lib/utils";
 
@@ -12,8 +12,15 @@ export default function Home() {
   const [filterMode, setFilterMode] = useState("all"); // 'all' or 'by-date'
   const [draggedTaskId, setDraggedTaskId] = useState(null);
   const [localOrderIds, setLocalOrderIds] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
 
-  const activeTasks = tasks.filter((t) => !t.completed);
+  const activeTasks = tasks.filter((t) => {
+    const isNotCompleted = !t.completed;
+    const matchesSearch =
+      t.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (t.description || "").toLowerCase().includes(searchTerm.toLowerCase());
+    return isNotCompleted && matchesSearch;
+  });
   const tasksWithDeadlines = activeTasks.filter((t) => t.deadline);
   const orderedActiveTasks = useMemo(() => {
     // Context already sorts by manualOrder → createdAt desc.
@@ -110,106 +117,128 @@ export default function Home() {
           <div className="h-4 w-32 bg-surface-hover rounded mb-2"></div>
           <div className="h-4 w-24 bg-surface-hover rounded"></div>
         </div>
-      ) : activeTasks.length > 0 ? (
+      ) : tasks.filter(t => !t.completed).length > 0 ? (
         <div className="space-y-6">
-          {/* Filter Toggle + Active Tasks */}
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-            {/* Filter Toggle */}
-            <div className="flex items-center bg-surface p-1.5 rounded-2xl border border-border/50 shadow-sm w-fit">
-              <button
-                onClick={() => setFilterMode("all")}
-                className={cn(
-                  "flex items-center gap-2 px-4 py-2.5 rounded-xl font-semibold text-sm transition-all duration-200",
-                  filterMode === "all"
-                    ? "bg-primary text-primary-foreground shadow-md"
-                    : "text-muted-foreground hover:text-primary hover:bg-surface-hover"
-                )}
-              >
-                <LayoutGrid size={16} strokeWidth={2.5} />
-                <span>All Tasks</span>
-              </button>
-              <button
-                onClick={() => setFilterMode("by-date")}
-                className={cn(
-                  "flex items-center gap-2 px-4 py-2.5 rounded-xl font-semibold text-sm transition-all duration-200",
-                  filterMode === "by-date"
-                    ? "bg-primary text-primary-foreground shadow-md"
-                    : "text-muted-foreground hover:text-primary hover:bg-surface-hover"
-                )}
-              >
-                <Calendar size={16} strokeWidth={2.5} />
-                <span>By Date</span>
-              </button>
-            </div>
-
-            {/* Active Tasks */}
-            <div className="bg-surface p-1.5 rounded-2xl border border-border/50 shadow-sm w-fit mb-0.5">
-              <span className="flex items-center px-4 py-2.5 rounded-xl font-semibold text-sm bg-primary text-primary-foreground shadow-md">
-                {activeTasks.length} Active Tasks
-              </span>
-            </div>
+          {/* Search Bar */}
+          <div className="relative w-full max-w-2xl mx-auto sm:mx-0">
+            <Search
+              className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground/60"
+              size={18}
+            />
+            <input
+              type="text"
+              placeholder="Search your tasks..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full pl-11 pr-4 py-3.5 bg-surface border border-border/50 rounded-2xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-hidden transition-all text-sm font-semibold shadow-sm"
+            />
           </div>
 
-          {/* Tasks Display */}
-          {filterMode === "all" ? (
-            // All Tasks View - No Grouping
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {orderedActiveTasks.map((task) => (
-                <TaskCard
-                  key={task.id}
-                  task={task}
-                  draggable
-                  isDragging={draggedTaskId === task.id}
-                  onDragStart={() => handleDragStart(task.id)}
-                  onDragEnd={handleDragEnd}
-                  onDragOver={(e) => e.preventDefault()}
-                  onDrop={() => handleDropTask(task.id)}
-                />
-              ))}
+          {activeTasks.length > 0 ? (
+            <div className="space-y-6">
+              {/* Filter Toggle + Active Tasks */}
+              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+                {/* Filter Toggle */}
+                <div className="flex items-center bg-surface p-1.5 rounded-2xl border border-border/50 shadow-sm w-fit">
+                  <button
+                    onClick={() => setFilterMode("all")}
+                    className={cn(
+                      "flex items-center gap-2 px-4 py-2.5 rounded-xl font-semibold text-sm transition-all duration-200",
+                      filterMode === "all"
+                        ? "bg-primary text-primary-foreground shadow-md"
+                        : "text-muted-foreground hover:text-primary hover:bg-surface-hover"
+                    )}
+                  >
+                    <LayoutGrid size={16} strokeWidth={2.5} />
+                    <span>All Tasks</span>
+                  </button>
+                  <button
+                    onClick={() => setFilterMode("by-date")}
+                    className={cn(
+                      "flex items-center gap-2 px-4 py-2.5 rounded-xl font-semibold text-sm transition-all duration-200",
+                      filterMode === "by-date"
+                        ? "bg-primary text-primary-foreground shadow-md"
+                        : "text-muted-foreground hover:text-primary hover:bg-surface-hover"
+                    )}
+                  >
+                    <Calendar size={16} strokeWidth={2.5} />
+                    <span>By Date</span>
+                  </button>
+                </div>
+
+                {/* Active Tasks Counter */}
+                <div className="bg-surface p-1.5 rounded-2xl border border-border/50 shadow-sm w-fit mb-0.5">
+                  <span className="flex items-center px-4 py-2.5 rounded-xl font-semibold text-sm bg-primary text-primary-foreground shadow-md">
+                    {activeTasks.length} {searchTerm ? "Matching Tasks" : "Active Tasks"}
+                  </span>
+                </div>
+              </div>
+
+              {/* Tasks Display */}
+              {filterMode === "all" ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {orderedActiveTasks.map((task) => (
+                    <TaskCard
+                      key={task.id}
+                      task={task}
+                      draggable
+                      isDragging={draggedTaskId === task.id}
+                      onDragStart={() => handleDragStart(task.id)}
+                      onDragEnd={handleDragEnd}
+                      onDragOver={(e) => e.preventDefault()}
+                      onDrop={() => handleDropTask(task.id)}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <div className="space-y-8">
+                  {tasksWithDeadlines.length > 0 && (
+                    <section>
+                      <div className="flex items-center gap-3 mb-5 px-1">
+                        <div className="h-1.5 w-1.5 rounded-full bg-orange-500"></div>
+                        <h3 className="text-lg font-bold text-orange-500">Upcoming Deadlines</h3>
+                        <div className="h-px flex-1 bg-linear-to-r from-border to-transparent"></div>
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {tasksWithDeadlines.map((task) => (
+                          <TaskCard key={task.id} task={task} />
+                        ))}
+                      </div>
+                    </section>
+                  )}
+
+                  {groupTasksByDate(activeTasks).map((group) => (
+                    <section key={format(group.date, "yyyy-MM-dd")}>
+                      <div className="flex items-center gap-3 mb-5 px-1">
+                        <div className="h-1.5 w-1.5 rounded-full bg-primary"></div>
+                        <h3 className="text-lg font-bold text-primary">{formatDateHeader(group.date)}</h3>
+                        <div className="h-px flex-1 bg-linear-to-r from-border to-transparent"></div>
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {group.tasks.map((task) => (
+                          <TaskCard key={task.id} task={task} />
+                        ))}
+                      </div>
+                    </section>
+                  ))}
+                </div>
+              )}
             </div>
           ) : (
-            // By Date View - Grouped by Creation Date
-            <div className="space-y-8">
-              {/* Upcoming Deadlines Subsection */}
-              {tasksWithDeadlines.length > 0 && (
-                <section>
-                  <div className="flex items-center gap-3 mb-5 px-1">
-                    <div className="h-1.5 w-1.5 rounded-full bg-orange-500"></div>
-                    <h3 className="text-lg font-bold text-orange-500">
-                      Upcoming Deadlines
-                    </h3>
-                    <div className="px-3 py-1 bg-orange-500/10 text-orange-600 dark:text-orange-500 rounded-full text-xs font-bold">
-                      {tasksWithDeadlines.length}
-                    </div>
-                    <div className="h-px flex-1 bg-linear-to-r from-border to-transparent"></div>
-                  </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {tasksWithDeadlines.map((task) => (
-                      <TaskCard key={task.id} task={task} />
-                    ))}
-                  </div>
-                </section>
-              )}
-
-              {tasksByDate.map((group) => (
-                <section key={format(group.date, "yyyy-MM-dd")}>
-                  <div className="flex items-center gap-3 mb-5 px-1">
-                    <div className="h-1.5 w-1.5 rounded-full bg-primary"></div>
-                    <h3 className="text-lg font-bold text-primary">
-                      {formatDateHeader(group.date)}
-                    </h3>
-                    <div className="px-3 py-1 bg-primary/10 text-primary rounded-full text-xs font-bold">
-                      {group.tasks.length}
-                    </div>
-                    <div className="h-px flex-1 bg-linear-to-r from-border to-transparent"></div>
-                  </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {group.tasks.map((task) => (
-                      <TaskCard key={task.id} task={task} />
-                    ))}
-                  </div>
-                </section>
-              ))}
+            <div className="flex flex-col items-center justify-center py-20 text-center">
+              <div className="w-20 h-20 bg-surface rounded-3xl flex items-center justify-center text-primary/20 mb-4 border border-border/50 shadow-xs">
+                <Search size={32} />
+              </div>
+              <h3 className="text-xl font-bold text-primary mb-2">No matching tasks found</h3>
+              <p className="text-muted-foreground max-w-xs mx-auto text-sm">
+                Try adjusting your search terms or clear the filter.
+              </p>
+              <button 
+                onClick={() => setSearchTerm("")}
+                className="mt-6 text-primary font-bold hover:underline"
+              >
+                Clear search
+              </button>
             </div>
           )}
         </div>

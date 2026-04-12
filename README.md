@@ -90,6 +90,7 @@ Security isn't a feature; it's the foundation.
 - **⚡ One-Click Actions** — Engineered for speed: instantly complete, edit, or delete tasks directly from the dashboard.
 - **📖 Detailed Task View** — Rich description support with perfectly formatted date and time metadata.
 - **📈 Task Progress Tracking** — Granular completion updates (**0–100%**) with support for marking tasks as "Unsuccessful" for comprehensive productivity auditing.
+- **📓 Personal Notes** — A dedicated space for random thoughts and ideas with a minimalist editor and instant search.
 
 ### 🔐 Security & User Safety
 - **Dual-Phase Login**: After standard Firebase Authentication, a secondary **Security Key** verifies the database access permission.

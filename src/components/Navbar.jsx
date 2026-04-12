@@ -9,6 +9,7 @@ import {
   LogOut,
   Menu,
   X,
+  StickyNote,
 } from "lucide-react";
 import { cn } from "../lib/utils";
 import { useAuth } from "../context/AuthContext";
@@ -34,6 +35,7 @@ export default function Navbar() {
     { to: "/", icon: ListTodo, label: "My Tasks" },
     { to: "/add", icon: PlusCircle, label: "Add New Task" },
     { to: "/completed", icon: CheckCircle, label: "Completed" },
+    { to: "/notes", icon: StickyNote, label: "Notes" },
     {
       to: "/device-activity",
       icon: MonitorSmartphone,
