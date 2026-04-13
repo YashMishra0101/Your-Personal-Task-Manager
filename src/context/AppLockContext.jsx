@@ -43,7 +43,7 @@ export function AppLockProvider({ children }) {
 
   const appLockDocRef = useMemo(() => {
     if (!userId || !db) return null;
-    return doc(db, "users", userId, "settings", "appLock");
+    return doc(db, "applock", userId);
   }, [userId]);
 
   useEffect(() => {

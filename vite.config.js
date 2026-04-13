@@ -10,6 +10,8 @@ export default defineConfig({
       registerType: "autoUpdate",
       includeAssets: ["icon-192.png", "icon-512.png", "apple-touch-icon.png"],
       manifest: {
+        id: "/?version=4.0.0",
+        version: "4.0.0",
         name: "Task Manager - Organize Your Tasks Efficiently",
         short_name: "Task Manager",
         description: "A modern, secure task management app",
