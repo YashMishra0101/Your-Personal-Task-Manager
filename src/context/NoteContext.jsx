@@ -26,18 +26,7 @@ export function NoteProvider({ children }) {
   const isOnline = useNetworkStatus();
   const { currentUser } = useAuth();
 
-  // Load notes from localStorage on mount
-  useEffect(() => {
-    const cachedNotes = localStorage.getItem("notes");
-    if (cachedNotes) {
-      try {
-        setNotes(JSON.parse(cachedNotes));
-        setLoading(false);
-      } catch (e) {
-        console.error("Error parsing cached notes:", e);
-      }
-    }
-  }, []);
+
 
   // Firebase real-time listener for current user's notes
   useEffect(() => {
@@ -52,8 +41,7 @@ export function NoteProvider({ children }) {
     try {
       const q = query(
         collection(db, "notes"),
-        where("userId", "==", currentUser.uid),
-        orderBy("updatedAt", "desc")
+        where("userId", "==", currentUser.uid)
       );
 
       const unsubscribe = onSnapshot(
@@ -63,9 +51,11 @@ export function NoteProvider({ children }) {
             id: doc.id,
             ...doc.data(),
           }));
+          
+          notesData.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+          
           setNotes(notesData);
           setLoading(false);
-          localStorage.setItem("notes", JSON.stringify(notesData));
         },
         (error) => {
           console.error("Firebase notes snapshot error:", error);
@@ -91,16 +81,9 @@ export function NoteProvider({ children }) {
       color: note.color || "default",
     };
 
-    // Optimistic UI update
-    const tempId = `temp-${Date.now()}`;
-    setNotes((prev) => [{ id: tempId, ...newNote }, ...prev]);
-
     try {
-      if (db && isOnline) {
+      if (db) {
         const docRef = await addDoc(collection(db, "notes"), newNote);
-        setNotes((prev) =>
-          prev.map((n) => (n.id === tempId ? { ...n, id: docRef.id } : n))
-        );
         return docRef.id;
       }
     } catch (e) {
@@ -112,13 +95,8 @@ export function NoteProvider({ children }) {
     const updatedAt = new Date().toISOString();
     const finalUpdates = { ...updates, updatedAt };
 
-    // Optimistic UI update
-    setNotes((prev) =>
-      prev.map((n) => (n.id === noteId ? { ...n, ...finalUpdates } : n))
-    );
-
     try {
-      if (db && isOnline) {
+      if (db) {
         const noteRef = doc(db, "notes", noteId);
         await updateDoc(noteRef, finalUpdates);
       }
@@ -128,19 +106,13 @@ export function NoteProvider({ children }) {
   };
 
   const deleteNote = async (noteId) => {
-    const noteToDelete = notes.find((n) => n.id === noteId);
-    setNotes((prev) => prev.filter((n) => n.id !== noteId));
-
     try {
-      if (db && isOnline) {
+      if (db) {
         const noteRef = doc(db, "notes", noteId);
         await deleteDoc(noteRef);
       }
     } catch (e) {
       console.error("Error deleting note:", e);
-      if (noteToDelete) {
-        setNotes((prev) => [noteToDelete, ...prev].sort((a,b) => new Date(b.updatedAt) - new Date(a.updatedAt)));
-      }
     }
   };
 
