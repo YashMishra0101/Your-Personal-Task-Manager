@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from "react";
 import Layout from "../components/Layout";
 import { useAppLock } from "../context/AppLockContext";
-import { Lock, ShieldCheck, KeyRound } from "lucide-react";
+import { Lock, ShieldCheck, KeyRound, Eye, EyeOff } from "lucide-react";
 import { toast } from "sonner";
 
 export default function AppLockSettings() {
@@ -24,6 +24,7 @@ export default function AppLockSettings() {
   const [confirmPin, setConfirmPin] = useState("");
   const [lockMode, setLockMode] = useState(config?.lockMode || "every_open");
   const [saving, setSaving] = useState(false);
+  const [showPin, setShowPin] = useState(false);
 
   const durationOptions = useMemo(
     () =>
@@ -176,24 +177,42 @@ export default function AppLockSettings() {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <input
-                type="password"
-                inputMode="numeric"
-                maxLength={pinLength}
-                value={pin}
-                onChange={(e) => setPin(e.target.value.replace(/\D/g, ""))}
-                placeholder={`Enter ${pinLength}-digit PIN`}
-                className="w-full p-3 rounded-xl border border-border bg-background"
-              />
-              <input
-                type="password"
-                inputMode="numeric"
-                maxLength={pinLength}
-                value={confirmPin}
-                onChange={(e) => setConfirmPin(e.target.value.replace(/\D/g, ""))}
-                placeholder="Confirm PIN"
-                className="w-full p-3 rounded-xl border border-border bg-background"
-              />
+              <div className="relative">
+                <input
+                  type={showPin ? "text" : "password"}
+                  inputMode="numeric"
+                  maxLength={pinLength}
+                  value={pin}
+                  onChange={(e) => setPin(e.target.value.replace(/\D/g, ""))}
+                  placeholder={`Enter ${pinLength}-digit PIN`}
+                  className="w-full p-3 pr-10 rounded-xl border border-border bg-background"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPin(!showPin)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                >
+                  {showPin ? <Eye size={18} /> : <EyeOff size={18} />}
+                </button>
+              </div>
+              <div className="relative">
+                <input
+                  type={showPin ? "text" : "password"}
+                  inputMode="numeric"
+                  maxLength={pinLength}
+                  value={confirmPin}
+                  onChange={(e) => setConfirmPin(e.target.value.replace(/\D/g, ""))}
+                  placeholder="Confirm PIN"
+                  className="w-full p-3 pr-10 rounded-xl border border-border bg-background"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPin(!showPin)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                >
+                  {showPin ? <Eye size={18} /> : <EyeOff size={18} />}
+                </button>
+              </div>
             </div>
 
             <div className="flex flex-wrap gap-2">
