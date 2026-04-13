@@ -19,7 +19,7 @@ export default function ProtectedRoute({ children }) {
 
   if (loading) return null;
 
-  if (isLocked && location.pathname !== "/unlock") {
+  if (isLocked && location.pathname !== "/unlock" && location.pathname !== "/forgot-pin") {
     return <Navigate to="/unlock" replace />;
   }
 

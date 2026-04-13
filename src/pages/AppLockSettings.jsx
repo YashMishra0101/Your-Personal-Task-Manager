@@ -245,10 +245,7 @@ export default function AppLockSettings() {
           </form>
         </div>
 
-        <div className="p-4 rounded-2xl border border-border bg-surface text-xs text-muted-foreground flex items-start gap-2">
-          <KeyRound size={14} className="mt-0.5" />
-          PIN is stored as a secure hash with salt. Plain PIN is never stored.
-        </div>
+
       </div>
     </Layout>
   );

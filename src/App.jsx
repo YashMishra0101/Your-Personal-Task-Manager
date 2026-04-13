@@ -11,6 +11,7 @@ import TaskDetails from "./pages/TaskDetails";
 import DeviceActivity from "./pages/DeviceActivity";
 import AppLockSettings from "./pages/AppLockSettings";
 import AppUnlock from "./pages/AppUnlock";
+import ForgotPin from "./pages/ForgotPin";
 import Notes from "./pages/Notes";
 import ProtectedRoute from "./components/ProtectedRoute";
 import SecurityRoute from "./components/SecurityRoute";
@@ -90,6 +91,14 @@ export default function App() {
           element={
             <ProtectedRoute>
               <AppUnlock />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/forgot-pin"
+          element={
+            <ProtectedRoute>
+              <ForgotPin />
             </ProtectedRoute>
           }
         />

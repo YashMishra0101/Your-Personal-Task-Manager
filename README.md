@@ -74,7 +74,7 @@ Security isn't a feature; it's the foundation.
 - **🔐 Dual-Phase Login**: After standard Firebase Authentication, a secondary **Security Key** verifies the database access permission.
 - **🔒 App Lock System**: Configurable PIN-lock (4/6/8 digits) with "Session-based" or "Duration-based" timeouts.
   - **🛠️ Full In-App Control**: Once the app is unlocked, you have **full authority** to update, change, or disable your PIN at any time.
-  - **🚫 Forbidden Reset Policy**: For maximum security, there is **no "Forgot PIN" option**. Access must be regained manually via the Firebase Console (Owner only).
+  - **🔑 Secure Reset Policy**: User can reset PIN using both password and security key simultaneously. This prevents unauthorized users from altering the lock without full credentials.
 - **🕵️ Device Audit**: A comprehensive real-time log of every browser and device that has accessed your account, with unique identifiers and session tracking.
 - **💰 Spark Plan Optimized**: Engineered to run efficiently on the **Firebase Free (Spark) Tier**, giving you a production-ready system with $0 infrastructure costs.
 
