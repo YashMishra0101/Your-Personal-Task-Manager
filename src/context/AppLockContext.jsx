@@ -14,6 +14,7 @@ import { useAuth } from "./AuthContext";
 import { generatePinSalt, hashPin, verifyPin } from "../lib/pinSecurity";
 
 const AppLockContext = createContext();
+const APP_LOCK_CACHE_PREFIX = "appLockBootstrap:";
 
 const LOCK_OPTIONS = {
   every_open: { label: "Every app open", ttlMs: 0, useSession: false },
@@ -28,6 +29,55 @@ const LOCK_OPTIONS = {
 const UNLOCKED_UNTIL_KEY = "appLockUnlockedUntil";
 const SESSION_UNLOCKED_KEY = "appLockUnlockedSession";
 
+function getAppLockCacheKey(userId) {
+  return `${APP_LOCK_CACHE_PREFIX}${userId}`;
+}
+
+function getCachedConfig(userId) {
+  if (!userId) return null;
+
+  try {
+    const raw = localStorage.getItem(getAppLockCacheKey(userId));
+    return raw ? JSON.parse(raw) : null;
+  } catch (error) {
+    console.error("Failed to parse cached app lock config:", error);
+    return null;
+  }
+}
+
+function persistCachedConfig(userId, config) {
+  if (!userId) return;
+
+  if (!config) {
+    localStorage.removeItem(getAppLockCacheKey(userId));
+    return;
+  }
+
+  const cacheableConfig = {
+    enabled: !!config.enabled,
+    lockMode: config.lockMode || "every_open",
+    pinLength: config.pinLength || 4,
+  };
+
+  localStorage.setItem(getAppLockCacheKey(userId), JSON.stringify(cacheableConfig));
+}
+
+function resolveUnlockedState(config) {
+  if (!config?.enabled) return true;
+
+  const mode = LOCK_OPTIONS[config.lockMode] || LOCK_OPTIONS.every_open;
+  if (mode.useSession) {
+    return sessionStorage.getItem(SESSION_UNLOCKED_KEY) === "1";
+  }
+
+  if (mode.ttlMs > 0) {
+    const unlockedUntil = Number(localStorage.getItem(UNLOCKED_UNTIL_KEY) || 0);
+    return unlockedUntil > Date.now();
+  }
+
+  return false;
+}
+
 export function useAppLock() {
   const value = useContext(AppLockContext);
   if (!value) throw new Error("useAppLock must be used inside AppLockProvider");
@@ -35,27 +85,52 @@ export function useAppLock() {
 }
 
 export function AppLockProvider({ children }) {
-  const { currentUser } = useAuth();
-  const [config, setConfig] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [isUnlocked, setIsUnlocked] = useState(false);
-  const userId = currentUser?.uid || null;
+  const { currentUser, lastKnownUserId } = useAuth();
+  const bootstrapUserId = currentUser?.uid || lastKnownUserId || null;
+  const remoteUserId = currentUser?.uid || null;
+  const initialCachedConfig = getCachedConfig(bootstrapUserId);
+  const [config, setConfig] = useState(initialCachedConfig);
+  const [loading, setLoading] = useState(
+    () => !!bootstrapUserId && !initialCachedConfig
+  );
+  const [isUnlocked, setIsUnlocked] = useState(() =>
+    bootstrapUserId
+      ? initialCachedConfig
+        ? resolveUnlockedState(initialCachedConfig)
+        : false
+      : true
+  );
 
   const appLockDocRef = useMemo(() => {
-    if (!userId || !db) return null;
-    return doc(db, "applock", userId);
-  }, [userId]);
+    if (!remoteUserId || !db) return null;
+    return doc(db, "applock", remoteUserId);
+  }, [remoteUserId]);
 
   useEffect(() => {
+    const cachedConfig = getCachedConfig(bootstrapUserId);
+
     const load = async () => {
-      if (!userId || !db) {
+      if (!bootstrapUserId || !db) {
         setConfig(null);
         setIsUnlocked(true);
         setLoading(false);
         return;
       }
 
-      setLoading(true);
+      if (cachedConfig) {
+        setConfig(cachedConfig);
+        setIsUnlocked(resolveUnlockedState(cachedConfig));
+        setLoading(false);
+      } else {
+        setConfig(null);
+        setIsUnlocked(false);
+        setLoading(true);
+      }
+
+      if (!remoteUserId || !appLockDocRef) {
+        return;
+      }
+
       try {
         const snap = await getDoc(appLockDocRef);
         const incoming = snap.exists()
@@ -67,7 +142,9 @@ export function AppLockProvider({ children }) {
               pinHash: null,
               pinSalt: null,
             };
+        persistCachedConfig(remoteUserId, incoming);
         setConfig(incoming);
+        setIsUnlocked(resolveUnlockedState(incoming));
       } catch (error) {
         console.error("Failed to load app lock config:", error);
       } finally {
@@ -76,28 +153,7 @@ export function AppLockProvider({ children }) {
     };
 
     load();
-  }, [appLockDocRef, userId]);
-
-  useEffect(() => {
-    if (!config?.enabled) {
-      setIsUnlocked(true);
-      return;
-    }
-
-    const mode = LOCK_OPTIONS[config.lockMode] || LOCK_OPTIONS.every_open;
-    if (mode.useSession) {
-      setIsUnlocked(sessionStorage.getItem(SESSION_UNLOCKED_KEY) === "1");
-      return;
-    }
-
-    if (mode.ttlMs > 0) {
-      const unlockedUntil = Number(localStorage.getItem(UNLOCKED_UNTIL_KEY) || 0);
-      setIsUnlocked(unlockedUntil > Date.now());
-      return;
-    }
-
-    setIsUnlocked(false);
-  }, [config]);
+  }, [appLockDocRef, bootstrapUserId, remoteUserId]);
 
   const applyUnlockWindow = (lockMode) => {
     const mode = LOCK_OPTIONS[lockMode] || LOCK_OPTIONS.every_open;
@@ -148,6 +204,7 @@ export function AppLockProvider({ children }) {
     };
 
     await setDoc(appLockDocRef, nextConfig, { merge: true });
+    persistCachedConfig(remoteUserId, nextConfig);
     setConfig((prev) => ({
       ...(prev || {}),
       ...nextConfig,
@@ -164,6 +221,7 @@ export function AppLockProvider({ children }) {
       updatedAt: serverTimestamp(),
     };
     await setDoc(appLockDocRef, nextConfig, { merge: true });
+    persistCachedConfig(remoteUserId, nextConfig);
     setConfig((prev) => ({
       ...(prev || {}),
       ...nextConfig,
@@ -196,6 +254,7 @@ export function AppLockProvider({ children }) {
       loading,
       isLocked: !!config?.enabled && !isUnlocked,
       isUnlocked,
+      canUnlock: !!config?.enabled && !!config?.pinSalt && !!config?.pinHash,
       lockOptions: LOCK_OPTIONS,
       verifyIdentity,
       setOrUpdatePin,

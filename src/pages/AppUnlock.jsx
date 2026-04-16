@@ -1,19 +1,35 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Lock, Unlock, ShieldAlert, Eye, EyeOff } from "lucide-react";
 import { useAppLock } from "../context/AppLockContext";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useLocation } from "react-router-dom";
+import AppLockBootstrapScreen from "../components/AppLockBootstrapScreen";
 
 export default function AppUnlock() {
   const [pin, setPin] = useState("");
   const [showPin, setShowPin] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const { config, unlockWithPin } = useAppLock();
+  const { config, loading: appLockLoading, canUnlock, unlockWithPin } =
+    useAppLock();
   const navigate = useNavigate();
+  const location = useLocation();
+  const pinLength = config?.pinLength || 4;
+  const redirectTarget = location.state?.from?.pathname || "/";
+
+  useEffect(() => {
+    if (!appLockLoading && !config?.enabled) {
+      navigate("/", { replace: true });
+    }
+  }, [appLockLoading, config?.enabled, navigate]);
 
   const handleUnlock = async (e) => {
     e.preventDefault();
     setError("");
+
+    if (!canUnlock) {
+      setError("Secure startup is still finishing. Please try again.");
+      return;
+    }
 
     if (!pin) {
       setError("Please enter your PIN.");
@@ -28,12 +44,21 @@ export default function AppUnlock() {
         setLoading(false);
         return;
       }
-      navigate("/", { replace: true });
-    } catch (unlockError) {
+      navigate(redirectTarget, { replace: true });
+    } catch {
       setError("Unable to unlock app right now.");
       setLoading(false);
     }
   };
+
+  if (appLockLoading && !config) {
+    return (
+      <AppLockBootstrapScreen
+        title="Preparing App Lock"
+        message="Loading your secure PIN screen..."
+      />
+    );
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
@@ -53,11 +78,12 @@ export default function AppUnlock() {
             <input
               type={showPin ? "text" : "password"}
               inputMode="numeric"
-              maxLength={8}
+              maxLength={pinLength}
               value={pin}
               onChange={(e) => setPin(e.target.value.replace(/\D/g, ""))}
+              autoFocus
               className="w-full p-3 text-center tracking-[0.5em] text-lg rounded-xl bg-background border border-border focus:border-primary focus:ring-2 focus:ring-primary/20"
-              placeholder="••••"
+              placeholder="...."
             />
             <button
               type="button"
@@ -75,14 +101,17 @@ export default function AppUnlock() {
           )}
           <button
             type="submit"
-            disabled={loading}
+            disabled={loading || !canUnlock}
             className="w-full py-3 bg-primary text-primary-foreground rounded-xl font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg shadow-primary/25 hover:scale-[1.02] active:scale-[0.98] transition-all"
           >
             <Unlock size={16} />
-            {loading ? "Unlocking..." : "Unlock App"}
+            {loading ? "Unlocking..." : !canUnlock ? "Preparing..." : "Unlock App"}
           </button>
           <div className="text-center pt-2">
-            <Link to="/forgot-pin" className="text-sm font-semibold text-muted-foreground hover:text-primary transition-colors">
+            <Link
+              to="/forgot-pin"
+              className="text-sm font-semibold text-muted-foreground hover:text-primary transition-colors"
+            >
               Forgot PIN?
             </Link>
           </div>

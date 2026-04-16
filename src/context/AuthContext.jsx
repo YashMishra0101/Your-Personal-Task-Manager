@@ -22,6 +22,7 @@ import { auth, db } from "../lib/firebase";
 import { getDeviceMetadata } from "../lib/deviceInfo";
 
 const AuthContext = createContext();
+const LAST_AUTH_USER_KEY = "lastAuthenticatedUserId";
 
 export function useAuth() {
   return useContext(AuthContext);
@@ -37,12 +38,15 @@ export function useAuth() {
 const sessionCreationPromises = new Map();
 
 export function AuthProvider({ children }) {
-  const [currentUser, setCurrentUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [currentUser, setCurrentUser] = useState(() => auth?.currentUser || null);
+  const [loading, setLoading] = useState(() => !!auth && !auth.currentUser);
   const [isSecurityVerified, setIsSecurityVerified] = useState(false);
   const [deviceSessions, setDeviceSessions] = useState([]);
   const [deviceSessionsLoading, setDeviceSessionsLoading] = useState(true);
   const [deduplicatedSessionsCount, setDeduplicatedSessionsCount] = useState(0);
+  const [lastKnownUserId, setLastKnownUserId] = useState(
+    () => auth?.currentUser?.uid || localStorage.getItem(LAST_AUTH_USER_KEY) || null
+  );
   const [activeSessionId, setActiveSessionId] = useState(
     localStorage.getItem("activeSessionId") || null
   );
@@ -162,6 +166,10 @@ export function AuthProvider({ children }) {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setCurrentUser(user);
       setLoading(false);
+      if (user?.uid) {
+        setLastKnownUserId(user.uid);
+        localStorage.setItem(LAST_AUTH_USER_KEY, user.uid);
+      }
       // If user logs out, clear verification
       if (!user) {
         if (activeSessionIdRef.current) {
@@ -169,6 +177,8 @@ export function AuthProvider({ children }) {
           localStorage.removeItem("activeSessionId");
           setActiveSessionId(null);
         }
+        setLastKnownUserId(null);
+        localStorage.removeItem(LAST_AUTH_USER_KEY);
         setIsSecurityVerified(false);
         localStorage.removeItem("isSecurityVerified");
       }
@@ -410,6 +420,8 @@ export function AuthProvider({ children }) {
 
   const value = {
     currentUser,
+    authLoading: loading,
+    lastKnownUserId,
     isSecurityVerified,
     login,
     verifySecurityKey,
@@ -423,9 +435,5 @@ export function AuthProvider({ children }) {
     deduplicatedSessionsCount,
   };
 
-  return (
-    <AuthContext.Provider value={value}>
-      {!loading && children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
