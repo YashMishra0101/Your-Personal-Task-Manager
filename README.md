@@ -157,7 +157,6 @@ Security isn't a feature; it's the foundation.
    VITE_FIREBASE_STORAGE_BUCKET=your_project_id.firebasestorage.app
    VITE_FIREBASE_MESSAGING_SENDER_ID=your_messaging_sender_id
    VITE_FIREBASE_APP_ID=your_app_id
-   # VITE_FIREBASE_VAPID_KEY=your_vapid_key_if_you_use_push_notifications (optional)
    ```
 
 ### 🏁 6. Start Developing
