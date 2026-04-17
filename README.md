@@ -63,7 +63,10 @@ This is more than just another **To-Do List**. It is a **Production-Ready Task M
 - **📈 Task Progress Tracking** — Granular completion updates (**0–100%**) with support for marking tasks as "Unsuccessful" for comprehensive productivity auditing.
 - **📓 Personal Notes** — A dedicated space for random thoughts and ideas with a minimalist editor and instant search.
 - **💰 100% Free & No-Cost Setup** — There are no hidden fees, subscriptions, or payment methods required. You own the code, you own the data, and you pay absolutely nothing to keep it running.
-- **📱 Install Anywhere** — Optimized PWA support; install on your **PC, Laptop, or Mobile** device for a seamless "Use Everywhere" experience.
+- **📱 Install Anywhere (Progressive Web App)** — Engineered with PWA support, allowing native-like installation. 
+  - **Mobile:** Open the hosted link in your browser, tap the browser menu, and select "**Add to Home screen**".
+  - **Desktop/Laptop:** Click the **Install** icon located directly inside the browser's URL address bar.
+  - > **⚠️ Browser Compatibility Note:** It is highly recommended to use **Google Chrome** for installation. Some browsers (like Brave) may occasionally block PWA prompts or hide the install buttons on both mobile and desktop platforms.
 
 ## 🛡️ Privacy & Security
 Security isn't a feature; it's the foundation.
