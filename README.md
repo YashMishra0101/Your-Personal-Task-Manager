@@ -130,7 +130,7 @@ Security isn't a feature; it's the foundation.
 2. **Enable Authentication**:
    - Navigate to **Build > Authentication**.
    - Enable the **Email/Password** provider.
-   - (Optional) Create your primary user account here or use the app's login flow to register if enabled in rules.
+   - **Create Your Account**: You have to create your login email and password directly inside the Firebase Authentication console. For security reasons, the app only has a "Login" page and does not have a "Create Account" page. You will use these Firebase credentials to log into your Task Manager.
 
 3. **Create Firestore Database**:
    - Navigate to **Build > Firestore Database**.
@@ -140,7 +140,7 @@ Security isn't a feature; it's the foundation.
 4. **Initialize Security Key**:
    - In Firestore, create a collection named `security`.
    - Create a document with the exact ID `key`.
-   - Add a field named `securityKey` (String) and set its value (e.g., `MySecretKey123`).
+   - Add a field named `securityKey` (String) and set its value (e.g., `8175BSPA@&+?ctje`).
 
 5. **Register Web App**:
    - Go to **Project Settings (⚙️ icon)**.
