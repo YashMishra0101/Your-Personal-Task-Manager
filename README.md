@@ -128,21 +128,41 @@ Security isn't a feature; it's the foundation.
    - **Plan**: The free **Spark Plan** is totally sufficient for this application.
 
 2. **Enable Authentication**:
-   - Navigate to **Build > Authentication**.
-   - Enable the **Email/Password** provider.
+   - In the Firebase console navigation menu, click **Build** to open the dropdown.
+   - Click on **Authentication**.
    - **Create Your Account**: You have to create your login email and password directly inside the Firebase Authentication console. For security reasons, the app only has a "Login" page and does not have a "Create Account" page. You will use these Firebase credentials to log into your Task Manager.
 
 3. **Create Firestore Database**:
-   - Navigate to **Build > Firestore Database**.
+   - In the navigation menu, click **Build** to open the dropdown.
+   - Click on **Firestore Database**.
    - Create a database in **Production Mode** (or test mode if you're quick, but production is recommended).
    - Choose a location nearest to you.
 
-4. **Initialize Security Key**:
+4. **Configure Firestore Database Rules**:
+   For your application to read and save data correctly when you first set it up, you must allow read/write access in your Firestore rules.
+   - In the Firebase console navigation menu, click **Build** to open the dropdown.
+   - Click on **Firestore Database**.
+   - Click on the **Rules** tab.
+   - In the code editor provided, change the default `false` value to `true` so it looks exactly like this:
+   ```javascript
+   rules_version = '2';
+   service cloud.firestore {
+     match /databases/{database}/documents {
+       match /{document=**} {
+         allow read, write: if true;
+       }
+     }
+   }
+   ```
+   > [!WARNING]
+   > This allows open access for local development. Before going live to the public, you should update these to secure production rules.
+
+5. **Initialize Security Key**:
    - In Firestore, create a collection named `security`.
    - Create a document with the exact ID `key`.
    - Add a field named `securityKey` (String) and set its value (e.g., `8175BSPA@&+?ctje`).
 
-5. **Register Web App**:
+6. **Register Web App**:
    - Go to **Project Settings (⚙️ icon)**.
    - Click the `</>` icon at the bottom to register a Web App.
    - Rename the provided `.env.example` file in your root folder to `.env`. This `.env` file is where you will add your credentials.
@@ -159,7 +179,7 @@ Security isn't a feature; it's the foundation.
    VITE_FIREBASE_APP_ID=your_app_id
    ```
 
-### 🏁 6. Start Developing
+### 🏁 7. Start Developing
    ```bash
    pnpm dev
    ```
