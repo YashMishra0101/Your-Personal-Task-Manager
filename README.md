@@ -142,23 +142,23 @@ Security isn't a feature; it's the foundation.
    - Choose a location nearest to you.
 
 4. **Configure Firestore Database Rules**:
-   For your application to read and save data correctly when you first set it up, you must allow read/write access in your Firestore rules.
+   To keep your database safe from public attackers while still allowing your app to work, you need to set up rules that only grant access to logged-in users.
    - In the Firebase console navigation menu, click **Build** to open the dropdown.
    - Click on **Firestore Database**.
    - Click on the **Rules** tab.
-   - In the code editor provided, change the default `false` value to `true` so it looks exactly like this:
+   - By default, the code editor will probably say `false`. Replace whatever is there with this exact code:
    ```javascript
    rules_version = '2';
    service cloud.firestore {
      match /databases/{database}/documents {
        match /{document=**} {
-         allow read, write: if true;
+         allow read, write: if request.auth != null;
        }
      }
    }
    ```
-   > [!WARNING]
-   > This allows open access for local development. Before going live to the public, you should update these to secure production rules.
+   > [!TIP]
+   > **What does this do?** It tells Firebase to completely block anyone trying to read or delete your database from the internet — *unless* they are currently logged into an account you created!
 
 5. **Initialize Security Key**:
    - In Firestore, create a collection named `security`.
