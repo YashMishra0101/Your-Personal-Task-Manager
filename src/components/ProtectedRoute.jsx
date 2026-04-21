@@ -11,7 +11,7 @@ export default function ProtectedRoute({ children }) {
   const isUnlockPath =
     location.pathname === "/unlock" || location.pathname === "/forgot-pin";
 
-  if (authLoading && !currentUser) {
+  if (authLoading) {
     return <AppLockBootstrapScreen />;
   }
 

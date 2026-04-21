@@ -25,6 +25,10 @@ const AuthContext = createContext();
 const LAST_AUTH_USER_KEY = "lastAuthenticatedUserId";
 const SECURITY_VERIFIED_KEY = "isSecurityVerified";
 const SECURITY_VERIFIED_USER_KEY = "securityVerifiedUserId";
+const ACTIVE_SESSION_ID_KEY = "activeSessionId";
+const ACTIVE_SESSION_USER_KEY = "activeSessionUserId";
+const SESSION_TTL_MS = 24 * 60 * 60 * 1000;
+const CLIENT_SESSION_ID_KEY = "clientSessionId";
 
 export function useAuth() {
   return useContext(AuthContext);
@@ -41,8 +45,16 @@ const sessionCreationPromises = new Map();
 
 export function AuthProvider({ children }) {
   const [currentUser, setCurrentUser] = useState(() => auth?.currentUser || null);
-  const [loading, setLoading] = useState(() => !!auth && !auth.currentUser);
-  const [isSecurityVerified, setIsSecurityVerified] = useState(false);
+  const [loading, setLoading] = useState(() => !!auth);
+  const [isSecurityVerified, setIsSecurityVerified] = useState(() => {
+    // Eagerly restore local session auth to prevent redirect flashes on fast reloads
+    const savedUser = localStorage.getItem(LAST_AUTH_USER_KEY);
+    if (!savedUser) return false;
+    return (
+      localStorage.getItem(SECURITY_VERIFIED_KEY) === "true" &&
+      localStorage.getItem(SECURITY_VERIFIED_USER_KEY) === savedUser
+    );
+  });
   const [deviceSessions, setDeviceSessions] = useState([]);
   const [deviceSessionsLoading, setDeviceSessionsLoading] = useState(true);
   const [deduplicatedSessionsCount, setDeduplicatedSessionsCount] = useState(0);
@@ -50,15 +62,19 @@ export function AuthProvider({ children }) {
     () => auth?.currentUser?.uid || localStorage.getItem(LAST_AUTH_USER_KEY) || null
   );
   const [activeSessionId, setActiveSessionId] = useState(
-    localStorage.getItem("activeSessionId") || null
+    localStorage.getItem(ACTIVE_SESSION_ID_KEY) || null
   );
   const activeSessionIdRef = useRef(activeSessionId);
   const duplicateCleanupInFlightRef = useRef(false);
 
-  const SESSION_TTL_MS = 24 * 60 * 60 * 1000;
-  const CLIENT_SESSION_ID_KEY = "clientSessionId";
+  function getStoredActiveSessionId(userId) {
+    const sessionId = localStorage.getItem(ACTIVE_SESSION_ID_KEY);
+    const sessionUserId = localStorage.getItem(ACTIVE_SESSION_USER_KEY);
+    if (!sessionId || (sessionUserId && sessionUserId !== userId)) return null;
+    return sessionId;
+  }
 
-  function hasStoredSecurityVerification(userId) {
+  function hasStoredFullAuthMarker(userId) {
     return (
       !!userId &&
       localStorage.getItem(SECURITY_VERIFIED_KEY) === "true" &&
@@ -72,8 +88,82 @@ export function AuthProvider({ children }) {
   }
 
   function clearSecurityVerification() {
+    sessionStorage.removeItem(SECURITY_VERIFIED_KEY);
+    sessionStorage.removeItem(SECURITY_VERIFIED_USER_KEY);
     localStorage.removeItem(SECURITY_VERIFIED_KEY);
     localStorage.removeItem(SECURITY_VERIFIED_USER_KEY);
+  }
+
+  function storeActiveSession(userId, sessionId) {
+    localStorage.setItem(ACTIVE_SESSION_ID_KEY, sessionId);
+    localStorage.setItem(ACTIVE_SESSION_USER_KEY, userId);
+    setActiveSessionId(sessionId);
+  }
+
+  function clearActiveSession() {
+    localStorage.removeItem(ACTIVE_SESSION_ID_KEY);
+    localStorage.removeItem(ACTIVE_SESSION_USER_KEY);
+    setActiveSessionId(null);
+  }
+
+  function timestampToMillis(value) {
+    if (!value) return null;
+    if (value.toDate) return value.toDate().getTime();
+    if (typeof value.seconds === "number") return value.seconds * 1000;
+
+    const parsed = new Date(value).getTime();
+    return Number.isNaN(parsed) ? null : parsed;
+  }
+
+  function isSessionExpired(session) {
+    const expiresAt = timestampToMillis(session.expiresAt);
+    return !!expiresAt && expiresAt <= Date.now();
+  }
+
+  async function restoreVerifiedSession(userId) {
+    if (!hasStoredFullAuthMarker(userId)) {
+      clearSecurityVerification();
+      clearActiveSession();
+      return false;
+    }
+
+    const storedSessionId = getStoredActiveSessionId(userId);
+    if (!db || !storedSessionId) {
+      // We are verified locally, but cannot reach DB or lack a session ID. Trust local marker.
+      return true;
+    }
+
+    try {
+      // Check the remote session status securely to see if they were logged out remotely
+      const sessionSnap = await getDoc(doc(db, "deviceSessions", storedSessionId));
+      if (sessionSnap.exists()) {
+        const session = sessionSnap.data();
+        const remotelyLoggedOut = session.status !== "active";
+        
+        if (remotelyLoggedOut || isSessionExpired(session)) {
+          clearSecurityVerification();
+          clearActiveSession();
+          return false;
+        }
+
+        // If it's valid, update the keepalive markers invisibly
+        await updateDoc(sessionSnap.ref, {
+          authenticationState: "fully_authenticated",
+          passwordVerified: true,
+          securityKeyVerified: true,
+          lastSeenAt: serverTimestamp(),
+          expiresAt: new Date(Date.now() + SESSION_TTL_MS),
+        });
+      }
+
+      storeActiveSession(userId, storedSessionId);
+      return true;
+    } catch (error) {
+      // CRITICAL FIX: If the DB fetch fails due to network, permissions, cache, etc.,
+      // DO NOT force logout. Trust the persistent local storage session markers to allow a seamless refresh!
+      console.warn("Non-fatal: Could not verify session against DB. Trusting persistent local session.", error);
+      return true;
+    }
   }
 
   useEffect(() => {
@@ -91,8 +181,12 @@ export function AuthProvider({ children }) {
     return generated;
   }
 
-  async function createDeviceSession(user) {
+  async function createDeviceSession(
+    user,
+    { secondFactorVerified = false } = {}
+  ) {
     if (!db || !user) return null;
+    if (!secondFactorVerified) return null;
 
     // Derive the idempotency key for this browser tab session.
     // getOrCreateClientSessionId writes to sessionStorage on first call, so any
@@ -120,8 +214,14 @@ export function AuthProvider({ children }) {
           const existingData = existing.data();
 
           if (existingData.status !== "logged_out") {
-            localStorage.setItem("activeSessionId", existing.id);
-            setActiveSessionId(existing.id);
+            await updateDoc(existing.ref, {
+              authenticationState: "fully_authenticated",
+              passwordVerified: true,
+              securityKeyVerified: true,
+              lastSeenAt: serverTimestamp(),
+              expiresAt: new Date(Date.now() + SESSION_TTL_MS),
+            });
+            storeActiveSession(user.uid, existing.id);
             return existing.id;
           }
         }
@@ -136,6 +236,9 @@ export function AuthProvider({ children }) {
           userId: user.uid,
           clientSessionId,
           status: "active",
+          authenticationState: "fully_authenticated",
+          passwordVerified: true,
+          securityKeyVerified: true,
           loginAt: serverTimestamp(),
           clientLoginAt: new Date(),
           lastSeenAt: serverTimestamp(),
@@ -146,8 +249,7 @@ export function AuthProvider({ children }) {
           ...metadata,
         });
 
-        localStorage.setItem("activeSessionId", docRef.id);
-        setActiveSessionId(docRef.id);
+        storeActiveSession(user.uid, docRef.id);
         return docRef.id;
       } finally {
         // Release the lock so fresh logins after logout start a new promise
@@ -179,52 +281,34 @@ export function AuthProvider({ children }) {
       return;
     }
 
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setCurrentUser(user);
-      setLoading(false);
       if (user?.uid) {
         setLastKnownUserId(user.uid);
         localStorage.setItem(LAST_AUTH_USER_KEY, user.uid);
-        setIsSecurityVerified(hasStoredSecurityVerification(user.uid));
+        setIsSecurityVerified(await restoreVerifiedSession(user.uid));
       }
       // If user logs out, clear verification
       if (!user) {
         if (activeSessionIdRef.current) {
           markSessionLoggedOut(activeSessionIdRef.current, "session_ended");
-          localStorage.removeItem("activeSessionId");
-          setActiveSessionId(null);
+          clearActiveSession();
         }
         setLastKnownUserId(null);
         localStorage.removeItem(LAST_AUTH_USER_KEY);
         setIsSecurityVerified(false);
         clearSecurityVerification();
       }
+      setLoading(false);
     });
 
     return unsubscribe;
+    // Subscribe once; the callback restores auth state from storage/Firestore.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
-    if (!db || !currentUser || !isSecurityVerified || activeSessionId) return;
-
-    let cancelled = false;
-    const ensureSession = async () => {
-      try {
-        const newSessionId = await createDeviceSession(currentUser);
-        if (cancelled || !newSessionId) return;
-      } catch (error) {
-        console.error("Failed to initialize device session:", error);
-      }
-    };
-
-    ensureSession();
-    return () => {
-      cancelled = true;
-    };
-  }, [activeSessionId, currentUser, isSecurityVerified]);
-
-  useEffect(() => {
-    if (!db || !currentUser) {
+    if (!db || !currentUser || !isSecurityVerified) {
       setDeviceSessions([]);
       setDeviceSessionsLoading(false);
       return;
@@ -253,10 +337,17 @@ export function AuthProvider({ children }) {
     );
 
     return unsubscribe;
-  }, [currentUser]);
+  }, [currentUser, isSecurityVerified]);
 
   useEffect(() => {
-    if (!db || !currentUser || deviceSessions.length === 0) return;
+    if (
+      !db ||
+      !currentUser ||
+      !isSecurityVerified ||
+      deviceSessions.length === 0
+    ) {
+      return;
+    }
     if (duplicateCleanupInFlightRef.current) return;
 
     const activeWithClientId = deviceSessions.filter(
@@ -315,7 +406,7 @@ export function AuthProvider({ children }) {
       .finally(() => {
         duplicateCleanupInFlightRef.current = false;
       });
-  }, [currentUser, deviceSessions]);
+  }, [currentUser, deviceSessions, isSecurityVerified]);
 
   useEffect(() => {
     if (!db || !currentUser || !isSecurityVerified || !activeSessionId) return;
@@ -360,9 +451,8 @@ export function AuthProvider({ children }) {
     try {
       clearSecurityVerification();
       setIsSecurityVerified(false);
-      localStorage.removeItem("activeSessionId");
+      clearActiveSession();
       sessionStorage.removeItem(CLIENT_SESSION_ID_KEY);
-      setActiveSessionId(null);
 
       // 1. Authenticate with Firebase
       const userCredential = await signInWithEmailAndPassword(
@@ -392,7 +482,9 @@ export function AuthProvider({ children }) {
       if (securitySnap.exists()) {
         const validKey = securitySnap.data().securityKey;
         if (inputKey === validKey) {
-          const sessionId = await createDeviceSession(authenticatedUser);
+          const sessionId = await createDeviceSession(authenticatedUser, {
+            secondFactorVerified: true,
+          });
           setIsSecurityVerified(true);
           storeSecurityVerification(authenticatedUser.uid);
           return !!sessionId;
@@ -426,8 +518,7 @@ export function AuthProvider({ children }) {
     if (!auth) return;
     if (activeSessionId) {
       await markSessionLoggedOut(activeSessionId, "manual_logout");
-      localStorage.removeItem("activeSessionId");
-      setActiveSessionId(null);
+      clearActiveSession();
     }
     sessionStorage.removeItem(CLIENT_SESSION_ID_KEY);
     setIsSecurityVerified(false);

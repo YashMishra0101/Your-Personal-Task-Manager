@@ -1,6 +1,7 @@
 import React from "react";
 import { Navigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import AppLockBootstrapScreen from "./AppLockBootstrapScreen";
 
 import { auth } from "../lib/firebase";
 
@@ -11,7 +12,11 @@ import { auth } from "../lib/firebase";
  * Allows access regardless of security key verification status
  */
 export default function SecurityRoute({ children }) {
-  const { currentUser } = useAuth();
+  const { currentUser, isSecurityVerified, authLoading } = useAuth();
+
+  if (authLoading) {
+    return <AppLockBootstrapScreen />;
+  }
 
   // Only check if user is logged in (has email/password auth)
   // Don't check security verification - that's what this page is for!
@@ -19,6 +24,10 @@ export default function SecurityRoute({ children }) {
   // happens before context updates.
   if (!currentUser && !auth?.currentUser) {
     return <Navigate to="/login" replace />;
+  }
+
+  if (isSecurityVerified) {
+    return <Navigate to="/" replace />;
   }
 
   return children;

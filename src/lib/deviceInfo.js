@@ -39,6 +39,9 @@ export function getDeviceMetadata() {
     deviceType: detectDeviceType(userAgent),
     browser: detectBrowser(userAgent),
     os: detectOs(userAgent),
+    platform: navigator.platform || "Unknown Platform",
+    language: navigator.language || "Unknown Language",
+    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || "Unknown Timezone",
     userAgent,
   };
 }
