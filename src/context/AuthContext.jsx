@@ -23,6 +23,8 @@ import { getDeviceMetadata } from "../lib/deviceInfo";
 
 const AuthContext = createContext();
 const LAST_AUTH_USER_KEY = "lastAuthenticatedUserId";
+const SECURITY_VERIFIED_KEY = "isSecurityVerified";
+const SECURITY_VERIFIED_USER_KEY = "securityVerifiedUserId";
 
 export function useAuth() {
   return useContext(AuthContext);
@@ -55,6 +57,24 @@ export function AuthProvider({ children }) {
 
   const SESSION_TTL_MS = 24 * 60 * 60 * 1000;
   const CLIENT_SESSION_ID_KEY = "clientSessionId";
+
+  function hasStoredSecurityVerification(userId) {
+    return (
+      !!userId &&
+      localStorage.getItem(SECURITY_VERIFIED_KEY) === "true" &&
+      localStorage.getItem(SECURITY_VERIFIED_USER_KEY) === userId
+    );
+  }
+
+  function storeSecurityVerification(userId) {
+    localStorage.setItem(SECURITY_VERIFIED_KEY, "true");
+    localStorage.setItem(SECURITY_VERIFIED_USER_KEY, userId);
+  }
+
+  function clearSecurityVerification() {
+    localStorage.removeItem(SECURITY_VERIFIED_KEY);
+    localStorage.removeItem(SECURITY_VERIFIED_USER_KEY);
+  }
 
   useEffect(() => {
     activeSessionIdRef.current = activeSessionId;
@@ -154,10 +174,6 @@ export function AuthProvider({ children }) {
   }
 
   useEffect(() => {
-    // Check local storage for verification status on load
-    const verified = localStorage.getItem("isSecurityVerified") === "true";
-    setIsSecurityVerified(verified);
-
     if (!auth) {
       setLoading(false);
       return;
@@ -169,6 +185,7 @@ export function AuthProvider({ children }) {
       if (user?.uid) {
         setLastKnownUserId(user.uid);
         localStorage.setItem(LAST_AUTH_USER_KEY, user.uid);
+        setIsSecurityVerified(hasStoredSecurityVerification(user.uid));
       }
       // If user logs out, clear verification
       if (!user) {
@@ -180,7 +197,7 @@ export function AuthProvider({ children }) {
         setLastKnownUserId(null);
         localStorage.removeItem(LAST_AUTH_USER_KEY);
         setIsSecurityVerified(false);
-        localStorage.removeItem("isSecurityVerified");
+        clearSecurityVerification();
       }
     });
 
@@ -188,7 +205,7 @@ export function AuthProvider({ children }) {
   }, []);
 
   useEffect(() => {
-    if (!db || !currentUser || activeSessionId) return;
+    if (!db || !currentUser || !isSecurityVerified || activeSessionId) return;
 
     let cancelled = false;
     const ensureSession = async () => {
@@ -204,7 +221,7 @@ export function AuthProvider({ children }) {
     return () => {
       cancelled = true;
     };
-  }, [activeSessionId, currentUser]);
+  }, [activeSessionId, currentUser, isSecurityVerified]);
 
   useEffect(() => {
     if (!db || !currentUser) {
@@ -301,7 +318,7 @@ export function AuthProvider({ children }) {
   }, [currentUser, deviceSessions]);
 
   useEffect(() => {
-    if (!db || !currentUser || !activeSessionId) return;
+    if (!db || !currentUser || !isSecurityVerified || !activeSessionId) return;
 
     const sendHeartbeat = async () => {
       try {
@@ -333,7 +350,7 @@ export function AuthProvider({ children }) {
       clearInterval(heartbeat);
       document.removeEventListener("visibilitychange", handleVisibility);
     };
-  }, [activeSessionId, currentUser]);
+  }, [activeSessionId, currentUser, isSecurityVerified]);
 
   async function login(email, password) {
     if (!auth) {
@@ -341,6 +358,12 @@ export function AuthProvider({ children }) {
     }
 
     try {
+      clearSecurityVerification();
+      setIsSecurityVerified(false);
+      localStorage.removeItem("activeSessionId");
+      sessionStorage.removeItem(CLIENT_SESSION_ID_KEY);
+      setActiveSessionId(null);
+
       // 1. Authenticate with Firebase
       const userCredential = await signInWithEmailAndPassword(
         auth,
@@ -350,7 +373,7 @@ export function AuthProvider({ children }) {
       setCurrentUser(userCredential.user);
       return userCredential;
     } catch (error) {
-      throw new Error("Invalid credentials.");
+      throw new Error("Invalid credentials.", { cause: error });
     }
   }
 
@@ -358,26 +381,35 @@ export function AuthProvider({ children }) {
     if (!db) throw new Error("Database unavailable.");
 
     try {
+      const authenticatedUser = currentUser || auth?.currentUser;
+      if (!authenticatedUser?.uid) {
+        throw new Error("Authentication required.");
+      }
+
       const securityRef = doc(db, "security", "key");
       const securitySnap = await getDoc(securityRef);
 
       if (securitySnap.exists()) {
         const validKey = securitySnap.data().securityKey;
         if (inputKey === validKey) {
+          const sessionId = await createDeviceSession(authenticatedUser);
           setIsSecurityVerified(true);
-          localStorage.setItem("isSecurityVerified", "true");
-          return true;
+          storeSecurityVerification(authenticatedUser.uid);
+          return !!sessionId;
         }
       }
       throw new Error("Invalid Security Key.");
     } catch (error) {
       if (error.message === "Invalid Security Key.") throw error;
+      if (error.message === "Authentication required.") throw error;
       console.error("Security check failed:", error);
-      throw new Error("Validation failed. Please try again.");
+      throw new Error("Validation failed. Please try again.", {
+        cause: error,
+      });
     }
   }
 
-  async function signup(email, password) {
+  async function signup() {
     throw new Error("Sign up is disabled for this personal application.");
   }
 
@@ -399,7 +431,7 @@ export function AuthProvider({ children }) {
     }
     sessionStorage.removeItem(CLIENT_SESSION_ID_KEY);
     setIsSecurityVerified(false);
-    localStorage.removeItem("isSecurityVerified");
+    clearSecurityVerification();
     return signOut(auth);
   }
 
