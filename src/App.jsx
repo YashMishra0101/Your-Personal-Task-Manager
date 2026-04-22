@@ -13,6 +13,7 @@ import AppLockSettings from "./pages/AppLockSettings";
 import AppUnlock from "./pages/AppUnlock";
 import ForgotPin from "./pages/ForgotPin";
 import Notes from "./pages/Notes";
+import NoteDetails from "./pages/NoteDetails";
 import ProtectedRoute from "./components/ProtectedRoute";
 import SecurityRoute from "./components/SecurityRoute";
 
@@ -107,6 +108,14 @@ export default function App() {
           element={
             <ProtectedRoute>
               <TaskDetails />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/note/:id"
+          element={
+            <ProtectedRoute>
+              <NoteDetails />
             </ProtectedRoute>
           }
         />

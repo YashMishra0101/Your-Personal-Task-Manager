@@ -112,6 +112,7 @@ export function TaskProvider({ children }) {
         ? task.completionPercentage
         : 0;
     const isUnsuccessful = !!task.isUnsuccessful;
+    const progressDisabled = !!task.progressDisabled;
 
     const newTask = {
       ...task,
@@ -120,6 +121,7 @@ export function TaskProvider({ children }) {
         task.includeLastDay !== undefined ? task.includeLastDay : true,
       completionPercentage,
       isUnsuccessful,
+      progressDisabled,
       completed: false,
       createdAt: new Date().toISOString(),
     };
@@ -135,6 +137,7 @@ export function TaskProvider({ children }) {
             task.includeLastDay !== undefined ? task.includeLastDay : true,
           completionPercentage,
           isUnsuccessful,
+          progressDisabled,
           completed: false,
           createdAt: new Date().toISOString(),
         });

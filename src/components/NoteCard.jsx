@@ -2,8 +2,10 @@ import React from "react";
 import { format, parseISO } from "date-fns";
 import { Trash2, Edit3 } from "lucide-react";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 
 export default function NoteCard({ note, onEdit, onDelete }) {
+  const navigate = useNavigate();
   const date = note.updatedAt ? parseISO(note.updatedAt) : new Date();
 
   return (
@@ -13,7 +15,7 @@ export default function NoteCard({ note, onEdit, onDelete }) {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.95 }}
       whileHover={{ y: -4 }}
-      onClick={() => onEdit(note, false)}
+      onClick={() => navigate(`/note/${note.id}`)}
       className="group bg-surface hover:bg-surface-hover border border-border/50 rounded-2xl p-5 shadow-xs transition-all duration-300 flex flex-col h-full cursor-pointer"
     >
       <div className="flex justify-between items-start mb-3">

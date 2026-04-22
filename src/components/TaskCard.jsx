@@ -35,7 +35,9 @@ export default function TaskCard({
       : task.completed
       ? 100
       : 0;
-  const completionLabel = task.isUnsuccessful
+  const completionLabel = task.progressDisabled
+    ? "Progress disabled"
+    : task.isUnsuccessful
     ? "Unsuccessful"
     : `${completionPercentage}% complete`;
 
@@ -116,7 +118,7 @@ export default function TaskCard({
           >
             {task.title}
           </h3>
-          {task.completed && (
+          {task.completed && !task.progressDisabled && (
             <p className="mt-1 text-[11px] font-semibold text-muted-foreground">
               {completionLabel}
             </p>

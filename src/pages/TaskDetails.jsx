@@ -10,8 +10,9 @@ import {
   Trash2,
   CheckCircle,
   Circle,
-  RotateCcw,
   CalendarCheck,
+  ToggleLeft,
+  ToggleRight,
 } from "lucide-react";
 import { format, isPast, parseISO, differenceInMinutes } from "date-fns";
 import { formatDeadlineDisplay } from "../lib/timeUtils";
@@ -30,6 +31,8 @@ export default function TaskDetails() {
   const [completionPercentage, setCompletionPercentage] = useState(0);
   const [isUnsuccessful, setIsUnsuccessful] = useState(false);
   const [isSavingProgress, setIsSavingProgress] = useState(false);
+  const [progressDisabled, setProgressDisabled] = useState(false);
+  const [isTogglingProgress, setIsTogglingProgress] = useState(false);
 
   useEffect(() => {
     const foundTask = tasks.find((t) => t.id === id);
@@ -41,6 +44,7 @@ export default function TaskDetails() {
           : 0
       );
       setIsUnsuccessful(!!foundTask.isUnsuccessful);
+      setProgressDisabled(!!foundTask.progressDisabled);
     }
     setLoading(false);
   }, [id, tasks]);
@@ -137,7 +141,7 @@ export default function TaskDetails() {
   };
 
   const handleSaveProgress = async () => {
-    if (!task) return;
+    if (!task || task.completed) return;
     try {
       setIsSavingProgress(true);
       await updateTask(task.id, {
@@ -152,45 +156,75 @@ export default function TaskDetails() {
     }
   };
 
+  const handleToggleProgressDisabled = async () => {
+    if (!task || task.completed) return;
+    const next = !progressDisabled;
+    try {
+      setIsTogglingProgress(true);
+      await updateTask(task.id, { progressDisabled: next });
+      setProgressDisabled(next);
+      toast.success(next ? "Task progress tracking disabled" : "Task progress tracking enabled");
+    } catch (error) {
+      toast.error("Failed to update progress setting");
+    } finally {
+      setIsTogglingProgress(false);
+    }
+  };
+
   return (
     <Layout title="Task Details">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 py-3 pb-24">
         {/* Navigation & Actions */}
         <div className="flex flex-col gap-4 mb-10">
-          {/* Back Button */}
-          <button
-            onClick={() => navigate(-1)}
-            className="flex items-center gap-2 px-4 py-3 bg-transparent border border-border/60 text-muted-foreground hover:bg-muted/50 hover:text-foreground rounded-2xl transition-all font-semibold active:scale-95 group self-start"
-          >
-            <ArrowLeft size={20} className="transition-transform group-hover:-translate-x-1" />
-            <span>Back</span>
-          </button>
-
-          {/* Action Buttons - Responsive Layout */}
-          <div className="flex items-center justify-between gap-3">
-            {/* Edit Button - Left on mobile, always visible */}
-            {!task.completed && (
-              <Link
-                to={`/edit/${task.id}`}
-                className="flex items-center gap-2 px-5 py-3 bg-primary/5 text-primary hover:bg-primary hover:text-white rounded-2xl transition-all font-semibold active:scale-95"
+          {task.completed ? (
+            /* ── Completed: Back (left) ↔ Delete (right) in one row ── */
+            <div className="flex items-center justify-between gap-3">
+              <button
+                onClick={() => navigate(-1)}
+                className="flex items-center gap-2 px-4 py-3 bg-transparent border border-border/60 text-muted-foreground hover:bg-muted/50 hover:text-foreground rounded-2xl transition-all font-semibold active:scale-95 group"
               >
-                <Pencil size={18} />
-                <span>Edit</span>
-              </Link>
-            )}
+                <ArrowLeft size={20} className="transition-transform group-hover:-translate-x-1" />
+                <span>Back</span>
+              </button>
 
-            {/* Spacer on mobile if no edit button */}
-            {task.completed && <div className="flex-1 sm:hidden"></div>}
+              <button
+                onClick={() => setShowDeleteDialog(true)}
+                className="flex items-center gap-2 px-5 py-3 bg-red-500/5 text-red-500 hover:bg-red-500 hover:text-white rounded-2xl transition-all font-semibold active:scale-95"
+              >
+                <Trash2 size={18} />
+                <span>Delete</span>
+              </button>
+            </div>
+          ) : (
+            /* ── Active: Back on top row, Edit + Delete on second row ── */
+            <>
+              <button
+                onClick={() => navigate(-1)}
+                className="flex items-center gap-2 px-4 py-3 bg-transparent border border-border/60 text-muted-foreground hover:bg-muted/50 hover:text-foreground rounded-2xl transition-all font-semibold active:scale-95 group self-start"
+              >
+                <ArrowLeft size={20} className="transition-transform group-hover:-translate-x-1" />
+                <span>Back</span>
+              </button>
 
-            {/* Delete Button - Right aligned */}
-            <button
-              onClick={() => setShowDeleteDialog(true)}
-              className="flex items-center gap-2 px-5 py-3 bg-red-500/5 text-red-500 hover:bg-red-500 hover:text-white rounded-2xl transition-all font-semibold active:scale-95"
-            >
-              <Trash2 size={18} />
-              <span>Delete</span>
-            </button>
-          </div>
+              <div className="flex items-center justify-between gap-3">
+                <Link
+                  to={`/edit/${task.id}`}
+                  className="flex items-center gap-2 px-5 py-3 bg-primary/5 text-primary hover:bg-primary hover:text-white rounded-2xl transition-all font-semibold active:scale-95"
+                >
+                  <Pencil size={18} />
+                  <span>Edit</span>
+                </Link>
+
+                <button
+                  onClick={() => setShowDeleteDialog(true)}
+                  className="flex items-center gap-2 px-5 py-3 bg-red-500/5 text-red-500 hover:bg-red-500 hover:text-white rounded-2xl transition-all font-semibold active:scale-95"
+                >
+                  <Trash2 size={18} />
+                  <span>Delete</span>
+                </button>
+              </div>
+            </>
+          )}
         </div>
 
         {/* Content Section */}
@@ -326,52 +360,119 @@ export default function TaskDetails() {
 
           {/* Task Progress Section */}
           <div className="space-y-3">
+            {/* Section header */}
             <div className="flex items-center gap-2 text-sm font-bold text-muted-foreground uppercase tracking-widest pl-1">
               <div className="w-1.5 h-1.5 rounded-full bg-primary"></div>
               Task Progress
             </div>
+
             <div className="bg-surface p-6 rounded-3xl border border-border/60 shadow-sm space-y-5">
-              <div>
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm font-medium text-muted-foreground">
-                    Completion
-                  </span>
-                  <span className="text-sm font-bold text-primary">
-                    {isUnsuccessful ? "Unsuccessful" : `${completionPercentage}%`}
-                  </span>
+
+              {/* ─── Disabled state: progress tracking turned off ─── */}
+              {progressDisabled ? (
+                <div className="flex items-center gap-3 p-4 bg-muted/40 border border-border/60 rounded-2xl">
+                  <div className="p-2 bg-muted rounded-xl text-muted-foreground shrink-0">
+                    <ToggleLeft size={16} />
+                  </div>
+                  <p className="text-sm font-medium text-muted-foreground">
+                    Progress tracking is disabled for this task.
+                  </p>
                 </div>
-                <input
-                  type="range"
-                  min={0}
-                  max={100}
-                  step={1}
-                  value={completionPercentage}
-                  disabled={isUnsuccessful}
-                  onChange={(e) => setCompletionPercentage(Number(e.target.value))}
-                  className="w-full accent-primary disabled:opacity-50"
-                />
-              </div>
+              ) : (
+                /* ─── Normal / read-only progress UI ─── */
+                <>
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm font-medium text-muted-foreground">
+                        Completion
+                      </span>
+                      <span className="text-sm font-bold text-primary">
+                        {isUnsuccessful ? "Unsuccessful" : `${completionPercentage}%`}
+                      </span>
+                    </div>
+                    <input
+                      type="range"
+                      min={0}
+                      max={100}
+                      step={1}
+                      value={completionPercentage}
+                      disabled={isUnsuccessful || task.completed}
+                      onChange={(e) => {
+                        if (task.completed) return;
+                        setCompletionPercentage(Number(e.target.value));
+                      }}
+                      className={cn(
+                        "w-full accent-primary disabled:opacity-50",
+                        task.completed ? "cursor-not-allowed" : ""
+                      )}
+                    />
+                  </div>
 
-              <label className="flex items-center gap-3 p-3 rounded-xl border border-border/60 bg-background cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={isUnsuccessful}
-                  onChange={(e) => setIsUnsuccessful(e.target.checked)}
-                  className="w-5 h-5 rounded border-border text-primary focus:ring-primary/20"
-                />
-                <span className="text-sm font-medium text-foreground">
-                  Mark as Unsuccessful
-                </span>
-              </label>
+                  <label
+                    className={cn(
+                      "flex items-center gap-3 p-3 rounded-xl border border-border/60 bg-background",
+                      task.completed ? "cursor-not-allowed opacity-60" : "cursor-pointer"
+                    )}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={isUnsuccessful}
+                      disabled={task.completed}
+                      onChange={(e) => {
+                        if (task.completed) return;
+                        setIsUnsuccessful(e.target.checked);
+                      }}
+                      className="w-5 h-5 rounded border-border text-primary focus:ring-primary/20 disabled:cursor-not-allowed"
+                    />
+                    <span className="text-sm font-medium text-foreground">
+                      Mark as Unsuccessful
+                    </span>
+                  </label>
 
-              <button
-                type="button"
-                onClick={handleSaveProgress}
-                disabled={isSavingProgress}
-                className="px-4 py-2 rounded-xl bg-primary text-primary-foreground text-sm font-semibold disabled:opacity-50"
-              >
-                {isSavingProgress ? "Saving..." : "Save Progress"}
-              </button>
+                  {/* Disable / Enable Progress toggle + Save — only when task is active */}
+                  {!task.completed && (
+                    <div className="flex items-center gap-3 pt-1">
+                      <button
+                        type="button"
+                        onClick={handleSaveProgress}
+                        disabled={isSavingProgress}
+                        className="px-4 py-2 rounded-xl bg-primary text-primary-foreground text-sm font-semibold disabled:opacity-50"
+                      >
+                        {isSavingProgress ? "Saving..." : "Save Progress"}
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={handleToggleProgressDisabled}
+                        disabled={isTogglingProgress}
+                        title={progressDisabled ? "Enable progress tracking" : "Disable progress tracking"}
+                        className={cn(
+                          "flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-semibold border transition-all active:scale-95 disabled:opacity-50",
+                          progressDisabled
+                            ? "bg-muted/60 border-border text-muted-foreground hover:bg-muted hover:text-foreground"
+                            : "bg-muted/40 border-border/60 text-muted-foreground hover:bg-muted hover:text-foreground"
+                        )}
+                      >
+                        <ToggleRight size={15} />
+                        {isTogglingProgress ? "Saving..." : "Disable Progress"}
+                      </button>
+                    </div>
+                  )}
+                </>
+              )}
+
+              {/* Disable → Enable button shown when progress is off and task is active */}
+              {progressDisabled && !task.completed && (
+                <button
+                  type="button"
+                  onClick={handleToggleProgressDisabled}
+                  disabled={isTogglingProgress}
+                  className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-semibold border border-primary/20 bg-primary/5 text-primary hover:bg-primary/10 transition-all active:scale-95 disabled:opacity-50"
+                >
+                  <ToggleRight size={15} />
+                  {isTogglingProgress ? "Saving..." : "Enable Progress"}
+                </button>
+              )}
             </div>
           </div>
 
