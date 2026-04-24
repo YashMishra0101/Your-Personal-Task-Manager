@@ -281,7 +281,20 @@ export function AuthProvider({ children }) {
       return;
     }
 
+    // Safety timeout: if Firebase Auth hasn't resolved within 2 s (e.g. offline),
+    // release the loading gate and trust the eagerly-loaded localStorage state.
+    // onAuthStateChanged will still fire and reconcile when the network returns.
+    const timeoutId = setTimeout(() => {
+      setLoading((prev) => {
+        if (prev) {
+          console.warn("Auth resolution timed out — releasing loading gate (offline mode).");
+        }
+        return false;
+      });
+    }, 2000);
+
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      clearTimeout(timeoutId);
       setCurrentUser(user);
       if (user?.uid) {
         setLastKnownUserId(user.uid);
@@ -302,7 +315,10 @@ export function AuthProvider({ children }) {
       setLoading(false);
     });
 
-    return unsubscribe;
+    return () => {
+      clearTimeout(timeoutId);
+      unsubscribe();
+    };
     // Subscribe once; the callback restores auth state from storage/Firestore.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

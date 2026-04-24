@@ -12,9 +12,14 @@ import { auth } from "../lib/firebase";
  * Allows access regardless of security key verification status
  */
 export default function SecurityRoute({ children }) {
-  const { currentUser, isSecurityVerified, authLoading } = useAuth();
+  const { currentUser, isSecurityVerified, authLoading, lastKnownUserId } = useAuth();
 
   if (authLoading) {
+    return <AppLockBootstrapScreen />;
+  }
+
+  // Timeout fired before onAuthStateChanged resolved (offline edge case)
+  if (!currentUser && lastKnownUserId) {
     return <AppLockBootstrapScreen />;
   }
 

@@ -6,15 +6,24 @@ import AppLockBootstrapScreen from "./AppLockBootstrapScreen";
 
 export default function ProtectedRoute({ children }) {
   const location = useLocation();
-  const { currentUser, isSecurityVerified, authLoading } = useAuth();
+  const { currentUser, isSecurityVerified, authLoading, lastKnownUserId } = useAuth();
   const { config, loading, isLocked } = useAppLock();
   const isUnlockPath =
     location.pathname === "/unlock" || location.pathname === "/forgot-pin";
 
+  // Show loading while Firebase Auth is resolving
   if (authLoading) {
     return <AppLockBootstrapScreen />;
   }
 
+  // Timeout fired before onAuthStateChanged resolved (offline edge case):
+  // currentUser is still null but lastKnownUserId proves user WAS logged in.
+  // Keep showing the loading screen — onAuthStateChanged WILL fire shortly.
+  if (!currentUser && lastKnownUserId) {
+    return <AppLockBootstrapScreen />;
+  }
+
+  // Genuinely not logged in
   if (!currentUser) {
     return <Navigate to="/login" replace />;
   }
