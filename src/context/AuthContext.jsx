@@ -301,8 +301,21 @@ export function AuthProvider({ children }) {
         localStorage.setItem(LAST_AUTH_USER_KEY, user.uid);
         setIsSecurityVerified(await restoreVerifiedSession(user.uid));
       }
-      // If user logs out, clear verification
+      // If user is null — could be a real logout OR Firebase firing null offline
+      // because accounts:lookup failed (ERR_INTERNET_DISCONNECTED).
       if (!user) {
+        const storedUserId = localStorage.getItem(LAST_AUTH_USER_KEY);
+
+        // Offline + previous session: preserve localStorage state.
+        // Firebase fires null when it can't verify the token, not because the user logged out.
+        if (!navigator.onLine && storedUserId) {
+          setLastKnownUserId(storedUserId);
+          setIsSecurityVerified(hasStoredFullAuthMarker(storedUserId));
+          setLoading(false);
+          return; // do NOT wipe the session
+        }
+
+        // Online logout — clear everything properly
         if (activeSessionIdRef.current) {
           markSessionLoggedOut(activeSessionIdRef.current, "session_ended");
           clearActiveSession();

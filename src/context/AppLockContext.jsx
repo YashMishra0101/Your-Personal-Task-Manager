@@ -127,7 +127,10 @@ export function AppLockProvider({ children }) {
         setLoading(true);
       }
 
+      // Offline or no Firebase user yet — cannot fetch remotely.
+      // Trust the local cache (already applied above) and release loading.
       if (!remoteUserId || !appLockDocRef) {
+        setLoading(false); // ← critical: was missing, caused infinite loading offline
         return;
       }
 

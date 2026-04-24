@@ -16,11 +16,24 @@ export default function ProtectedRoute({ children }) {
     return <AppLockBootstrapScreen />;
   }
 
-  // Timeout fired before onAuthStateChanged resolved (offline edge case):
-  // currentUser is still null but lastKnownUserId proves user WAS logged in.
-  // Keep showing the loading screen — onAuthStateChanged WILL fire shortly.
+  // Offline mode: Firebase fired null (failed token check) but we have a stored session.
+  // Route using localStorage-backed isSecurityVerified and isLocked.
   if (!currentUser && lastKnownUserId) {
-    return <AppLockBootstrapScreen />;
+    if (!isSecurityVerified) {
+      return <Navigate to="/security-check" replace />;
+    }
+    if (loading && !config) {
+      return (
+        <AppLockBootstrapScreen
+          title="Preparing App Lock"
+          message="Loading your secure PIN screen..."
+        />
+      );
+    }
+    if (isLocked && !isUnlockPath) {
+      return <Navigate to="/unlock" replace state={{ from: location }} />;
+    }
+    return children;
   }
 
   // Genuinely not logged in
