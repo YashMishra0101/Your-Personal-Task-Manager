@@ -151,7 +151,7 @@ export default function DeviceActivity() {
                       "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold border",
                       session.status === "active"
                         ? "bg-green-500/10 text-green-600 border-green-500/20"
-                        : "bg-muted text-muted-foreground border-border"
+                        : "bg-red-500/10 text-red-500 border-red-500/20"
                     )}
                   >
                     <ShieldCheck size={12} />
@@ -167,9 +167,20 @@ export default function DeviceActivity() {
                       {formatTimestamp(session.loginAt || session.clientLoginAt)}
                     </p>
                   </div>
-                  <div className="p-3 rounded-xl bg-background border border-border/50">
-                    <p className="text-muted-foreground mb-1">Logout</p>
-                    <p className="text-foreground font-medium flex items-center gap-1.5">
+                  <div className={cn(
+                    "p-3 rounded-xl border",
+                    session.logoutAt
+                      ? "bg-red-500/5 border-red-500/20"
+                      : "bg-background border-border/50"
+                  )}>
+                    <p className={cn(
+                      "mb-1 font-semibold text-xs",
+                      session.logoutAt ? "text-red-500" : "text-muted-foreground"
+                    )}>Logout</p>
+                    <p className={cn(
+                      "font-medium flex items-center gap-1.5",
+                      session.logoutAt ? "text-red-500" : "text-muted-foreground"
+                    )}>
                       <LogOut size={12} />
                       {formatTimestamp(session.logoutAt)}
                     </p>
