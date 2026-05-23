@@ -1,4 +1,4 @@
-# 🎯 Personal Task Manager (v4.0)
+# 🎯 Personal Task Manager     
 
 <div align="center">
 
