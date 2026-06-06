@@ -5,15 +5,14 @@ import {
   Check,
   Clock,
   Calendar,
-  Trash2,
-  Pencil,
   RotateCcw,
+  X,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "../lib/utils";
 import { isPast, parseISO } from "date-fns";
 import { Link, useNavigate } from "react-router-dom";
-import ConfirmDialog from "./ConfirmDialog";
+import OutcomeDialog from "./OutcomeDialog";
 import { toast } from "sonner";
 
 export default function TaskCard({
@@ -25,9 +24,9 @@ export default function TaskCard({
   onDragOver,
   onDrop,
 }) {
-  const { toggleTaskCompletion, deleteTask } = useTasks();
+  const { toggleTaskCompletion, markTaskOutcome } = useTasks();
   const navigate = useNavigate();
-  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [showOutcomeDialog, setShowOutcomeDialog] = useState(false);
   const isOverdue = task.deadline && isPast(parseISO(task.deadline));
   const completionPercentage =
     typeof task.completionPercentage === "number"
@@ -41,23 +40,26 @@ export default function TaskCard({
     ? "Unsuccessful"
     : `${completionPercentage}% complete`;
 
-  const handleToggleComplete = async (e) => {
+  const handleLeftIconClick = async (e) => {
     e.stopPropagation();
     try {
-      await toggleTaskCompletion(task.id, task.completed);
-      toast.success(task.completed ? "Task moved to active" : "Task completed");
+      if (task.completed) {
+        await toggleTaskCompletion(task.id, true);
+        toast.success("Task moved to active");
+      } else {
+        setShowOutcomeDialog(true);
+      }
     } catch (error) {
       toast.error("Failed to update task");
     }
   };
 
-  const handleDelete = async (e) => {
-    e?.stopPropagation();
+  const handleOutcome = async (isSuccessful) => {
     try {
-      await deleteTask(task.id);
-      toast.success("Task deleted successfully");
+      await markTaskOutcome(task.id, isSuccessful);
+      toast.success(isSuccessful ? "Task completed successfully" : "Task marked as not completed");
     } catch (error) {
-      toast.error("Failed to delete task");
+      toast.error("Failed to update task");
     }
   };
 
@@ -86,23 +88,33 @@ export default function TaskCard({
       >
         {/* Checkbox */}
         <button
-          onClick={handleToggleComplete}
+          onClick={handleLeftIconClick}
           className={cn(
             "shrink-0 w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors mr-4 z-10",
             task.completed
-              ? "bg-primary border-primary"
+              ? task.isUnsuccessful
+                ? "bg-red-500 border-red-500"
+                : "bg-primary border-primary"
               : "border-muted-foreground/30 group-hover:border-primary"
           )}
           aria-label={
-            task.completed ? "Mark as incomplete" : "Mark as complete"
+            task.completed ? "Reactivate task" : "Mark as complete"
           }
         >
           {task.completed && (
-            <Check
-              size={14}
-              className="text-primary-foreground"
-              strokeWidth={3}
-            />
+            task.isUnsuccessful ? (
+              <X
+                size={14}
+                className="text-white"
+                strokeWidth={3}
+              />
+            ) : (
+              <Check
+                size={14}
+                className="text-primary-foreground"
+                strokeWidth={3}
+              />
+            )
           )}
         </button>
 
@@ -184,52 +196,23 @@ export default function TaskCard({
         </div>
 
         {/* Quick Actions */}
-        <div
-          className={cn(
-            "shrink-0 ml-2 z-10",
-            task.completed ? "flex" : "hidden group-hover:flex"
-          )}
-        >
-          {task.completed ? (
+        <div className="shrink-0 ml-2 z-10 flex items-center">
+          {task.completed && (
             <button
-              onClick={handleToggleComplete}
+              onClick={handleLeftIconClick}
               title="Reactivate Task"
               className="p-1.5 text-accent bg-accent/10 hover:bg-accent hover:text-white rounded-lg transition-colors shadow-sm"
             >
               <RotateCcw size={16} />
             </button>
-          ) : (
-            <div className="flex items-center gap-1">
-              <Link
-                to={`/edit/${task.id}`}
-                onClick={(e) => e.stopPropagation()}
-                className="p-1.5 text-muted-foreground hover:text-accent hover:bg-accent/10 rounded-lg transition-colors"
-              >
-                <Pencil size={16} />
-              </Link>
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setShowDeleteDialog(true);
-                }}
-                className="p-1.5 text-muted-foreground hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-colors"
-              >
-                <Trash2 size={16} />
-              </button>
-            </div>
           )}
         </div>
       </motion.div>
 
-      <ConfirmDialog
-        isOpen={showDeleteDialog}
-        onClose={() => setShowDeleteDialog(false)}
-        onConfirm={handleDelete}
-        title="Delete Task"
-        message={`Are you sure you want to delete "${task.title}"? This action cannot be undone.`}
-        confirmText="Delete"
-        cancelText="Cancel"
-        variant="danger"
+      <OutcomeDialog
+        isOpen={showOutcomeDialog}
+        onClose={() => setShowOutcomeDialog(false)}
+        onOutcome={handleOutcome}
       />
     </>
   );

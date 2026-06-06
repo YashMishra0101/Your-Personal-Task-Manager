@@ -13,20 +13,24 @@ import {
   CalendarCheck,
   ToggleLeft,
   ToggleRight,
+  XCircle,
+  RotateCcw,
 } from "lucide-react";
 import { format, isPast, parseISO, differenceInMinutes } from "date-fns";
 import { formatDeadlineDisplay } from "../lib/timeUtils";
 import { cn } from "../lib/utils";
 import ConfirmDialog from "../components/ConfirmDialog";
+import OutcomeDialog from "../components/OutcomeDialog";
 import { toast } from "sonner";
 
 export default function TaskDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { tasks, toggleTaskCompletion, deleteTask, updateTask } = useTasks();
+  const { tasks, toggleTaskCompletion, markTaskOutcome, deleteTask, updateTask } = useTasks();
 
   const [task, setTask] = useState(null);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [showOutcomeDialog, setShowOutcomeDialog] = useState(false);
   const [loading, setLoading] = useState(true);
   const [completionPercentage, setCompletionPercentage] = useState(0);
   const [isUnsuccessful, setIsUnsuccessful] = useState(false);
@@ -121,12 +125,21 @@ export default function TaskDetails() {
   const timeDetails = getDetailedTimeLeft(task.deadline, task.includeLastDay);
   const isOverdue = timeDetails?.isOverdue;
 
-  const handleToggleComplete = async () => {
+  const handleMarkOutcome = async (isSuccessful) => {
     try {
-      await toggleTaskCompletion(task.id, task.completed);
-      toast.success(task.completed ? "Task reactivated" : "Task completed");
+      await markTaskOutcome(task.id, isSuccessful);
+      toast.success(isSuccessful ? "Task completed successfully" : "Task marked as not completed");
     } catch (error) {
       toast.error("Failed to update task");
+    }
+  };
+
+  const handleReactivate = async () => {
+    try {
+      await toggleTaskCompletion(task.id, true);
+      toast.success("Task reactivated");
+    } catch (error) {
+      toast.error("Failed to reactivate task");
     }
   };
 
@@ -145,8 +158,7 @@ export default function TaskDetails() {
     try {
       setIsSavingProgress(true);
       await updateTask(task.id, {
-        completionPercentage: isUnsuccessful ? 0 : completionPercentage,
-        isUnsuccessful,
+        completionPercentage: completionPercentage,
       });
       toast.success("Task progress updated");
     } catch (error) {
@@ -237,23 +249,29 @@ export default function TaskDetails() {
                 Task Heading
               </div>
 
-              {/* Status Indicator - Smaller and better positioned */}
-              <button
-                onClick={handleToggleComplete}
-                className={cn(
-                  "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border transition-all cursor-pointer shadow-sm active:scale-95",
-                  task.completed
-                    ? "bg-green-500/10 border-green-500/20 text-green-600"
-                    : "bg-surface border-border text-foreground hover:border-primary/50"
-                )}
-              >
-                {task.completed ? (
-                  <CheckCircle size={14} className="text-green-600" />
+              {/* Status Actions */}
+              <div className="flex items-center gap-2">
+                {!task.completed ? (
+                  <button
+                    onClick={() => setShowOutcomeDialog(true)}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border transition-all cursor-pointer shadow-sm active:scale-95 bg-green-500/10 border-green-500/20 text-green-600 hover:bg-green-500/20"
+                  >
+                    <CheckCircle size={14} /> Complete Task
+                  </button>
                 ) : (
-                  <Circle size={14} className="text-muted-foreground" />
+                  <button
+                    onClick={handleReactivate}
+                    className={cn(
+                      "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border transition-all cursor-pointer shadow-sm active:scale-95",
+                      task.isUnsuccessful
+                        ? "bg-red-500/10 border-red-500/20 text-red-500 hover:bg-red-500/20"
+                        : "bg-green-500/10 border-green-500/20 text-green-600 hover:bg-green-500/20"
+                    )}
+                  >
+                    <RotateCcw size={14} /> Reactivate Task
+                  </button>
                 )}
-                <span>{task.completed ? "Completed" : "Active"}</span>
-              </button>
+              </div>
             </div>
 
             {/* Heading in white box */}
@@ -408,27 +426,6 @@ export default function TaskDetails() {
                     />
                   </div>
 
-                  <label
-                    className={cn(
-                      "flex items-center gap-3 p-3 rounded-xl border border-border/60 bg-background",
-                      task.completed ? "cursor-not-allowed opacity-60" : "cursor-pointer"
-                    )}
-                  >
-                    <input
-                      type="checkbox"
-                      checked={isUnsuccessful}
-                      disabled={task.completed}
-                      onChange={(e) => {
-                        if (task.completed) return;
-                        setIsUnsuccessful(e.target.checked);
-                      }}
-                      className="w-5 h-5 rounded border-border text-primary focus:ring-primary/20 disabled:cursor-not-allowed"
-                    />
-                    <span className="text-sm font-medium text-foreground">
-                      Mark as Unsuccessful
-                    </span>
-                  </label>
-
                   {/* Disable / Enable Progress toggle + Save — only when task is active */}
                   {!task.completed && (
                     <div className="flex items-center gap-3 pt-1">
@@ -567,6 +564,12 @@ export default function TaskDetails() {
         confirmText="Delete Task"
         cancelText="Keep Task"
         variant="danger"
+      />
+
+      <OutcomeDialog
+        isOpen={showOutcomeDialog}
+        onClose={() => setShowOutcomeDialog(false)}
+        onOutcome={handleMarkOutcome}
       />
     </Layout>
   );

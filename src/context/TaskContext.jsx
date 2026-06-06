@@ -112,7 +112,7 @@ export function TaskProvider({ children }) {
         ? task.completionPercentage
         : 0;
     const isUnsuccessful = !!task.isUnsuccessful;
-    const progressDisabled = !!task.progressDisabled;
+    const progressDisabled = task.progressDisabled !== undefined ? !!task.progressDisabled : true;
 
     const newTask = {
       ...task,
@@ -176,7 +176,8 @@ export function TaskProvider({ children }) {
 
     const completionUpdates = {
       completionPercentage: nextCompletionPercentage,
-      isUnsuccessful,
+      // Clear unsuccessful flag when reactivating a task
+      isUnsuccessful: nextCompletedStatus ? isUnsuccessful : false,
       completedAt,
     };
 
@@ -208,7 +209,43 @@ export function TaskProvider({ children }) {
       // Revert on error
       setTasks((prev) =>
         prev.map((t) =>
-          t.id === taskId ? { ...t, completed: currentStatus } : t
+          t.id === taskId ? { ...t, completed: currentStatus, isUnsuccessful } : t
+        )
+      );
+    }
+  };
+
+  const markTaskOutcome = async (taskId, isSuccessful) => {
+    const taskToToggle = tasks.find((t) => t.id === taskId);
+    if (!taskToToggle) return;
+
+    const completionUpdates = {
+      completed: true,
+      completionPercentage: isSuccessful ? 100 : 0,
+      isUnsuccessful: !isSuccessful,
+      completedAt: new Date().toISOString(),
+    };
+
+    // Optimistically update UI
+    setTasks((prev) =>
+      prev.map((t) =>
+        t.id === taskId ? { ...t, ...completionUpdates } : t
+      )
+    );
+
+    try {
+      if (db && isOnline) {
+        const taskRef = doc(db, "tasks", taskId);
+        await updateDoc(taskRef, completionUpdates);
+      } else {
+        console.log("Offline: Task outcome updated locally");
+      }
+    } catch (e) {
+      console.error("Error updating task outcome:", e);
+      // Revert on error
+      setTasks((prev) =>
+        prev.map((t) =>
+          t.id === taskId ? taskToToggle : t
         )
       );
     }
@@ -320,6 +357,7 @@ export function TaskProvider({ children }) {
     loading,
     addTask,
     toggleTaskCompletion,
+    markTaskOutcome,
     deleteTask,
     updateTask,
     reorderTasks,

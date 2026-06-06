@@ -3,7 +3,7 @@ import { Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import AddTask from "./pages/AddTask";
 import EditTask from "./pages/EditTask";
-import Completed from "./pages/Completed";
+import TaskHistory from "./pages/TaskHistory";
 import Login from "./pages/Login";
 import SecurityKey from "./pages/SecurityKey";
 import NotFound from "./pages/NotFound";
@@ -64,10 +64,10 @@ export default function App() {
           }
         />
         <Route
-          path="/completed"
+          path="/history"
           element={
             <ProtectedRoute>
-              <Completed />
+              <TaskHistory />
             </ProtectedRoute>
           }
         />

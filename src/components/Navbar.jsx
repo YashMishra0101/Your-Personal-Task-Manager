@@ -10,6 +10,7 @@ import {
   Menu,
   X,
   StickyNote,
+  History,
 } from "lucide-react";
 import { cn } from "../lib/utils";
 import { useAuth } from "../context/AuthContext";
@@ -34,7 +35,7 @@ export default function Navbar() {
   const mainNavItems = [
     { to: "/", icon: ListTodo, label: "My Tasks" },
     { to: "/add", icon: PlusCircle, label: "Add New Task" },
-    { to: "/completed", icon: CheckCircle, label: "Completed" },
+    { to: "/history", icon: History, label: "Task Records" },
     { to: "/notes", icon: StickyNote, label: "Notes" },
     {
       to: "/device-activity",
