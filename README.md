@@ -1,10 +1,11 @@
-# 🎯 Personal Task Manager     
+# 🎯 Personal Task Manager
 
 <div align="center">
 
-[![React 19](https://img.shields.io/badge/React_19-61dafb?style=for-the-badge&logo=react&logoColor=white)](https://react.dev)
-[![Vite 8](https://img.shields.io/badge/Vite_8-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev)
-[![Tailwind 4](https://img.shields.io/badge/Tailwind_4-38bdf8?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com)
+[![React](https://img.shields.io/badge/React-61dafb?style=for-the-badge&logo=react&logoColor=white)](https://react.dev)
+[![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev)
+[![pnpm](https://img.shields.io/badge/pnpm-F69220?style=for-the-badge&logo=pnpm&logoColor=white)](https://pnpm.io)
+[![Tailwind](https://img.shields.io/badge/Tailwind-38bdf8?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com)
 [![Firebase](https://img.shields.io/badge/Firebase-ffca28?style=for-the-badge&logo=firebase&logoColor=black)](https://firebase.google.com)
 [![PWA](https://img.shields.io/badge/PWA-Enabled-5A0FC8?style=for-the-badge&logo=pwa&logoColor=white)](https://web.dev/progressive-web-apps/)
 [![Tracking](https://img.shields.io/badge/Tracking-Zero-000000?style=for-the-badge&logo=ghostery&logoColor=white)](#)
@@ -26,12 +27,12 @@
 
 <div align="center">
 
-| <img src="src/assets/1.png" width="400" alt="Dashboard Overview" /> | <img src="src/assets/2.png" width="400" alt="Security Checks" /> |
-| :---: | :---: |
-| <img src="src/assets/3.png" width="400" alt="Task Creation" /> | <img src="src/assets/4.png" width="400" alt="Dark Mode Support" /> |
-| <img src="src/assets/5.png" width="400" alt="Task Details" /> | <img src="src/assets/6.png" width="400" alt="Deadline Tracking" /> |
-| <img src="src/assets/7.png" width="400" alt="Mobile View" /> | <img src="src/assets/8.png" width="400" alt="Session Audit" /> |
-| <img src="src/assets/9.png" width="400" alt="PIN Security" /> | <img src="src/assets/10.png" width="400" alt="Profile Settings" /> |
+|  <img src="src/assets/1.png" width="400" alt="Dashboard Overview" />  |   <img src="src/assets/2.png" width="400" alt="Security Checks" />    |
+| :-------------------------------------------------------------------: | :-------------------------------------------------------------------: |
+|    <img src="src/assets/3.png" width="400" alt="Task Creation" />     |  <img src="src/assets/4.png" width="400" alt="Dark Mode Support" />   |
+|     <img src="src/assets/5.png" width="400" alt="Task Details" />     |  <img src="src/assets/6.png" width="400" alt="Deadline Tracking" />   |
+|     <img src="src/assets/7.png" width="400" alt="Mobile View" />      |    <img src="src/assets/8.png" width="400" alt="Session Audit" />     |
+|     <img src="src/assets/9.png" width="400" alt="PIN Security" />     |  <img src="src/assets/10.png" width="400" alt="Profile Settings" />   |
 | <img src="src/assets/11.png" width="400" alt="New Feature Preview" /> | <img src="src/assets/12.png" width="400" alt="Final Task Complete" /> |
 
 </div>
@@ -45,6 +46,7 @@ This is more than just another **To-Do List**. It is a **Production-Ready Task M
 > **Born from personal necessity** — not just a project, but my **daily driver**. It's a tool I couldn’t find elsewhere, so I built it to solve my own needs and actively use it every day.
 
 ---
+
 ## ✨ Feature Deep-Dive
 
 ### 🧠 Task Management Features
@@ -63,12 +65,13 @@ This is more than just another **To-Do List**. It is a **Production-Ready Task M
 - **📈 Task Progress Tracking** — Granular completion updates (**0–100%**) with support for marking tasks as "Unsuccessful" for comprehensive productivity auditing.
 - **📓 Personal Notes** — A dedicated space for random thoughts and ideas with a minimalist editor and instant search.
 - **💰 100% Free & No-Cost Setup** — There are no hidden fees, subscriptions, or payment methods required. You own the code, you own the data, and you pay absolutely nothing to keep it running.
-- **📱 Install Anywhere (Progressive Web App)** — Engineered with PWA support, allowing native-like installation. 
+- **📱 Install Anywhere (Progressive Web App)** — Engineered with PWA support, allowing native-like installation.
   - **Mobile:** Open the hosted link in your browser, tap the browser menu, and select "**Add to Home screen**".
   - **Desktop/Laptop:** Click the **Install** icon located directly inside the browser's URL address bar.
   - > **⚠️ Browser Compatibility Note:** It is highly recommended to use **Google Chrome** for installation. Some browsers (like Brave) may occasionally block PWA prompts or hide the install buttons on both mobile and desktop platforms.
 
 ## 🛡️ Privacy & Security
+
 Security isn't a feature; it's the foundation.
 
 - **🚫 Zero-Ad & Zero-Tracking**: No tracking, no analytics, no third-party distractions. 100% focused on your data.
@@ -86,12 +89,14 @@ Security isn't a feature; it's the foundation.
 ## 🏗️ Technical Highlights
 
 ### ⚡ Cutting-Edge Stack
+
 - **React 19 & Vite 8**: Built on the bleeding edge for optimal developer experience and sub-second HMR.
 - **Tailwind CSS 4**: Utilizing the latest JIT engine for ultra-lightweight production CSS.
 - **Framer Motion**: Purpose-built micro-interactions that make the UI feel alive and responsive.
 - **Offline-First (PWA)**: Using Workbox for intelligent caching. The app works flawlessly in a tunnel or on a plane.
 
 ### 🧠 Advanced Architecture
+
 - **Persistent Firestore Cache**: Custom implementation of `persistentLocalCache` for instant data access even on cold starts.
 - **Atomic Context State**: State management split via dedicated Context Providers (Auth, AppLock, Tasks) to minimize re-renders.
 - **Intelligent Deduplication**: Module-level session management to prevent duplicate Firestore writes during React's StrictMode double-mounts.
@@ -101,17 +106,21 @@ Security isn't a feature; it's the foundation.
 ## 🛠️ Installation & Setup
 
 ### Prerequisites
+
 - **Node.js** 20+
 - **pnpm** (Recommended) or npm
 
 ### Setup Steps
+
 1. **Clone the Repo**
+
    ```bash
    git clone https://github.com/YashMishra0101/Personal-Task-Manager.git
    cd Personal-Task-Manager
    ```
 
 2. **Install Dependencies**
+
    ```bash
    pnpm install
    ```
@@ -125,7 +134,7 @@ Security isn't a feature; it's the foundation.
 
 ### 🛠️ Detailed Firebase Setup
 
-1. **Create a Firebase Project**: 
+1. **Create a Firebase Project**:
    - Go to [Firebase Console](https://console.firebase.google.com/).
    - Click "Add Project" and follow the setup wizard.
    - **Plan**: The free **Spark Plan** is totally sufficient for this application.
@@ -147,6 +156,7 @@ Security isn't a feature; it's the foundation.
    - Click on **Firestore Database**.
    - Click on the **Rules** tab.
    - By default, the code editor will probably say `false`. Replace whatever is there with this exact code:
+
    ```javascript
    rules_version = '2';
    service cloud.firestore {
@@ -157,8 +167,9 @@ Security isn't a feature; it's the foundation.
      }
    }
    ```
+
    > [!TIP]
-   > **What does this do?** It tells Firebase to completely block anyone trying to read or delete your database from the internet — *unless* they are currently logged into an account you created!
+   > **What does this do?** It tells Firebase to completely block anyone trying to read or delete your database from the internet — _unless_ they are currently logged into an account you created!
 
 5. **Initialize Security Key**:
    - In Firestore, create a collection named `security`.
@@ -183,20 +194,20 @@ Security isn't a feature; it's the foundation.
    ```
 
 ### 🏁 7. Start Developing
-   ```bash
-   pnpm dev
-   ```
+
+```bash
+pnpm dev
+```
 
 ---
-
 
 ## 🤝 Contributing
 
 This is a developer-friendly project! We value:
+
 - **Clean Code**: Follow the existing ESLint and Prettier configs.
 - **Performance**: Keep the bundle size small and logic efficient.
 - **UX**: Ensure every new feature feels premium.
-
 
 ---
 
@@ -205,7 +216,6 @@ This is a developer-friendly project! We value:
 Licensed under the **MIT License**.
 
 > 💡 **Note**: While the license allows free use, I appreciate attribution by linking back to this repository in your project's 'About' section.
-
 
 > "Great things are done by a series of small things brought together."
 
@@ -216,6 +226,6 @@ Licensed under the **MIT License**.
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/yash-mishra-356280223/)
 [![X](https://img.shields.io/badge/X-000000?style=for-the-badge&logo=x&logoColor=white)](https://x.com/YashRKMishra1)
 
-**[⭐ Star this repository to show your support!](#)**
+**[⭐ Star this repository to show your support](#)**
 
 </div>
