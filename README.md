@@ -1,24 +1,24 @@
 # 🎯 Personal Task Manager
 
 <div align="center">
-
+  
+[![Free of Cost](https://img.shields.io/badge/Free_of_Cost-100%25-brightgreen?style=for-the-badge)](#)
+[![PWA](https://img.shields.io/badge/PWA-Enabled-5A0FC8?style=for-the-badge&logo=pwa&logoColor=white)](https://web.dev/progressive-web-apps)
+[![Tracking](https://img.shields.io/badge/Tracking-Zero-000000?style=for-the-badge&logo=ghostery&logoColor=white)](#)
+[![Security](https://img.shields.io/badge/Security-Highest-red?style=for-the-badge&logo=securityscorecard&logoColor=white)](#)
+<br/>
+[![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
+[![Open Source](https://img.shields.io/badge/Open_Source-%E2%9D%A4-brightgreen?style=for-the-badge&logo=open-source-initiative&logoColor=white)](https://github.com/YashMishra0101/Personal-Task-Manager)
+[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-brightgreen.svg?style=for-the-badge)](https://github.com/YashMishra0101/Personal-Task-Manager/graphs/commit-activity)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-blue.svg?style=for-the-badge)](https://github.com/YashMishra0101/Personal-Task-Manager/pulls)
+<br/>
 [![React](https://img.shields.io/badge/React-61dafb?style=for-the-badge&logo=react&logoColor=white)](https://react.dev)
 [![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev)
 [![pnpm](https://img.shields.io/badge/pnpm-F69220?style=for-the-badge&logo=pnpm&logoColor=white)](https://pnpm.io)
 [![Tailwind](https://img.shields.io/badge/Tailwind-38bdf8?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com)
 [![Firebase](https://img.shields.io/badge/Firebase-ffca28?style=for-the-badge&logo=firebase&logoColor=black)](https://firebase.google.com)
-[![PWA](https://img.shields.io/badge/PWA-Enabled-5A0FC8?style=for-the-badge&logo=pwa&logoColor=white)](https://web.dev/progressive-web-apps/)
-[![Tracking](https://img.shields.io/badge/Tracking-Zero-000000?style=for-the-badge&logo=ghostery&logoColor=white)](#)
-[![Security](https://img.shields.io/badge/Security-Highest-red?style=for-the-badge&logo=securityscorecard&logoColor=white)](#)
-[![Free of Cost](https://img.shields.io/badge/Free_of_Cost-100%25-brightgreen?style=for-the-badge)](#)
-
-[![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
-[![Open Source](https://img.shields.io/badge/Open_Source-%E2%9D%A4-brightgreen?style=for-the-badge&logo=open-source-initiative&logoColor=white)](https://github.com/YashMishra0101/Personal-Task-Manager)
-[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-brightgreen.svg?style=for-the-badge)](https://github.com/YashMishra0101/Personal-Task-Manager/graphs/commit-activity)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-blue.svg?style=for-the-badge)](https://github.com/YashMishra0101/Personal-Task-Manager/pulls)
 
 ### 🧑‍💻 Explore the Project • 🐛 Report a Bug • 💡 Request Feature
-
 </div>
 
 ---
