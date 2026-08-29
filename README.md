@@ -7,18 +7,15 @@
 [![Tracking](https://img.shields.io/badge/Tracking-Zero-000000?style=for-the-badge&logo=ghostery&logoColor=white)](#)
 [![Security](https://img.shields.io/badge/Security-Highest-red?style=for-the-badge&logo=securityscorecard&logoColor=white)](#)
 <br/>
-[![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
-[![Open Source](https://img.shields.io/badge/Open_Source-%E2%9D%A4-brightgreen?style=for-the-badge&logo=open-source-initiative&logoColor=white)](https://github.com/YashMishra0101/Personal-Task-Manager)
-[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-brightgreen.svg?style=for-the-badge)](https://github.com/YashMishra0101/Personal-Task-Manager/graphs/commit-activity)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-blue.svg?style=for-the-badge)](https://github.com/YashMishra0101/Personal-Task-Manager/pulls)
-<br/>
 [![React](https://img.shields.io/badge/React-61dafb?style=for-the-badge&logo=react&logoColor=white)](https://react.dev)
 [![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev)
 [![pnpm](https://img.shields.io/badge/pnpm-F69220?style=for-the-badge&logo=pnpm&logoColor=white)](https://pnpm.io)
 [![Tailwind](https://img.shields.io/badge/Tailwind-38bdf8?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com)
 [![Firebase](https://img.shields.io/badge/Firebase-ffca28?style=for-the-badge&logo=firebase&logoColor=black)](https://firebase.google.com)
+<br/>
+[![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
+[![Open Source](https://img.shields.io/badge/Open_Source-%E2%9D%A4-brightgreen?style=for-the-badge&logo=open-source-initiative&logoColor=white)](https://github.com/YashMishra0101/Personal-Task-Manager)
 
-### 🧑‍💻 Explore the Project • 🐛 Report a Bug • 💡 Request Feature
 </div>
 
 ---
@@ -41,7 +38,7 @@
 
 ## 💎 Why This Project?
 
-This is more than just another **To-Do List**. It is a **Production-Ready Task Management Ecosystem** engineered for high performance, **Robust Security** and a **Seamless Offline-First Experience**. It provides **Multiple Premium Features Completely Free of Cost**, while ensuring total **Privacy**, **Security** and **Absolute Data Ownership**.
+This is more than just another **To-Do List**. It is a **Production-Ready Task Management Ecosystem** engineered for high performance, **Robust Security** and a **Seamless Offline-First Experience**. while ensuring total **Privacy**, **Security** and **Absolute Data Ownership**.
 
 > **Born from personal necessity** — not just a project, but my **daily driver**. It's a tool I couldn’t find elsewhere, so I built it to solve my own needs and actively use it every day.
 
@@ -135,7 +132,7 @@ Security isn't a feature; it's the foundation.
 ### 🛠️ Detailed Firebase Setup
 
 1. **Create a Firebase Project**:
-   - Go to [Firebase Console](https://console.firebase.google.com/).
+   - Go to Firebase Console.
    - Click "Add Project" and follow the setup wizard.
    - **Plan**: The free **Spark Plan** is totally sufficient for this application.
 
@@ -225,7 +222,5 @@ Licensed under the **MIT License**.
 
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/yash-mishra-356280223/)
 [![X](https://img.shields.io/badge/X-000000?style=for-the-badge&logo=x&logoColor=white)](https://x.com/YashRKMishra1)
-
-**[⭐ Star this repository to show your support](#)**
 
 </div>
