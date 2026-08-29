@@ -57,7 +57,7 @@ This is more than just another **To-Do List**. It is a **Production-Ready Task M
 - **🔄 Drag-and-Drop Reordering** — A high-performance manual reordering system to organize your workspace exactly how you want.
 - **🚨 Deadline Tracking** — Dynamic visual indicators and relative countdowns for overdue, urgent, and upcoming tasks.
 - **📌 Active Tasks Counter** — Real-time persistent overview of your total pending workload.
-- **⚡ One-Click Actions** — Engineered for speed: instantly complete, edit, or delete tasks directly from the dashboard.
+- **⚡ One-Click Actions** — Engineered for speed: instantly complete, edit or delete tasks directly from the dashboard.
 - **📖 Detailed Task View** — Rich description support with perfectly formatted date and time metadata.
 - **📈 Task Progress Tracking** — Granular completion updates (**0–100%**) with support for marking tasks as "Unsuccessful" for comprehensive productivity auditing.
 - **📓 Personal Notes** — A dedicated space for random thoughts and ideas with a minimalist editor and instant search.
