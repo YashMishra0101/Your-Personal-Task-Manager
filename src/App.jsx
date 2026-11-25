@@ -14,6 +14,7 @@ import AppUnlock from "./pages/AppUnlock";
 import ForgotPin from "./pages/ForgotPin";
 import Notes from "./pages/Notes";
 import NoteDetails from "./pages/NoteDetails";
+import Stopwatch from "./pages/Stopwatch";
 import ProtectedRoute from "./components/ProtectedRoute";
 import SecurityRoute from "./components/SecurityRoute";
 
@@ -44,6 +45,14 @@ export default function App() {
           element={
             <ProtectedRoute>
               <Notes />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/stopwatch"
+          element={
+            <ProtectedRoute>
+              <Stopwatch />
             </ProtectedRoute>
           }
         />

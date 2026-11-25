@@ -5,6 +5,7 @@ import App from "./App.jsx";
 import "./index.css";
 import { TaskProvider } from "./context/TaskContext";
 import { NoteProvider } from "./context/NoteContext";
+import { StopwatchProvider } from "./context/StopwatchContext";
 import { AuthProvider } from "./context/AuthContext";
 import { UIProvider } from "./context/UIContext";
 import { AppLockProvider } from "./context/AppLockContext";
@@ -16,8 +17,9 @@ ReactDOM.createRoot(document.getElementById("root")).render(
       <AuthProvider>
         <AppLockProvider>
           <NoteProvider>
-            <TaskProvider>
-              <UIProvider>
+            <StopwatchProvider>
+              <TaskProvider>
+                <UIProvider>
                 {/* Global UI State Provider */}
                 <App />
                 <Toaster
@@ -30,8 +32,9 @@ ReactDOM.createRoot(document.getElementById("root")).render(
                     },
                   }}
                 />
-              </UIProvider>
-            </TaskProvider>
+                </UIProvider>
+              </TaskProvider>
+            </StopwatchProvider>
           </NoteProvider>
         </AppLockProvider>
       </AuthProvider>

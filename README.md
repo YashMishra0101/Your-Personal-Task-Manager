@@ -30,6 +30,7 @@
 |     <img src="src/assets/5.png" width="400" alt="Task Details" />     |  <img src="src/assets/6.png" width="400" alt="Deadline Tracking" />   |
 |     <img src="src/assets/7.png" width="400" alt="Mobile View" />      |    <img src="src/assets/8.png" width="400" alt="Session Audit" />     |
 |     <img src="src/assets/9.png" width="400" alt="PIN Security" />     |  <img src="src/assets/10.png" width="400" alt="Profile Settings" />   |
+|    <img src="src/assets/13.png" width="400" alt="Stopwatch Active" />   |  <img src="src/assets/14.png" width="400" alt="Stopwatch History" />  |
 | <img src="src/assets/11.png" width="400" alt="New Feature Preview" /> | <img src="src/assets/12.png" width="400" alt="Final Task Complete" /> |
 
 </div>
@@ -57,10 +58,11 @@ This is more than just another **To-Do List**. It is a **Production-Ready Task M
 - **🔄 Drag-and-Drop Reordering** — A high-performance manual reordering system to organize your workspace exactly how you want.
 - **🚨 Deadline Tracking** — Dynamic visual indicators and relative countdowns for overdue, urgent, and upcoming tasks.
 - **📌 Active Tasks Counter** — Real-time persistent overview of your total pending workload.
-- **⚡ One-Click Actions** — Engineered for speed: instantly complete, edit or delete tasks directly from the dashboard.
+- **⚡ One-Click Actions** — Engineered for speed: instantly complete, edit, or delete tasks directly from the dashboard.
 - **📖 Detailed Task View** — Rich description support with perfectly formatted date and time metadata.
 - **📈 Task Progress Tracking** — Granular completion updates (**0–100%**) with support for marking tasks as "Unsuccessful" for comprehensive productivity auditing.
 - **📓 Personal Notes** — A dedicated space for random thoughts and ideas with a minimalist editor and instant search.
+- **⏱️ Focus Stopwatch** — Track live study or work sessions with real-time Firestore sync, pause/resume controls, per-session breakdowns, outcome logging (**Completed** / **Not Completed**) before saving to history, filterable session logs, and one-click restore back to Active from where you stopped.
 - **💰 100% Free & No-Cost Setup** — There are no hidden fees, subscriptions, or payment methods required. You own the code, you own the data, and you pay absolutely nothing to keep it running.
 - **📱 Install Anywhere (Progressive Web App)** — Engineered with PWA support, allowing native-like installation.
   - **Mobile:** Open the hosted link in your browser, tap the browser menu, and select "**Add to Home screen**".
@@ -95,7 +97,7 @@ Security isn't a feature; it's the foundation.
 ### 🧠 Advanced Architecture
 
 - **Persistent Firestore Cache**: Custom implementation of `persistentLocalCache` for instant data access even on cold starts.
-- **Atomic Context State**: State management split via dedicated Context Providers (Auth, AppLock, Tasks) to minimize re-renders.
+- **Atomic Context State**: State management split via dedicated Context Providers (Auth, AppLock, Tasks, Notes, Stopwatch) to minimize re-renders.
 - **Intelligent Deduplication**: Module-level session management to prevent duplicate Firestore writes during React's StrictMode double-mounts.
 
 ---

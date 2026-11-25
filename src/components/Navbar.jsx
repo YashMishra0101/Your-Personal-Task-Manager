@@ -11,6 +11,7 @@ import {
   X,
   StickyNote,
   History,
+  Timer,
 } from "lucide-react";
 import { cn } from "../lib/utils";
 import { useAuth } from "../context/AuthContext";
@@ -37,6 +38,7 @@ export default function Navbar() {
     { to: "/add", icon: PlusCircle, label: "Add New Task" },
     { to: "/history", icon: History, label: "Task Records" },
     { to: "/notes", icon: StickyNote, label: "Notes" },
+    { to: "/stopwatch", icon: Timer, label: "Stopwatch" },
     {
       to: "/device-activity",
       icon: MonitorSmartphone,
